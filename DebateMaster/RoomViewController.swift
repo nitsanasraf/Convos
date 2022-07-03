@@ -40,7 +40,7 @@ class RoomViewController: UIViewController {
         stackView.layer.cornerRadius = 10
         stackView.backgroundColor = UIColor(white: 0, alpha: 0.3)
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         stackView.alignment = .center
         return stackView
     }()
@@ -53,159 +53,72 @@ class RoomViewController: UIViewController {
         return stackView
     }()
     
-    private let localView:UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
+    private let localView = UIView()
+    private let remoteView = UIView()
+    private let remoteView2 = UIView()
+    private let remoteView3 = UIView()
+    private let remoteView4 = UIView()
+    private let remoteView5 = UIView()
+
     
-    private let remoteView:UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
+    private lazy var videoViews = [localView,remoteView,remoteView2,remoteView3,remoteView4,remoteView5]
     
-    private let remoteView2:UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
+    private func configureVideoViews() {
+        let screenHeight = UIScreen.main.bounds.height
+        for view in videoViews {
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.backgroundColor = .black
+            view.layer.cornerRadius = 10
+            view.clipsToBounds = true
+            view.heightAnchor.constraint(equalToConstant: screenHeight/4.65).isActive = true
+        }
+    }
     
-    private let remoteView3:UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
+    private let activityIndicator = UIActivityIndicatorView()
+    private let activityIndicator2 = UIActivityIndicatorView()
+    private let activityIndicator3 = UIActivityIndicatorView()
+    private let activityIndicator4 = UIActivityIndicatorView()
+    private let activityIndicator5 = UIActivityIndicatorView()
+    private let activityIndicator6 = UIActivityIndicatorView()
     
-    private let remoteView4:UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
+    private lazy var activityIndicators = [activityIndicator,activityIndicator2,activityIndicator3,activityIndicator4,activityIndicator5,activityIndicator6]
+
+    private func configureActivityIndicators() {
+        for (ix,indicator) in activityIndicators.enumerated() {
+            indicator.translatesAutoresizingMaskIntoConstraints = false
+            videoViews[ix].addSubview(indicator)
+            indicator.style = .medium
+            indicator.color = .white
+            indicator.centerXAnchor.constraint(equalTo: videoViews[ix].centerXAnchor).isActive = true
+            indicator.centerYAnchor.constraint(equalTo: videoViews[ix].centerYAnchor).isActive = true
+            indicator.startAnimating()
+        }
+    }
     
-    private let remoteView5:UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
-    
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        localView.addSubview(indicator)
-        indicator.style = .medium
-        indicator.color = .white
-        indicator.centerXAnchor.constraint(equalTo: localView.centerXAnchor).isActive = true
-        indicator.centerYAnchor.constraint(equalTo: localView.centerYAnchor).isActive = true
-        indicator.startAnimating()
-        return indicator
-    }()
-    
-    private lazy var activityIndicator2: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        remoteView.addSubview(indicator)
-        indicator.style = .medium
-        indicator.color = .white
-        indicator.centerXAnchor.constraint(equalTo: remoteView.centerXAnchor).isActive = true
-        indicator.centerYAnchor.constraint(equalTo: remoteView.centerYAnchor).isActive = true
-        indicator.startAnimating()
-        return indicator
-    }()
-    
-    private lazy var activityIndicator3: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        remoteView2.addSubview(indicator)
-        indicator.style = .medium
-        indicator.color = .white
-        indicator.centerXAnchor.constraint(equalTo: remoteView2.centerXAnchor).isActive = true
-        indicator.centerYAnchor.constraint(equalTo: remoteView2.centerYAnchor).isActive = true
-        indicator.startAnimating()
-        return indicator
-    }()
-    
-    private lazy var activityIndicator4: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        remoteView3.addSubview(indicator)
-        indicator.style = .medium
-        indicator.color = .white
-        indicator.centerXAnchor.constraint(equalTo: remoteView3.centerXAnchor).isActive = true
-        indicator.centerYAnchor.constraint(equalTo: remoteView3.centerYAnchor).isActive = true
-        indicator.startAnimating()
-        return indicator
-    }()
-    
-    private lazy var activityIndicator5: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        remoteView4.addSubview(indicator)
-        indicator.style = .medium
-        indicator.color = .white
-        indicator.centerXAnchor.constraint(equalTo: remoteView4.centerXAnchor).isActive = true
-        indicator.centerYAnchor.constraint(equalTo: remoteView4.centerYAnchor).isActive = true
-        indicator.startAnimating()
-        return indicator
-    }()
-    
-    private lazy var activityIndicator6: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        remoteView5.addSubview(indicator)
-        indicator.style = .medium
-        indicator.color = .white
-        indicator.centerXAnchor.constraint(equalTo: remoteView5.centerXAnchor).isActive = true
-        indicator.centerYAnchor.constraint(equalTo: remoteView5.centerYAnchor).isActive = true
-        indicator.startAnimating()
-        return indicator
-    }()
-    
-    private let questionLabel:UILabel = {
-        let label = UILabel()
-        label.text = "Question 1:"
-        label.font = UIFont.systemFont(ofSize: 16,weight: .bold)
-        label.textColor = .white
-        return label
-    }()
-    
-    private let questionText:UILabel = {
+    private let discussionTopic:UILabel = {
         let label = UILabel()
         label.text = "Do you think violent movies encourage the use of guns?"
-        label.font = UIFont.systemFont(ofSize: 15,weight: .regular)
-        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 16,weight: .bold)
         label.textColor = .white
+        label.numberOfLines = 0
         label.textAlignment = .center
         return label
     }()
+    
     
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemPink
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        title = "Room name"
+
+        configureVideoViews()
+        configureActivityIndicators()
         addViews()
         addLayouts()
         initializeAndJoinChannel()
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        title = "Room name"
+        
     }
     
     deinit {
@@ -225,42 +138,23 @@ class RoomViewController: UIViewController {
         topVideoStack.addArrangedSubview(remoteView4)
         topVideoStack.addArrangedSubview(remoteView5)
         
-        middleQustionsStack.addArrangedSubview(questionLabel)
-        middleQustionsStack.addArrangedSubview(questionText)
+        middleQustionsStack.addArrangedSubview(discussionTopic)
+
 
         bottomVideoStack.addArrangedSubview(localView)
         bottomVideoStack.addArrangedSubview(remoteView)
         bottomVideoStack.addArrangedSubview(remoteView2)
         
-        localView.addSubview(activityIndicator)
-        remoteView.addSubview(activityIndicator2)
-        remoteView2.addSubview(activityIndicator3)
-        remoteView3.addSubview(activityIndicator4)
-        remoteView4.addSubview(activityIndicator5)
-        remoteView5.addSubview(activityIndicator6)
-        
     }
     
     private func addLayouts() {
-        let screenBounds = UIScreen.main.bounds
-        let screenHeight = screenBounds.height
         let mainStackViewConstraints = [
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ]
-        let viewsConstraints = [
-            localView.heightAnchor.constraint(equalToConstant: screenHeight/4.65),
-            remoteView.heightAnchor.constraint(equalToConstant: screenHeight/4.65),
-            remoteView2.heightAnchor.constraint(equalToConstant: screenHeight/4.65),
-            remoteView3.heightAnchor.constraint(equalToConstant: screenHeight/4.65),
-            remoteView4.heightAnchor.constraint(equalToConstant: screenHeight/4.65),
-            remoteView5.heightAnchor.constraint(equalToConstant: screenHeight/4.65),
-        ]
-        
         NSLayoutConstraint.activate(mainStackViewConstraints)
-        NSLayoutConstraint.activate(viewsConstraints)
     }
     
     //MARK: - Agora Funcs

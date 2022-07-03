@@ -9,5 +9,6 @@ import Foundation
 
 struct KeyCenter {
     static let AppId: String = "68aec75811214c85a87524b6442e936b"
-    static var Token: String? = "00668aec75811214c85a87524b6442e936bIAA4PwPU0U36JJ0HJ2R15LH1cIEMQmqp/kdKkZberHRAk1piGh8AAAAAEACiqr7MC3vBYgEAAQALe8Fi"
+    static var Token: String? = "00668aec75811214c85a87524b6442e936bIACxAaGWha3CAfNjLQL2Jx6EnZWk/gIy8QSCpVS6mbSpUlpiGh8AAAAAEACiqr7MR/bCYgEAAQBH9sJi"
+        
 }
