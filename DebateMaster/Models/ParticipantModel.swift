@@ -14,9 +14,13 @@ struct ParticipantModel {
     let container:UIStackView
     let videoView:UIView
     let buttonContainer:UIStackView
-    let skipButton: UIButton
+    let muteButton: UIButton
+    var color: CGColor
     var uid:UInt {
         let uid = self.id < 0 ? self.id * -1 : self.id
         return UInt(uid)
+    }
+    mutating func setColor(color:CGColor) {
+        self.color = color
     }
 }
