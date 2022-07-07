@@ -16,6 +16,51 @@ class RoomViewController: UIViewController {
     
     private var newTopicVotes = [ParticipantModel]()
     
+    //MARK: - Web Socket Functions
+    private func receiveData() {
+        WebSocketModel.shared.webSocketTask.receive { [weak self] result in
+            switch result {
+            case .success(let msg):
+                switch msg {
+                case .data(let data):
+                    print("Got Data: \(data)")
+                case .string(let str):
+                    print("Got String: \(str)")
+                default:
+                    break
+                }
+            case .failure(let err):
+                print("Receive Error: \(err)")
+                return
+            }
+            self?.receiveData()
+        }
+    }
+    
+    private func resumeSocket() {
+        WebSocketModel.shared.webSocketTask.resume()
+    }
+    
+    private func sendData() {
+        WebSocketModel.shared.webSocketTask.send( WebSocketModel.shared.message) { error in
+            if let error = error {
+                print("Web socket couldn't send message: \(error)")
+            }
+        }
+    }
+    
+    private func ping() {
+        WebSocketModel.shared.webSocketTask.sendPing { error in
+            if let error = error {
+                print("Ping Error: \(error)")
+            }
+        }
+    }
+    
+    private func closeSocket() {
+        WebSocketModel.shared.webSocketTask.cancel(with: .goingAway, reason: "Room left".data(using: .utf8))
+    }
+    
     //MARK: - UI Views
     private let mainStackView:UIStackView = {
         let stackView = UIStackView()
@@ -81,6 +126,7 @@ class RoomViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14,weight: .regular)
         label.text = "New Topic Votes: \(newTopicVotes.count)"
+        label.textColor = .white
         return label
     }()
     
@@ -142,7 +188,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newRoomPressed() {
-        //change room
+        sendData()
     }
     
     private lazy var newTopicButton: UIButton = {
@@ -358,6 +404,9 @@ class RoomViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         title = "Room name"
         
+        WebSocketModel.shared.webSocketTask.delegate = self
+        resumeSocket()
+        
         configureVideoViews()
         createActivityIndicators()
         configureButtonsStackViews()
@@ -456,7 +505,19 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
-        print("left")
+        print("user left channel")
     }
     
+}
+
+//MARK: - URLSessionWebSocketDelegate
+extension RoomViewController:URLSessionWebSocketDelegate {
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        print("Connected to socket")
+        ping()
+        receiveData()
+    }
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+        print("Closed connection to socket")
+    }
 }
