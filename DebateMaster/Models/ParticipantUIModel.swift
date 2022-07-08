@@ -8,8 +8,7 @@
 import Foundation
 import UIKit
 
-
-struct ParticipantModel {
+struct ParticipantUIModel:Identifiable {
     let id = UUID().hashValue
     let container:UIStackView
     let videoView:UIView

@@ -14,16 +14,33 @@ class RoomViewController: UIViewController {
     
     private var videoSessions = 0
     
-    private var newTopicVotes = [ParticipantModel]()
+    private var newTopicVotes = [ParticipantCodableModel]()
+    
+    private lazy var participants = [
+        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+    ]
+
     
     //MARK: - Web Socket Functions
     private func receiveData() {
         WebSocketModel.shared.webSocketTask.receive { [weak self] result in
+            guard let self = self else {return}
             switch result {
             case .success(let msg):
                 switch msg {
                 case .data(let data):
-                    print("Got Data: \(data)")
+                    do {
+                        let decodedData = try JSONDecoder().decode([ParticipantCodableModel].self, from: data)
+                        self.newTopicVotes = decodedData
+                        print(self.newTopicVotes)
+                    } catch {
+                        print("Error decoding: \(error)")
+                    }
                 case .string(let str):
                     print("Got String: \(str)")
                 default:
@@ -33,7 +50,7 @@ class RoomViewController: UIViewController {
                 print("Receive Error: \(err)")
                 return
             }
-            self?.receiveData()
+            self.receiveData()
         }
     }
     
@@ -42,10 +59,15 @@ class RoomViewController: UIViewController {
     }
     
     private func sendData() {
-        WebSocketModel.shared.webSocketTask.send( WebSocketModel.shared.message) { error in
-            if let error = error {
-                print("Web socket couldn't send message: \(error)")
+        do {
+            let dummyJSON = try JSONEncoder().encode(newTopicVotes)
+            WebSocketModel.shared.webSocketTask.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
+                if let error = error {
+                    print("Web socket couldn't send message: \(error)")
+                }
             }
+        } catch {
+            print("Error encoding: \(error)")
         }
     }
     
@@ -153,7 +175,7 @@ class RoomViewController: UIViewController {
         }
         if isPressed {
             newTopicVoteColorView.removeFromSuperview()
-            if let participantIndex = newTopicVotes.firstIndex(where: {$0.uid == participants[0].uid}) {
+            if let participantIndex = newTopicVotes.firstIndex(where: {$0.id == participants[0].uid}) {
                 newTopicVotes.remove(at: participantIndex)
             }
             newTopicVotesLabel.text = "New topic votes: \(newTopicVotes.count)"
@@ -162,7 +184,8 @@ class RoomViewController: UIViewController {
             }
         } else {
             newTopicVotesColorsStackView.addArrangedSubview(newTopicVoteColorView)
-            newTopicVotes.append(participants[0])
+            let colorName = UIColor(cgColor: participants[0].color).accessibilityName
+            newTopicVotes.append(ParticipantCodableModel(id: participants[0].uid, color: colorName))
             newTopicVotesLabel.text = "New topic votes: \(newTopicVotes.count)"
         }
     }
@@ -250,14 +273,6 @@ class RoomViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var participants = [
-        ParticipantModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-    ]
     
     private func configureVideoStackViews() {
         for (ix,participant) in participants.enumerated() {
