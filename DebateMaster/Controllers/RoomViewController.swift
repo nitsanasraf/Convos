@@ -84,7 +84,7 @@ class RoomViewController: UIViewController {
     }
     
     //MARK: - UI Views
-    private let mainStackView:UIStackView = {
+    private let mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 15
@@ -94,7 +94,7 @@ class RoomViewController: UIViewController {
         return stackView
     }()
     
-    private let topVideoStack:UIStackView = {
+    private let topVideoStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 10
@@ -102,14 +102,14 @@ class RoomViewController: UIViewController {
         return stackView
     }()
     
-    private let middleQustionsStack:UIStackView = {
+    private let middleQustionsStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 5
         stackView.layer.cornerRadius = 10
         stackView.backgroundColor = UIColor(white: 0, alpha: 0.3)
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        stackView.layoutMargins = UIEdgeInsets(top:5, left: 15, bottom: 5, right: 15)
         stackView.alignment = .center
         return stackView
     }()
@@ -148,6 +148,7 @@ class RoomViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14,weight: .regular)
         label.text = "New Topic Votes: \(newTopicVotes.count)"
+        label.numberOfLines = 0
         label.textColor = .white
         return label
     }()
@@ -263,6 +264,14 @@ class RoomViewController: UIViewController {
     @objc private func muteAllPressed(_ sender:UIButton) {
         let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.3) ? false : true
         changeActionButtonUI(isPressed: isPressed, config: &sender.configuration!)
+        for participant in participants {
+            if isPressed {
+                mute(with: participant, button: participant.muteButton, unmute: true)
+            } else {
+                mute(with: participant, button: participant.muteButton, unmute: false)
+            }
+            
+        }
     }
     
     private let bottomVideoStack:UIStackView = {
@@ -273,7 +282,6 @@ class RoomViewController: UIViewController {
         return stackView
     }()
     
-    
     private func configureVideoStackViews() {
         for (ix,participant) in participants.enumerated() {
             participant.container.axis = .vertical
@@ -281,22 +289,22 @@ class RoomViewController: UIViewController {
             switch ix {
             case 0,1,2:
                 if ix != 1 {
-                    participant.container.addArrangedSubview(participant.buttonContainer)
+                    mainStackView.addSubview(participant.buttonContainer)
                     participant.container.addArrangedSubview(participant.videoView)
                     participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
                 } else {
                     participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
-                    participant.container.addArrangedSubview(participant.buttonContainer)
+                    mainStackView.addSubview(participant.buttonContainer)
                     participant.container.addArrangedSubview(participant.videoView)
                 }
             case 3,4,5:
                 if ix != 4 {
                     participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
                     participant.container.addArrangedSubview(participant.videoView)
-                    participant.container.addArrangedSubview(participant.buttonContainer)
+                    mainStackView.addSubview(participant.buttonContainer)
                 } else {
                     participant.container.addArrangedSubview(participant.videoView)
-                    participant.container.addArrangedSubview(participant.buttonContainer)
+                    mainStackView.addSubview(participant.buttonContainer)
                     participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
                     
                 }
@@ -350,43 +358,59 @@ class RoomViewController: UIViewController {
     }
     
     private func configureMuteButtons() {
-        for participant in participants {
+        for (ix,participant) in participants.enumerated() {
             let size:CGFloat = 35
-            participant.muteButton.backgroundColor = .clear
+            participant.muteButton.backgroundColor = UIColor(cgColor:participant.color)
             participant.muteButton.translatesAutoresizingMaskIntoConstraints = false
             participant.muteButton.widthAnchor.constraint(equalToConstant: size).isActive = true
             participant.muteButton.heightAnchor.constraint(equalToConstant: size).isActive = true
             participant.muteButton.layer.masksToBounds = true
             participant.muteButton.layer.cornerRadius = size/2
-            participant.muteButton.layer.borderColor = UIColor.black.cgColor
-            participant.muteButton.layer.borderWidth = 3
+            participant.muteButton.tag = ix
             participant.muteButton.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
-            participant.muteButton.tintColor = .white
+            participant.muteButton.tintColor = .black
             participant.muteButton.addTarget(self, action: #selector(muteClicked), for: .touchUpInside)
         }
     }
     
-    private func changeMuteButtonUI(isMuted:Bool, button: UIButton) {
-        if isMuted {
-            button.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
-            button.alpha = 1
-        } else {
+    private func mute(with participant:ParticipantUIModel, button:UIButton, unmute:Bool) {
+        if !unmute {
             button.setBackgroundImage(UIImage(systemName: "mic.slash.circle"), for: .normal)
+            participant.container.alpha = 0.5
             button.alpha = 0.5
+        } else {
+            button.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
+            participant.container.alpha = 1
+            button.alpha = 1
+        }
+    }
+    
+    private func muteParticipant(isMuted:Bool, button: UIButton) {
+        for participant in participants {
+            if participant.muteButton.tag == button.tag {
+                if isMuted {
+                    mute(with: participant, button: button, unmute: true)
+                } else {
+                    mute(with: participant, button: button, unmute: false)
+                }
+            }
         }
     }
     
     @objc private func muteClicked(_ sender:UIButton) {
         let isMuted = sender.currentBackgroundImage == UIImage(systemName: "mic.circle") ? false : true
-        changeMuteButtonUI(isMuted: isMuted, button: sender)
-        changeTopic(topic: "Should abortions be legal or not?")
+        muteParticipant(isMuted: isMuted, button: sender)
     }
     
     private func configureButtonsStackViews() {
         for participant in participants {
+            let muteBtnSize:CGFloat = 35/2
+            participant.buttonContainer.translatesAutoresizingMaskIntoConstraints = false
             participant.buttonContainer.axis = .vertical
             participant.buttonContainer.alignment = .center
             participant.buttonContainer.addArrangedSubview(participant.muteButton)
+            participant.buttonContainer.bottomAnchor.constraint(equalTo: participant.videoView.bottomAnchor, constant: muteBtnSize - 3).isActive = true
+            participant.buttonContainer.centerXAnchor.constraint(equalTo: participant.videoView.centerXAnchor).isActive = true
         }
     }
     
@@ -404,7 +428,7 @@ class RoomViewController: UIViewController {
     private let discussionTopic:UILabel = {
         let label = UILabel()
         label.text = "Do you think violent movies encourage the use of guns?"
-        label.font = UIFont.systemFont(ofSize: 16,weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = .white
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -417,18 +441,18 @@ class RoomViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemPink
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        title = "Room name"
+        title = "Category"
         
         WebSocketModel.shared.webSocketTask.delegate = self
         resumeSocket()
-        
-        configureVideoViews()
-        createActivityIndicators()
-        configureButtonsStackViews()
-        configureMuteButtons()
-        configureVideoStackViews()
         addViews()
         addLayouts()
+
+        configureVideoViews()
+        createActivityIndicators()
+        configureMuteButtons()
+        configureVideoStackViews()
+        configureButtonsStackViews()
         initializeAndJoinChannel()
         
     }
@@ -443,6 +467,7 @@ class RoomViewController: UIViewController {
         view.addSubview(mainStackView)
         
         mainStackView.addArrangedSubview(topVideoStack)
+        mainStackView.addArrangedSubview(UIView.spacer(size: 0, for: .vertical))
         mainStackView.addArrangedSubview(middleQustionsStack)
         mainStackView.addArrangedSubview(middleActionStack)
         mainStackView.addArrangedSubview(middleSkipCounterStack)
