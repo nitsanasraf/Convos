@@ -37,12 +37,16 @@ class RoomViewController: UIViewController {
                     do {
                         let decodedData = try JSONDecoder().decode([ParticipantCodableModel].self, from: data)
                         self.newTopicVotes = decodedData
-                        print(self.newTopicVotes)
+                        DispatchQueue.main.async {
+                            self.renderVoteOrbs()
+                        }
                     } catch {
                         print("Error decoding: \(error)")
                     }
                 case .string(let str):
-                    print("Got String: \(str)")
+                    DispatchQueue.main.async {
+                        self.changeTopic(topic: str)
+                    }
                 default:
                     break
                 }
@@ -70,6 +74,7 @@ class RoomViewController: UIViewController {
             print("Error encoding: \(error)")
         }
     }
+    
     
     private func ping() {
         WebSocketModel.shared.webSocketTask.sendPing { error in
@@ -153,7 +158,7 @@ class RoomViewController: UIViewController {
         return label
     }()
     
-    private let newTopicVotesColorsStackView: UIStackView = {
+    private let newVoteOrbsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 5
@@ -161,36 +166,44 @@ class RoomViewController: UIViewController {
         return stackView
     }()
     
-    private let newTopicVoteColorView = UIView()
-    
-    private func configureNewTopicVotesInformation(color:CGColor, isPressed:Bool) {
+    private func createNewVoteOrb(color:UIColor) -> UIView {
         let size:CGFloat = 10
-        newTopicVoteColorView.backgroundColor = UIColor(cgColor:color)
-        newTopicVoteColorView.translatesAutoresizingMaskIntoConstraints = false
-        newTopicVoteColorView.widthAnchor.constraint(equalToConstant: size).isActive = true
-        newTopicVoteColorView.heightAnchor.constraint(equalToConstant: size).isActive = true
-        newTopicVoteColorView.layer.masksToBounds = true
-        newTopicVoteColorView.layer.cornerRadius = size/2
-        if newTopicVotesColorsStackView.superview == nil {
-            middleSkipCounterStack.addArrangedSubview(newTopicVotesColorsStackView)
+        let view = UIView()
+        view.backgroundColor = color
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.widthAnchor.constraint(equalToConstant: size).isActive = true
+        view.heightAnchor.constraint(equalToConstant: size).isActive = true
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = size/2
+        return view
+    }
+    
+    private func renderVoteOrbs() {
+        for subview in newVoteOrbsStackView.arrangedSubviews {
+            newVoteOrbsStackView.removeArrangedSubview(subview)
         }
+        newVoteOrbsStackView.removeFromSuperview()
+        for newTopicVote in newTopicVotes {
+            if newVoteOrbsStackView.superview == nil {
+                middleSkipCounterStack.addArrangedSubview(newVoteOrbsStackView)
+            }
+            let orb = createNewVoteOrb(color: newTopicVote.color.getColorByName())
+            newVoteOrbsStackView.addArrangedSubview(orb)
+        }
+        newTopicVotesLabel.text = "New topic votes: \(newTopicVotes.count)"
+    }
+    
+    private func appendNewTopicVote(isPressed:Bool) {
         if isPressed {
-            newTopicVoteColorView.removeFromSuperview()
             if let participantIndex = newTopicVotes.firstIndex(where: {$0.id == participants[0].uid}) {
                 newTopicVotes.remove(at: participantIndex)
             }
-            newTopicVotesLabel.text = "New topic votes: \(newTopicVotes.count)"
-            if newTopicVotes.count == 0 {
-                newTopicVotesColorsStackView.removeFromSuperview()
-            }
         } else {
-            newTopicVotesColorsStackView.addArrangedSubview(newTopicVoteColorView)
-            let colorName = UIColor(cgColor: participants[0].color).accessibilityName
+            let colorName = UIColor(cgColor:participants[0].color).accessibilityName
             newTopicVotes.append(ParticipantCodableModel(id: participants[0].uid, color: colorName))
-            newTopicVotesLabel.text = "New topic votes: \(newTopicVotes.count)"
         }
     }
-
+    
     private lazy var newRoomButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
@@ -212,7 +225,11 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newRoomPressed() {
-        sendData()
+        WebSocketModel.shared.webSocketTask.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
+            if let error = error {
+                print("Web socket couldn't send message: \(error)")
+            }
+        }
     }
     
     private lazy var newTopicButton: UIButton = {
@@ -237,8 +254,9 @@ class RoomViewController: UIViewController {
     
     @objc private func newTopicPressed(_ sender:UIButton) {
         let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.3) ? false : true
-        configureNewTopicVotesInformation(color: participants[0].color,isPressed: isPressed)
+        appendNewTopicVote(isPressed: isPressed)
         changeActionButtonUI(isPressed: isPressed, config: &sender.configuration!)
+        sendData()
     }
     
     private lazy var muteAllButton: UIButton = {
@@ -427,7 +445,7 @@ class RoomViewController: UIViewController {
     
     private let discussionTopic:UILabel = {
         let label = UILabel()
-        label.text = "Do you think violent movies encourage the use of guns?"
+        label.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s?"
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = .white
         label.numberOfLines = 0

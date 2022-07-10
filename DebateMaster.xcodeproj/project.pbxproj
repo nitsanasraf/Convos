@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C6098F38287B027100AF1CDD /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098F37287B027100AF1CDD /* String+Extensions.swift */; };
 		C61DCD1D28770E79007E5EBE /* WebSocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DCD1C28770E79007E5EBE /* WebSocketModel.swift */; };
 		C6301475286F11F900128576 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6301474286F11F900128576 /* AppDelegate.swift */; };
 		C6301477286F11F900128576 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6301476286F11F900128576 /* SceneDelegate.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C6098F37287B027100AF1CDD /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		C61DCD1C28770E79007E5EBE /* WebSocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketModel.swift; sourceTree = "<group>"; };
 		C6301471286F11F900128576 /* DebateMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DebateMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6301474286F11F900128576 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				C6B1E8E32875C406006B067D /* UIView+Extensions.swift */,
+				C6098F37287B027100AF1CDD /* String+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 				C6FEF1ED2877D3110042BBA7 /* ParticipantCodableModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,
 				C63905F12872583900AE11C5 /* ParticipantUIModel.swift in Sources */,
+				C6098F38287B027100AF1CDD /* String+Extensions.swift in Sources */,
 				C61DCD1D28770E79007E5EBE /* WebSocketModel.swift in Sources */,
 				C6301475286F11F900128576 /* AppDelegate.swift in Sources */,
 				C6CBE82328707458007D1F95 /* KeyCenter.swift in Sources */,
