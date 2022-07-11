@@ -24,7 +24,7 @@ class RoomViewController: UIViewController {
         ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
         ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
     ]
-
+    
     
     //MARK: - Web Socket Functions
     private func receiveData() {
@@ -341,23 +341,40 @@ class RoomViewController: UIViewController {
         UIColor.systemPurple.cgColor,
     ]
     
-    private func setRandomParticipantColor(index: Int) {
-        let randIndex = Int.random(in: 0..<availableColors.count)
-        let color = availableColors[randIndex]
-        participants[index].videoView.layer.borderColor = color
-        participants[index].setColor(color: color)
-        availableColors.remove(at: randIndex)
+    private func setRandomParticipantColor() {
+        guard let url = URL(string: "http://127.0.0.1:8080/color") else {return}
+        for (ix,_) in participants.enumerated() {
+            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                if let error = error {
+                    print("Error fetching colors: \(error)")
+                } else {
+                    guard let data = data else {return}
+                    do {
+                        let colors = try JSONDecoder().decode([String].self, from: data)
+                        DispatchQueue.main.async {
+                            self.participants[ix].videoView.layer.borderColor = colors[ix].getColorByName().cgColor
+                            self.participants[ix].setColor(color: colors[ix].getColorByName().cgColor)
+                            self.participants[ix].muteButton.backgroundColor = colors[ix].getColorByName()
+                            
+                        }
+                    } catch {
+                        print("Error decoding: \(error)")
+                    }
+                    
+                }
+            }
+            task.resume()
+        }
     }
     
     private func configureVideoViews() {
         let screenHeight = UIScreen.main.bounds.height
-        for (ix,participant) in participants.enumerated() {
+        for participant in participants {
             participant.videoView.translatesAutoresizingMaskIntoConstraints = false
             participant.videoView.backgroundColor = .black
             participant.videoView.layer.cornerRadius = 10
             participant.videoView.clipsToBounds = true
             participant.videoView.heightAnchor.constraint(equalToConstant: screenHeight/4.65).isActive = true
-            setRandomParticipantColor(index: ix)
             participant.videoView.layer.borderWidth = 3
         }
     }
@@ -378,7 +395,6 @@ class RoomViewController: UIViewController {
     private func configureMuteButtons() {
         for (ix,participant) in participants.enumerated() {
             let size:CGFloat = 35
-            participant.muteButton.backgroundColor = UIColor(cgColor:participant.color)
             participant.muteButton.translatesAutoresizingMaskIntoConstraints = false
             participant.muteButton.widthAnchor.constraint(equalToConstant: size).isActive = true
             participant.muteButton.heightAnchor.constraint(equalToConstant: size).isActive = true
@@ -465,12 +481,14 @@ class RoomViewController: UIViewController {
         resumeSocket()
         addViews()
         addLayouts()
-
+        
         configureVideoViews()
         createActivityIndicators()
         configureMuteButtons()
         configureVideoStackViews()
         configureButtonsStackViews()
+        
+        setRandomParticipantColor()
         initializeAndJoinChannel()
         
     }
@@ -490,7 +508,7 @@ class RoomViewController: UIViewController {
         mainStackView.addArrangedSubview(middleActionStack)
         mainStackView.addArrangedSubview(middleSkipCounterStack)
         mainStackView.addArrangedSubview(bottomVideoStack)
-
+        
         
         topVideoStack.addArrangedSubview(participants[3].container)
         topVideoStack.addArrangedSubview(participants[4].container)
