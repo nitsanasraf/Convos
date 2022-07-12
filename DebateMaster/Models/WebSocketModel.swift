@@ -11,7 +11,7 @@ struct WebSocketModel {
     static var shared = WebSocketModel()
     
     let url = "ws://127.0.0.1:8080/socket"
-//    let url = "wss://108f-2a00-a040-199-6406-e5c8-f283-1ba5-73ac.eu.ngrok.io/socket"
+//    let url = "wss://6286-2a00-a040-199-6406-38a5-9800-a0c6-3211.eu.ngrok.io/socket"
 
     let urlSession = URLSession(configuration: .default)
     lazy var webSocketTask = urlSession.webSocketTask(with: URL(string:url)!)

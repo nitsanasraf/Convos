@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct ParticipantCodableModel:Codable,Identifiable {
+struct ParticipantModel:Codable,Identifiable {
     let id:UInt
     let color:String
     

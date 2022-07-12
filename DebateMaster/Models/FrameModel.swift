@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct ParticipantUIModel:Identifiable {
+struct FrameModel:Identifiable {
     let id = UUID().hashValue
     let container:UIStackView
     let videoView:UIView
@@ -22,4 +22,5 @@ struct ParticipantUIModel:Identifiable {
     mutating func setColor(color:CGColor) {
         self.color = color
     }
+    var isOccupied = false
 }

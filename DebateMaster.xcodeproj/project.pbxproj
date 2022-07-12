@@ -25,10 +25,10 @@
 		C630149A286F126F00128576 /* SuperResolution in Frameworks */ = {isa = PBXBuildFile; productRef = C6301499286F126F00128576 /* SuperResolution */; };
 		C630149C286F126F00128576 /* VideoPreprocess in Frameworks */ = {isa = PBXBuildFile; productRef = C630149B286F126F00128576 /* VideoPreprocess */; };
 		C630149E286F126F00128576 /* VirtualBackground in Frameworks */ = {isa = PBXBuildFile; productRef = C630149D286F126F00128576 /* VirtualBackground */; };
-		C63905F12872583900AE11C5 /* ParticipantUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63905F02872583900AE11C5 /* ParticipantUIModel.swift */; };
+		C63905F12872583900AE11C5 /* FrameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63905F02872583900AE11C5 /* FrameModel.swift */; };
 		C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1E8E32875C406006B067D /* UIView+Extensions.swift */; };
 		C6CBE82328707458007D1F95 /* KeyCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CBE82228707458007D1F95 /* KeyCenter.swift */; };
-		C6FEF1ED2877D3110042BBA7 /* ParticipantCodableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FEF1EC2877D3110042BBA7 /* ParticipantCodableModel.swift */; };
+		C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,10 +41,10 @@
 		C630147D286F11FB00128576 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C6301480286F11FB00128576 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C6301482286F11FB00128576 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C63905F02872583900AE11C5 /* ParticipantUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantUIModel.swift; sourceTree = "<group>"; };
+		C63905F02872583900AE11C5 /* FrameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModel.swift; sourceTree = "<group>"; };
 		C6B1E8E32875C406006B067D /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		C6CBE82228707458007D1F95 /* KeyCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCenter.swift; sourceTree = "<group>"; };
-		C6FEF1EC2877D3110042BBA7 /* ParticipantCodableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantCodableModel.swift; sourceTree = "<group>"; };
+		C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,8 +121,8 @@
 		C63905F42872624F00AE11C5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C6FEF1EC2877D3110042BBA7 /* ParticipantCodableModel.swift */,
-				C63905F02872583900AE11C5 /* ParticipantUIModel.swift */,
+				C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */,
+				C63905F02872583900AE11C5 /* FrameModel.swift */,
 				C61DCD1C28770E79007E5EBE /* WebSocketModel.swift */,
 			);
 			path = Models;
@@ -231,9 +231,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */,
-				C6FEF1ED2877D3110042BBA7 /* ParticipantCodableModel.swift in Sources */,
+				C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,
-				C63905F12872583900AE11C5 /* ParticipantUIModel.swift in Sources */,
+				C63905F12872583900AE11C5 /* FrameModel.swift in Sources */,
 				C6098F38287B027100AF1CDD /* String+Extensions.swift in Sources */,
 				C61DCD1D28770E79007E5EBE /* WebSocketModel.swift in Sources */,
 				C6301475286F11F900128576 /* AppDelegate.swift in Sources */,

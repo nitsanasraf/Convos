@@ -12,17 +12,15 @@ class RoomViewController: UIViewController {
     
     private var agoraKit: AgoraRtcEngineKit?
     
-    private var videoSessions = 0
+    private var newTopicVotes = [ParticipantModel]()
     
-    private var newTopicVotes = [ParticipantCodableModel]()
-    
-    private lazy var participants = [
-        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        ParticipantUIModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+    private lazy var frames = [
+        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
+        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
     ]
     
     
@@ -35,7 +33,7 @@ class RoomViewController: UIViewController {
                 switch msg {
                 case .data(let data):
                     do {
-                        let decodedData = try JSONDecoder().decode([ParticipantCodableModel].self, from: data)
+                        let decodedData = try JSONDecoder().decode([ParticipantModel].self, from: data)
                         self.newTopicVotes = decodedData
                         DispatchQueue.main.async {
                             self.renderVoteOrbs()
@@ -194,13 +192,14 @@ class RoomViewController: UIViewController {
     }
     
     private func appendNewTopicVote(isPressed:Bool) {
+        guard let localIX = localFrameIndex else {return}
         if isPressed {
-            if let participantIndex = newTopicVotes.firstIndex(where: {$0.id == participants[0].uid}) {
+            if let participantIndex = newTopicVotes.firstIndex(where: {$0.id == frames[localIX].uid}) {
                 newTopicVotes.remove(at: participantIndex)
             }
         } else {
-            let colorName = UIColor(cgColor:participants[0].color).accessibilityName
-            newTopicVotes.append(ParticipantCodableModel(id: participants[0].uid, color: colorName))
+            let colorName = UIColor(cgColor:frames[localIX].color).accessibilityName
+            newTopicVotes.append(ParticipantModel(id: frames[localIX].uid, color: colorName))
         }
     }
     
@@ -282,11 +281,11 @@ class RoomViewController: UIViewController {
     @objc private func muteAllPressed(_ sender:UIButton) {
         let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.3) ? false : true
         changeActionButtonUI(isPressed: isPressed, config: &sender.configuration!)
-        for participant in participants {
+        for frame in frames {
             if isPressed {
-                mute(with: participant, button: participant.muteButton, unmute: true)
+                mute(with: frame, button: frame.muteButton, unmute: true)
             } else {
-                mute(with: participant, button: participant.muteButton, unmute: false)
+                mute(with: frame, button: frame.muteButton, unmute: false)
             }
             
         }
@@ -301,29 +300,29 @@ class RoomViewController: UIViewController {
     }()
     
     private func configureVideoStackViews() {
-        for (ix,participant) in participants.enumerated() {
-            participant.container.axis = .vertical
-            participant.container.spacing = 10
+        for (ix,frame) in frames.enumerated() {
+            frame.container.axis = .vertical
+            frame.container.spacing = 10
             switch ix {
             case 0,1,2:
                 if ix != 1 {
-                    mainStackView.addSubview(participant.buttonContainer)
-                    participant.container.addArrangedSubview(participant.videoView)
-                    participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
+                    mainStackView.addSubview(frame.buttonContainer)
+                    frame.container.addArrangedSubview(frame.videoView)
+                    frame.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
                 } else {
-                    participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
-                    mainStackView.addSubview(participant.buttonContainer)
-                    participant.container.addArrangedSubview(participant.videoView)
+                    frame.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
+                    mainStackView.addSubview(frame.buttonContainer)
+                    frame.container.addArrangedSubview(frame.videoView)
                 }
             case 3,4,5:
                 if ix != 4 {
-                    participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
-                    participant.container.addArrangedSubview(participant.videoView)
-                    mainStackView.addSubview(participant.buttonContainer)
+                    frame.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
+                    frame.container.addArrangedSubview(frame.videoView)
+                    mainStackView.addSubview(frame.buttonContainer)
                 } else {
-                    participant.container.addArrangedSubview(participant.videoView)
-                    mainStackView.addSubview(participant.buttonContainer)
-                    participant.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
+                    frame.container.addArrangedSubview(frame.videoView)
+                    mainStackView.addSubview(frame.buttonContainer)
+                    frame.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
                     
                 }
             default:
@@ -343,7 +342,7 @@ class RoomViewController: UIViewController {
     
     private func setRandomParticipantColor() {
         guard let url = URL(string: "http://127.0.0.1:8080/color") else {return}
-        for (ix,_) in participants.enumerated() {
+        for (ix,_) in frames.enumerated() {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 if let error = error {
                     print("Error fetching colors: \(error)")
@@ -352,10 +351,9 @@ class RoomViewController: UIViewController {
                     do {
                         let colors = try JSONDecoder().decode([String].self, from: data)
                         DispatchQueue.main.async {
-                            self.participants[ix].videoView.layer.borderColor = colors[ix].getColorByName().cgColor
-                            self.participants[ix].setColor(color: colors[ix].getColorByName().cgColor)
-                            self.participants[ix].muteButton.backgroundColor = colors[ix].getColorByName()
-                            
+                            self.frames[ix].videoView.layer.borderColor = colors[ix].getColorByName().cgColor
+                            self.frames[ix].setColor(color: colors[ix].getColorByName().cgColor)
+                            self.frames[ix].muteButton.backgroundColor = colors[ix].getColorByName()
                         }
                     } catch {
                         print("Error decoding: \(error)")
@@ -369,63 +367,63 @@ class RoomViewController: UIViewController {
     
     private func configureVideoViews() {
         let screenHeight = UIScreen.main.bounds.height
-        for participant in participants {
-            participant.videoView.translatesAutoresizingMaskIntoConstraints = false
-            participant.videoView.backgroundColor = .black
-            participant.videoView.layer.cornerRadius = 10
-            participant.videoView.clipsToBounds = true
-            participant.videoView.heightAnchor.constraint(equalToConstant: screenHeight/4.65).isActive = true
-            participant.videoView.layer.borderWidth = 3
+        for frame in frames {
+            frame.videoView.translatesAutoresizingMaskIntoConstraints = false
+            frame.videoView.backgroundColor = .black
+            frame.videoView.layer.cornerRadius = 10
+            frame.videoView.clipsToBounds = true
+            frame.videoView.heightAnchor.constraint(equalToConstant: screenHeight/4.65).isActive = true
+            frame.videoView.layer.borderWidth = 3
         }
     }
     
     private func createActivityIndicators() {
-        for participant in participants {
+        for frame in frames {
             let indicator = UIActivityIndicatorView()
             indicator.translatesAutoresizingMaskIntoConstraints = false
-            participant.videoView.addSubview(indicator)
+            frame.videoView.addSubview(indicator)
             indicator.style = .medium
             indicator.color = .white
-            indicator.centerXAnchor.constraint(equalTo: participant.videoView.centerXAnchor).isActive = true
-            indicator.centerYAnchor.constraint(equalTo: participant.videoView.centerYAnchor).isActive = true
+            indicator.centerXAnchor.constraint(equalTo: frame.videoView.centerXAnchor).isActive = true
+            indicator.centerYAnchor.constraint(equalTo: frame.videoView.centerYAnchor).isActive = true
             indicator.startAnimating()
         }
     }
     
     private func configureMuteButtons() {
-        for (ix,participant) in participants.enumerated() {
+        for (ix,frame) in frames.enumerated() {
             let size:CGFloat = 35
-            participant.muteButton.translatesAutoresizingMaskIntoConstraints = false
-            participant.muteButton.widthAnchor.constraint(equalToConstant: size).isActive = true
-            participant.muteButton.heightAnchor.constraint(equalToConstant: size).isActive = true
-            participant.muteButton.layer.masksToBounds = true
-            participant.muteButton.layer.cornerRadius = size/2
-            participant.muteButton.tag = ix
-            participant.muteButton.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
-            participant.muteButton.tintColor = .black
-            participant.muteButton.addTarget(self, action: #selector(muteClicked), for: .touchUpInside)
+            frame.muteButton.translatesAutoresizingMaskIntoConstraints = false
+            frame.muteButton.widthAnchor.constraint(equalToConstant: size).isActive = true
+            frame.muteButton.heightAnchor.constraint(equalToConstant: size).isActive = true
+            frame.muteButton.layer.masksToBounds = true
+            frame.muteButton.layer.cornerRadius = size/2
+            frame.muteButton.tag = ix
+            frame.muteButton.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
+            frame.muteButton.tintColor = .black
+            frame.muteButton.addTarget(self, action: #selector(muteClicked), for: .touchUpInside)
         }
     }
     
-    private func mute(with participant:ParticipantUIModel, button:UIButton, unmute:Bool) {
+    private func mute(with frame:FrameModel, button:UIButton, unmute:Bool) {
         if !unmute {
             button.setBackgroundImage(UIImage(systemName: "mic.slash.circle"), for: .normal)
-            participant.container.alpha = 0.5
+            frame.container.alpha = 0.5
             button.alpha = 0.5
         } else {
             button.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
-            participant.container.alpha = 1
+            frame.container.alpha = 1
             button.alpha = 1
         }
     }
     
     private func muteParticipant(isMuted:Bool, button: UIButton) {
-        for participant in participants {
-            if participant.muteButton.tag == button.tag {
+        for frame in frames {
+            if frame.muteButton.tag == button.tag {
                 if isMuted {
-                    mute(with: participant, button: button, unmute: true)
+                    mute(with: frame, button: button, unmute: true)
                 } else {
-                    mute(with: participant, button: button, unmute: false)
+                    mute(with: frame, button: button, unmute: false)
                 }
             }
         }
@@ -437,14 +435,14 @@ class RoomViewController: UIViewController {
     }
     
     private func configureButtonsStackViews() {
-        for participant in participants {
+        for frame in frames {
             let muteBtnSize:CGFloat = 35/2
-            participant.buttonContainer.translatesAutoresizingMaskIntoConstraints = false
-            participant.buttonContainer.axis = .vertical
-            participant.buttonContainer.alignment = .center
-            participant.buttonContainer.addArrangedSubview(participant.muteButton)
-            participant.buttonContainer.bottomAnchor.constraint(equalTo: participant.videoView.bottomAnchor, constant: muteBtnSize - 3).isActive = true
-            participant.buttonContainer.centerXAnchor.constraint(equalTo: participant.videoView.centerXAnchor).isActive = true
+            frame.buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+            frame.buttonContainer.axis = .vertical
+            frame.buttonContainer.alignment = .center
+            frame.buttonContainer.addArrangedSubview(frame.muteButton)
+            frame.buttonContainer.bottomAnchor.constraint(equalTo: frame.videoView.bottomAnchor, constant: muteBtnSize - 3).isActive = true
+            frame.buttonContainer.centerXAnchor.constraint(equalTo: frame.videoView.centerXAnchor).isActive = true
         }
     }
     
@@ -510,9 +508,9 @@ class RoomViewController: UIViewController {
         mainStackView.addArrangedSubview(bottomVideoStack)
         
         
-        topVideoStack.addArrangedSubview(participants[3].container)
-        topVideoStack.addArrangedSubview(participants[4].container)
-        topVideoStack.addArrangedSubview(participants[5].container)
+        topVideoStack.addArrangedSubview(frames[3].container)
+        topVideoStack.addArrangedSubview(frames[4].container)
+        topVideoStack.addArrangedSubview(frames[5].container)
         
         middleQustionsStack.addArrangedSubview(discussionTopic)
         
@@ -522,9 +520,9 @@ class RoomViewController: UIViewController {
         
         middleSkipCounterStack.addArrangedSubview(newTopicVotesLabel)
         
-        bottomVideoStack.addArrangedSubview(participants[0].container)
-        bottomVideoStack.addArrangedSubview(participants[1].container)
-        bottomVideoStack.addArrangedSubview(participants[2].container)
+        bottomVideoStack.addArrangedSubview(frames[0].container)
+        bottomVideoStack.addArrangedSubview(frames[1].container)
+        bottomVideoStack.addArrangedSubview(frames[2].container)
         
     }
     
@@ -538,6 +536,20 @@ class RoomViewController: UIViewController {
         NSLayoutConstraint.activate(mainStackViewConstraints)
     }
     
+    private func findEmptyFrame() -> Int? {
+        for (ix,frame) in frames.enumerated() {
+            if frame.isOccupied {
+                print("Frame\(ix) is occupied.")
+                continue
+            }
+            print("Found Frame[\(ix)]!")
+            return ix
+        }
+        return nil
+    }
+    
+    private var localFrameIndex:Int?
+    
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
         agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.AppId, delegate: self)
@@ -545,14 +557,17 @@ class RoomViewController: UIViewController {
         agoraKit?.enableVideo()
         // Create a videoCanvas to render the local video
         let videoCanvas = AgoraRtcVideoCanvas()
-        videoCanvas.uid = participants[0].uid
+        guard let emptyFrameIX = findEmptyFrame() else {return}
+        localFrameIndex = emptyFrameIX
+        videoCanvas.uid = frames[localFrameIndex!].uid
         videoCanvas.renderMode = .hidden
-        videoCanvas.view = participants[0].videoView
+        videoCanvas.view = frames[localFrameIndex!].videoView
+        frames[localFrameIndex!].isOccupied = true
         agoraKit?.setupLocalVideo(videoCanvas)
         
         // Join the channel with a token. Pass in your token and channel name here
         agoraKit?.joinChannel(byToken: KeyCenter.Token, channelId: "Main", info: nil, uid: 0, joinSuccess: { (channel, uid, elapsed) in
-            self.videoSessions += 1
+            
         })
     }
     
@@ -562,26 +577,17 @@ class RoomViewController: UIViewController {
 extension RoomViewController: AgoraRtcEngineDelegate {
     // This callback is triggered when a remote user joins the channel
     func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinedOfUid uid: UInt, elapsed: Int) {
-        videoSessions += 1
         let videoCanvas = AgoraRtcVideoCanvas()
+        guard let emptyFrameIX = findEmptyFrame() else {return}
         videoCanvas.uid = uid
         videoCanvas.renderMode = .hidden
-        if videoSessions == 2 {
-            videoCanvas.view = participants[1].videoView
-        } else if videoSessions == 3 {
-            videoCanvas.view = participants[2].videoView
-        } else if videoSessions == 4 {
-            videoCanvas.view = participants[3].videoView
-        } else if videoSessions == 5 {
-            videoCanvas.view = participants[4].videoView
-        } else if videoSessions == 6 {
-            videoCanvas.view = participants[5].videoView
-        }
+        videoCanvas.view = frames[emptyFrameIX].videoView
+        frames[emptyFrameIX].isOccupied = true
         agoraKit?.setupRemoteVideo(videoCanvas)
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
-        print("user left channel")
+        print("User left channel")
     }
     
 }
