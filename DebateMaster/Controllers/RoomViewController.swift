@@ -14,6 +14,8 @@ class RoomViewController: UIViewController {
     
     private var newTopicVotes = [ParticipantModel]()
     
+    private var localFrameIndex:Int?
+    
     private lazy var frames = [
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
@@ -339,7 +341,7 @@ class RoomViewController: UIViewController {
         UIColor.systemYellow.cgColor,
         UIColor.systemPurple.cgColor,
     ]
-    
+
     private func setRandomParticipantColor() {
         guard let url = URL(string: NetworkManger.shared.getColorsURL) else {return}
         for (ix,_) in frames.enumerated() {
@@ -477,6 +479,7 @@ class RoomViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         title = "Category"
         
+        
         NetworkManger.shared.webSocketTask.delegate = self
         resumeSocket()
         addViews()
@@ -541,32 +544,68 @@ class RoomViewController: UIViewController {
     private func findEmptyFrame() -> Int? {
         for (ix,frame) in frames.enumerated() {
             if frame.isOccupied {
-                print("Frame\(ix) is occupied.")
                 continue
             }
-            print("Found Frame[\(ix)]!")
             return ix
         }
         return nil
     }
+        
+    private func postAvailablePositions() {
+        guard let url = URL(string: NetworkManger.shared.getPostPositionURL) else {return}
+        var tempPositions = [Bool]()
+        for frame in frames {
+            tempPositions.append(frame.isOccupied)
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = try! JSONSerialization.data(withJSONObject: tempPositions, options: [])
+        
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("Error posting to server: \(error)")
+            }
+        }
+        task.resume()
+        
+    }
     
-    private var localFrameIndex:Int?
+    private func getAvailablePosition(_ completionHandler: @escaping ()-> Void) {
+        guard let url = URL(string: NetworkManger.shared.getPostPositionURL) else {return}
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error posting: \(error) ")
+            }
+            guard let data = data else { return }
+            do {
+                let areOccupied = try JSONDecoder().decode([Bool].self, from: data)
+                for ix in 0..<self.frames.count {
+                    self.frames[ix].isOccupied = areOccupied[ix]
+                }
+                completionHandler()
+            } catch {
+                print("Error decoding data: \(error)")
+            }
+        }
+        task.resume()
+    }
     
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
         agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.AppId, delegate: self)
-        // Video is disabled by default. You need to call enableVideo to start a video stream.
-        agoraKit?.enableVideo()
-        // Create a videoCanvas to render the local video
-        let videoCanvas = AgoraRtcVideoCanvas()
-        guard let emptyFrameIX = findEmptyFrame() else {return}
-        localFrameIndex = emptyFrameIX
-        videoCanvas.uid = frames[localFrameIndex!].uid
-        videoCanvas.renderMode = .hidden
-        videoCanvas.view = frames[localFrameIndex!].videoView
-        frames[localFrameIndex!].isOccupied = true
-        agoraKit?.setupLocalVideo(videoCanvas)
-        
+        getAvailablePosition {
+            self.agoraKit?.enableVideo()
+            let videoCanvas = AgoraRtcVideoCanvas()
+            guard let emptyFrameIX = self.findEmptyFrame() else {return}
+            self.localFrameIndex = emptyFrameIX
+            videoCanvas.uid = self.frames[self.localFrameIndex!].uid
+            videoCanvas.renderMode = .hidden
+            videoCanvas.view = self.frames[self.localFrameIndex!].videoView
+            self.frames[self.localFrameIndex!].isOccupied = true
+            self.agoraKit?.setupLocalVideo(videoCanvas)
+            self.postAvailablePositions()
+        }
+      
         // Join the channel with a token. Pass in your token and channel name here
         agoraKit?.joinChannel(byToken: KeyCenter.Token, channelId: "Main", info: nil, uid: 0, joinSuccess: { (channel, uid, elapsed) in
             
@@ -584,12 +623,13 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         videoCanvas.uid = uid
         videoCanvas.renderMode = .hidden
         videoCanvas.view = frames[emptyFrameIX].videoView
-        frames[emptyFrameIX].isOccupied = true
         agoraKit?.setupRemoteVideo(videoCanvas)
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
         print("User left channel")
+        //frame of the user that left.isOccupied = false
+        //postAvailablePositions()
     }
     
 }

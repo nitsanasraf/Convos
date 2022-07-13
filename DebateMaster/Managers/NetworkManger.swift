@@ -10,9 +10,12 @@ import Foundation
 struct NetworkManger {
     static var shared = NetworkManger()
     
-    let socketURL = "ws://127.0.0.1:8080/socket"
     let getColorsURL = "http://127.0.0.1:8080/color"
+    let getPostPositionURL = "http://127.0.0.1:8080/position"
     
+    let socketURL = "ws://127.0.0.1:8080/socket"
+
     let urlSession = URLSession(configuration: .default)
     lazy var webSocketTask = urlSession.webSocketTask(with: URL(string:socketURL)!)
+    
 }
