@@ -26,7 +26,7 @@ class RoomViewController: UIViewController {
     
     //MARK: - Web Socket Functions
     private func receiveData() {
-        WebSocketModel.shared.webSocketTask.receive { [weak self] result in
+        NetworkManger.shared.webSocketTask.receive { [weak self] result in
             guard let self = self else {return}
             switch result {
             case .success(let msg):
@@ -57,13 +57,13 @@ class RoomViewController: UIViewController {
     }
     
     private func resumeSocket() {
-        WebSocketModel.shared.webSocketTask.resume()
+        NetworkManger.shared.webSocketTask.resume()
     }
     
     private func sendData() {
         do {
             let dummyJSON = try JSONEncoder().encode(newTopicVotes)
-            WebSocketModel.shared.webSocketTask.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
+            NetworkManger.shared.webSocketTask.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
                 if let error = error {
                     print("Web socket couldn't send message: \(error)")
                 }
@@ -75,7 +75,7 @@ class RoomViewController: UIViewController {
     
     
     private func ping() {
-        WebSocketModel.shared.webSocketTask.sendPing { error in
+        NetworkManger.shared.webSocketTask.sendPing { error in
             if let error = error {
                 print("Ping Error: \(error)")
             }
@@ -83,7 +83,7 @@ class RoomViewController: UIViewController {
     }
     
     private func closeSocket() {
-        WebSocketModel.shared.webSocketTask.cancel(with: .goingAway, reason: "Room left".data(using: .utf8))
+        NetworkManger.shared.webSocketTask.cancel(with: .goingAway, reason: "Room left".data(using: .utf8))
     }
     
     //MARK: - UI Views
@@ -224,7 +224,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newRoomPressed() {
-        WebSocketModel.shared.webSocketTask.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
+        NetworkManger.shared.webSocketTask.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
             if let error = error {
                 print("Web socket couldn't send message: \(error)")
             }
@@ -341,7 +341,7 @@ class RoomViewController: UIViewController {
     ]
     
     private func setRandomParticipantColor() {
-        guard let url = URL(string: "http://127.0.0.1:8080/color") else {return}
+        guard let url = URL(string: NetworkManger.shared.getColorsURL) else {return}
         for (ix,_) in frames.enumerated() {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 if let error = error {
@@ -351,9 +351,11 @@ class RoomViewController: UIViewController {
                     do {
                         let colors = try JSONDecoder().decode([String].self, from: data)
                         DispatchQueue.main.async {
+                            self.frames[ix].videoView.layer.borderWidth = 3
                             self.frames[ix].videoView.layer.borderColor = colors[ix].getColorByName().cgColor
                             self.frames[ix].setColor(color: colors[ix].getColorByName().cgColor)
                             self.frames[ix].muteButton.backgroundColor = colors[ix].getColorByName()
+                            self.frames[ix].muteButton.isHidden = false
                         }
                     } catch {
                         print("Error decoding: \(error)")
@@ -373,7 +375,6 @@ class RoomViewController: UIViewController {
             frame.videoView.layer.cornerRadius = 10
             frame.videoView.clipsToBounds = true
             frame.videoView.heightAnchor.constraint(equalToConstant: screenHeight/4.65).isActive = true
-            frame.videoView.layer.borderWidth = 3
         }
     }
     
@@ -393,6 +394,7 @@ class RoomViewController: UIViewController {
     private func configureMuteButtons() {
         for (ix,frame) in frames.enumerated() {
             let size:CGFloat = 35
+            frame.muteButton.isHidden = true
             frame.muteButton.translatesAutoresizingMaskIntoConstraints = false
             frame.muteButton.widthAnchor.constraint(equalToConstant: size).isActive = true
             frame.muteButton.heightAnchor.constraint(equalToConstant: size).isActive = true
@@ -475,7 +477,7 @@ class RoomViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         title = "Category"
         
-        WebSocketModel.shared.webSocketTask.delegate = self
+        NetworkManger.shared.webSocketTask.delegate = self
         resumeSocket()
         addViews()
         addLayouts()
