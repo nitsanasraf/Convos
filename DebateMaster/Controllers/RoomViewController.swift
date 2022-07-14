@@ -12,6 +12,8 @@ class RoomViewController: UIViewController {
     
     private var agoraKit: AgoraRtcEngineKit?
     
+    private var networkManager = NetworkManger()
+    
     private var newTopicVotes = [ParticipantModel]()
     
     private var localFrameIndex:Int?
@@ -28,7 +30,7 @@ class RoomViewController: UIViewController {
     
     //MARK: - Web Socket Functions
     private func receiveData() {
-        NetworkManger.shared.webSocketTask.receive { [weak self] result in
+        networkManager.webSocketTask.receive { [weak self] result in
             guard let self = self else {return}
             switch result {
             case .success(let msg):
@@ -59,13 +61,13 @@ class RoomViewController: UIViewController {
     }
     
     private func resumeSocket() {
-        NetworkManger.shared.webSocketTask.resume()
+        networkManager.webSocketTask.resume()
     }
     
     private func sendData() {
         do {
             let dummyJSON = try JSONEncoder().encode(newTopicVotes)
-            NetworkManger.shared.webSocketTask.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
+            networkManager.webSocketTask.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
                 if let error = error {
                     print("Web socket couldn't send message: \(error)")
                 }
@@ -77,7 +79,7 @@ class RoomViewController: UIViewController {
     
     
     private func ping() {
-        NetworkManger.shared.webSocketTask.sendPing { error in
+        networkManager.webSocketTask.sendPing { error in
             if let error = error {
                 print("Ping Error: \(error)")
             }
@@ -85,7 +87,7 @@ class RoomViewController: UIViewController {
     }
     
     private func closeSocket() {
-        NetworkManger.shared.webSocketTask.cancel(with: .goingAway, reason: "Room left".data(using: .utf8))
+        networkManager.webSocketTask.cancel(with: .goingAway, reason: "Room left".data(using: .utf8))
     }
     
     //MARK: - UI Views
@@ -112,7 +114,7 @@ class RoomViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 5
         stackView.layer.cornerRadius = 10
-        stackView.backgroundColor = UIColor(white: 0, alpha: 0.3)
+        stackView.backgroundColor = UIColor(white: 0, alpha: 0.2)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top:5, left: 15, bottom: 5, right: 15)
         stackView.alignment = .center
@@ -125,7 +127,7 @@ class RoomViewController: UIViewController {
         stackView.spacing = 5
         stackView.alignment = .center
         stackView.layer.cornerRadius = 10
-        stackView.backgroundColor = UIColor(white: 0, alpha: 0.3)
+        stackView.backgroundColor = UIColor(white: 0, alpha: 0.2)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         return stackView
@@ -141,7 +143,7 @@ class RoomViewController: UIViewController {
     
     private func changeActionButtonUI(isPressed:Bool,config: inout UIButton.Configuration) {
         if isPressed {
-            config.baseBackgroundColor = UIColor(white: 0, alpha: 0.3)
+            config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
             config.baseForegroundColor = .white
         } else {
             config.baseBackgroundColor = .white
@@ -208,7 +210,7 @@ class RoomViewController: UIViewController {
     private lazy var newRoomButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.3)
+        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
         config.baseForegroundColor = .white
         config.title = "New room"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -226,7 +228,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newRoomPressed() {
-        NetworkManger.shared.webSocketTask.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
+        networkManager.webSocketTask.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
             if let error = error {
                 print("Web socket couldn't send message: \(error)")
             }
@@ -236,7 +238,7 @@ class RoomViewController: UIViewController {
     private lazy var newTopicButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.3)
+        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
         config.baseForegroundColor = .white
         config.title = "New topic"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -254,7 +256,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newTopicPressed(_ sender:UIButton) {
-        let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.3) ? false : true
+        let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.2) ? false : true
         appendNewTopicVote(isPressed: isPressed)
         changeActionButtonUI(isPressed: isPressed, config: &sender.configuration!)
         sendData()
@@ -263,7 +265,7 @@ class RoomViewController: UIViewController {
     private lazy var muteAllButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.3)
+        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
         config.baseForegroundColor = .white
         config.title = "Mute all"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -281,7 +283,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func muteAllPressed(_ sender:UIButton) {
-        let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.3) ? false : true
+        let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.2) ? false : true
         changeActionButtonUI(isPressed: isPressed, config: &sender.configuration!)
         for frame in frames {
             if isPressed {
@@ -343,7 +345,7 @@ class RoomViewController: UIViewController {
     ]
 
     private func setRandomParticipantColor() {
-        guard let url = URL(string: NetworkManger.shared.getColorsURL) else {return}
+        guard let url = URL(string: networkManager.getColorsURL) else {return}
         for (ix,_) in frames.enumerated() {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 if let error = error {
@@ -475,13 +477,12 @@ class RoomViewController: UIViewController {
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .systemPink
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        title = "Category"
-        
-        
-        NetworkManger.shared.webSocketTask.delegate = self
+
+        networkManager.webSocketTask.delegate = self
         resumeSocket()
+
         addViews()
         addLayouts()
         
@@ -502,6 +503,7 @@ class RoomViewController: UIViewController {
     }
     
     //MARK: - Utils Setups
+
     private func addViews() {
         view.addSubview(mainStackView)
         
@@ -552,7 +554,7 @@ class RoomViewController: UIViewController {
     }
         
     private func postAvailablePositions() {
-        guard let url = URL(string: NetworkManger.shared.getPostPositionURL) else {return}
+        guard let url = URL(string: networkManager.getPostPositionURL) else {return}
         var tempPositions = [Bool]()
         for frame in frames {
             tempPositions.append(frame.isOccupied)
@@ -571,7 +573,7 @@ class RoomViewController: UIViewController {
     }
     
     private func getAvailablePosition(_ completionHandler: @escaping ()-> Void) {
-        guard let url = URL(string: NetworkManger.shared.getPostPositionURL) else {return}
+        guard let url = URL(string: networkManager.getPostPositionURL) else {return}
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 print("Error posting: \(error) ")
@@ -623,6 +625,7 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         videoCanvas.uid = uid
         videoCanvas.renderMode = .hidden
         videoCanvas.view = frames[emptyFrameIX].videoView
+        frames[emptyFrameIX].isOccupied = true
         agoraKit?.setupRemoteVideo(videoCanvas)
     }
     
