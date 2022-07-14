@@ -18,6 +18,8 @@ class RoomViewController: UIViewController {
     
     private var localFrameIndex:Int?
     
+    private var textAnimationTimer:Timer?
+    
     private lazy var frames = [
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
@@ -192,7 +194,7 @@ class RoomViewController: UIViewController {
             let orb = createNewVoteOrb(color: newTopicVote.color.getColorByName())
             newVoteOrbsStackView.addArrangedSubview(orb)
         }
-        newTopicVotesLabel.text = "New topic votes: \(newTopicVotes.count)"
+        newTopicVotesLabel.text = "New Topic Votes: \(newTopicVotes.count)"
     }
     
     private func appendNewTopicVote(isPressed:Bool) {
@@ -232,6 +234,11 @@ class RoomViewController: UIViewController {
             if let error = error {
                 print("Web socket couldn't send message: \(error)")
             }
+            self.textAnimationTimer?.invalidate()
+            DispatchQueue.main.async {
+                self.newTopicButton.isEnabled = true
+            }
+
         }
     }
     
@@ -252,6 +259,7 @@ class RoomViewController: UIViewController {
         let button = UIButton(configuration: config)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(newTopicPressed(_:)), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     
@@ -465,14 +473,26 @@ class RoomViewController: UIViewController {
     
     private let discussionTopic:UILabel = {
         let label = UILabel()
-        label.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s?"
+        label.text = "Searching for participants"
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = .white
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
     }()
-    
+        
+    private func animateLoadingText() {
+        var counter = 0
+        textAnimationTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: true) { timer in
+            counter += 1
+            if counter == 4 {
+                counter = 0
+                self.discussionTopic.text = "Searching for participants"
+            } else {
+                self.discussionTopic.text?.append(".")
+            }
+        }
+      }
     
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -492,6 +512,7 @@ class RoomViewController: UIViewController {
         configureVideoStackViews()
         configureButtonsStackViews()
         
+        animateLoadingText()
         setRandomParticipantColor()
         initializeAndJoinChannel()
         
