@@ -27,10 +27,9 @@ class CategoriesViewController: UIViewController {
     private func configureSkeleton() {
         view.backgroundColor = .systemPink
         title = "All Categories"
-        navigationItem.backBarButtonItem = UIBarButtonItem(
-            title: "Exit", style: .plain, target: nil, action: nil)
     }
     
+ 
     private func addViews() {
         view.addSubview(tableView)
         embed(CategoriesTableViewController(), inView: tableView)

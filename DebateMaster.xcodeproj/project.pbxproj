@@ -25,6 +25,7 @@
 		C630149A286F126F00128576 /* SuperResolution in Frameworks */ = {isa = PBXBuildFile; productRef = C6301499286F126F00128576 /* SuperResolution */; };
 		C630149C286F126F00128576 /* VideoPreprocess in Frameworks */ = {isa = PBXBuildFile; productRef = C630149B286F126F00128576 /* VideoPreprocess */; };
 		C630149E286F126F00128576 /* VirtualBackground in Frameworks */ = {isa = PBXBuildFile; productRef = C630149D286F126F00128576 /* VirtualBackground */; };
+		C63804632882C7BC0028B6D5 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63804622882C7BC0028B6D5 /* LoadingViewController.swift */; };
 		C63905F12872583900AE11C5 /* FrameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63905F02872583900AE11C5 /* FrameModel.swift */; };
 		C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09902880242B004AF0DD /* CategoriesViewController.swift */; };
 		C6AD09932880360A004AF0DD /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09922880360A004AF0DD /* UIViewController+Extensions.swift */; };
@@ -45,6 +46,7 @@
 		C630147D286F11FB00128576 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C6301480286F11FB00128576 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C6301482286F11FB00128576 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C63804622882C7BC0028B6D5 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		C63905F02872583900AE11C5 /* FrameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModel.swift; sourceTree = "<group>"; };
 		C6AD09902880242B004AF0DD /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		C6AD09922880360A004AF0DD /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				C6301478286F11F900128576 /* RoomViewController.swift */,
 				C6AD09902880242B004AF0DD /* CategoriesViewController.swift */,
 				C6AD0994288037A2004AF0DD /* CategoriesTableViewController.swift */,
+				C63804622882C7BC0028B6D5 /* LoadingViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				C63905F12872583900AE11C5 /* FrameModel.swift in Sources */,
 				C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */,
 				C6098F38287B027100AF1CDD /* String+Extensions.swift in Sources */,
+				C63804632882C7BC0028B6D5 /* LoadingViewController.swift in Sources */,
 				C6AD09932880360A004AF0DD /* UIViewController+Extensions.swift in Sources */,
 				C61DCD1D28770E79007E5EBE /* NetworkManger.swift in Sources */,
 				C6301475286F11F900128576 /* AppDelegate.swift in Sources */,

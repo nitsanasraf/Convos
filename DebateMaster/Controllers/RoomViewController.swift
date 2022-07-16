@@ -494,11 +494,21 @@ class RoomViewController: UIViewController {
         }
       }
     
+    @objc private func goBack() {
+        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You wont have the option to rejoin this room.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
+            self.navigationController?.popToRootViewController(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemPink
+        configureSkeleton()
 
         networkManager.webSocketTask.delegate = self
         resumeSocket()
@@ -525,6 +535,13 @@ class RoomViewController: UIViewController {
     
     //MARK: - Utils Setups
 
+    private func configureSkeleton() {
+        view.backgroundColor = .systemPink
+        self.navigationItem.hidesBackButton = true
+        
+        let newBackButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(goBack))
+        self.navigationItem.leftBarButtonItem = newBackButton
+    }
     private func addViews() {
         view.addSubview(mainStackView)
         

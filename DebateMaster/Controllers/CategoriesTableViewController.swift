@@ -27,8 +27,8 @@ class CategoriesTableViewController: UITableViewController {
     }
     
     private func findEmptyRoom(withCategory category:String) {
-        let vc = RoomViewController()
-        vc.title = category
+        let vc = LoadingViewController()
+        vc.categoryLabel.text = category
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
