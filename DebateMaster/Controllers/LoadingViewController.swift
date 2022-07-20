@@ -9,6 +9,8 @@ import UIKit
 
 class LoadingViewController: UIViewController {
     
+    private var networkManager = NetworkManger()
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -83,16 +85,59 @@ class LoadingViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    
+    private func moveToRoom(withCategory category:String, room:RoomModel) {
+        DispatchQueue.main.async {
+            let roomVC = RoomViewController()
+            roomVC.title = category
+            roomVC.room = room
+            self.navigationController?.pushViewController(roomVC, animated: true)
+        }
+    }
+    
+    private func searchFirstEmpty(results:[RoomModel]) -> RoomModel? {
+        var emptyPositionIX = -1
+        for room in results {
+            for i in 0..<room.availablePositions.count {
+                if (!room.availablePositions[i]) {
+                    emptyPositionIX = i
+                    break
+                }
+            }
+            if (emptyPositionIX > -1) {
+                return room
+            }
+        }
+        return nil
+    }
+    
+    private func createEmptyRoom(withCategory category:String) {
+        let newRoom = RoomModel(category: category)
+        networkManager.sendData(object: newRoom, url: networkManager.roomsURL, httpMethod: "POST") { [weak self] response in
+            print(response)
+            self?.moveToRoom(withCategory: category, room: newRoom)
+        }
+    }
+
+    private func findEmptyRoom() {
+        guard let category = self.categoryLabel.text else {return}
+        networkManager.fetchData(type: [RoomModel].self, url: networkManager.roomsURL) { [weak self] results in
+            let relevantRooms = results.filter { $0.category.makeComparable() == category.makeComparable() }
+            if let emptyRoom = self?.searchFirstEmpty(results: relevantRooms) {
+                self?.moveToRoom(withCategory: category, room: emptyRoom)
+            } else {
+                self?.createEmptyRoom(withCategory:category)
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureSkeleton()
         addViews()
         addLayouts()
-        DispatchQueue.main.asyncAfter(deadline: .now()+10) {
-            let vc = RoomViewController()
-            vc.title = self.categoryLabel.text
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
+        
+        findEmptyRoom()
     }
     
     private func configureSkeleton() {

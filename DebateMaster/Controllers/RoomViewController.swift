@@ -20,6 +20,8 @@ class RoomViewController: UIViewController {
     
     private var textAnimationTimer:Timer?
     
+    var room:RoomModel?
+    
     private lazy var frames = [
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
@@ -343,39 +345,14 @@ class RoomViewController: UIViewController {
         }
     }
     
-    private var availableColors = [
-        UIColor.white.cgColor,
-        UIColor.systemGreen.cgColor,
-        UIColor.systemCyan.cgColor,
-        UIColor.orange.cgColor,
-        UIColor.systemYellow.cgColor,
-        UIColor.systemPurple.cgColor,
-    ]
-
-    private func setRandomParticipantColor() {
-        guard let url = URL(string: networkManager.getColorsURL) else {return}
-        for (ix,_) in frames.enumerated() {
-            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if let error = error {
-                    print("Error fetching colors: \(error)")
-                } else {
-                    guard let data = data else {return}
-                    do {
-                        let colors = try JSONDecoder().decode([String].self, from: data)
-                        DispatchQueue.main.async {
-                            self.frames[ix].videoView.layer.borderWidth = 3
-                            self.frames[ix].videoView.layer.borderColor = colors[ix].getColorByName().cgColor
-                            self.frames[ix].setColor(color: colors[ix].getColorByName().cgColor)
-                            self.frames[ix].muteButton.backgroundColor = colors[ix].getColorByName()
-                            self.frames[ix].muteButton.isHidden = false
-                        }
-                    } catch {
-                        print("Error decoding: \(error)")
-                    }
-                    
-                }
-            }
-            task.resume()
+    private func setFramesColors() {
+        guard let room = room else {return}
+        for i in 0..<frames.count {
+            self.frames[i].videoView.layer.borderWidth = 3
+            self.frames[i].videoView.layer.borderColor = room.colors[i].getColorByName().cgColor
+            self.frames[i].setColor(color: room.colors[i].getColorByName().cgColor)
+            self.frames[i].muteButton.backgroundColor = room.colors[i].getColorByName()
+            self.frames[i].muteButton.isHidden = false
         }
     }
     
@@ -523,7 +500,7 @@ class RoomViewController: UIViewController {
         configureButtonsStackViews()
         
         animateLoadingText()
-        setRandomParticipantColor()
+        setFramesColors()
         initializeAndJoinChannel()
         
     }
@@ -581,73 +558,50 @@ class RoomViewController: UIViewController {
         NSLayoutConstraint.activate(mainStackViewConstraints)
     }
     
-    private func findEmptyFrame() -> Int? {
-        for (ix,frame) in frames.enumerated() {
-            if frame.isOccupied {
+    //MARK: - Frames & Positions Functions
+    private func findEmptyPosition() -> Int? {
+        guard let room = room else {return nil}
+        for (i,isOccupied) in room.availablePositions.enumerated() {
+            if isOccupied {
                 continue
             }
-            return ix
+            return i
         }
         return nil
+       
     }
         
-    private func postAvailablePositions() {
-        guard let url = URL(string: networkManager.getPostPositionURL) else {return}
-        var tempPositions = [Bool]()
-        for frame in frames {
-            tempPositions.append(frame.isOccupied)
-        }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = try! JSONSerialization.data(withJSONObject: tempPositions, options: [])
+    private func updateAvailablePositions(withIndex i:Int) {
+        guard let room = room else {return}
         
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                print("Error posting to server: \(error)")
-            }
-        }
-        task.resume()
+        room.availablePositions[i] = true
         
-    }
-    
-    private func getAvailablePosition(_ completionHandler: @escaping ()-> Void) {
-        guard let url = URL(string: networkManager.getPostPositionURL) else {return}
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error posting: \(error) ")
-            }
-            guard let data = data else { return }
-            do {
-                let areOccupied = try JSONDecoder().decode([Bool].self, from: data)
-                for ix in 0..<self.frames.count {
-                    self.frames[ix].isOccupied = areOccupied[ix]
-                }
-                completionHandler()
-            } catch {
-                print("Error decoding data: \(error)")
-            }
+        networkManager.sendData(object: room, url: networkManager.roomsURL, httpMethod: "PUT") { response in
+            print(response)
         }
-        task.resume()
     }
     
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
+        guard let room = room else {return}
+        
         agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.AppId, delegate: self)
-        getAvailablePosition {
-            self.agoraKit?.enableVideo()
-            let videoCanvas = AgoraRtcVideoCanvas()
-            guard let emptyFrameIX = self.findEmptyFrame() else {return}
-            self.localFrameIndex = emptyFrameIX
-            videoCanvas.uid = self.frames[self.localFrameIndex!].uid
-            videoCanvas.renderMode = .hidden
-            videoCanvas.view = self.frames[self.localFrameIndex!].videoView
-            self.frames[self.localFrameIndex!].isOccupied = true
-            self.agoraKit?.setupLocalVideo(videoCanvas)
-            self.postAvailablePositions()
-        }
+        self.agoraKit?.enableVideo()
+        let videoCanvas = AgoraRtcVideoCanvas()
+        
+        guard let emptyPositionIX = self.findEmptyPosition() else {return}
+        self.localFrameIndex = emptyPositionIX
+        
+        videoCanvas.uid = self.frames[self.localFrameIndex!].uid
+        videoCanvas.renderMode = .hidden
+        videoCanvas.view = self.frames[self.localFrameIndex!].videoView
+        
+        self.updateAvailablePositions(withIndex:localFrameIndex!)
+
+        self.agoraKit?.setupLocalVideo(videoCanvas)
       
         // Join the channel with a token. Pass in your token and channel name here
-        agoraKit?.joinChannel(byToken: KeyCenter.Token, channelId: "Main", info: nil, uid: 0, joinSuccess: { (channel, uid, elapsed) in
+        agoraKit?.joinChannel(byToken: KeyCenter.Token, channelId: room.name, info: nil, uid: 0, joinSuccess: { (channel, uid, elapsed) in
             
         })
     }
@@ -658,19 +612,22 @@ class RoomViewController: UIViewController {
 extension RoomViewController: AgoraRtcEngineDelegate {
     // This callback is triggered when a remote user joins the channel
     func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinedOfUid uid: UInt, elapsed: Int) {
+        guard let room = self.room else {return}
+        
+        guard let emptyPositionIX = findEmptyPosition() else {return}
+        room.availablePositions[emptyPositionIX] = true
+
         let videoCanvas = AgoraRtcVideoCanvas()
-        guard let emptyFrameIX = findEmptyFrame() else {return}
         videoCanvas.uid = uid
         videoCanvas.renderMode = .hidden
-        videoCanvas.view = frames[emptyFrameIX].videoView
-        frames[emptyFrameIX].isOccupied = true
+        videoCanvas.view = frames[emptyPositionIX].videoView
+        
         agoraKit?.setupRemoteVideo(videoCanvas)
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
         print("User left channel")
-        //frame of the user that left.isOccupied = false
-        //postAvailablePositions()
+        //updateAvailablePositions()
     }
     
 }

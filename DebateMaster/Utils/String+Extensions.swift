@@ -22,9 +22,12 @@ extension String {
             return .systemYellow
         case "purple":
             return .systemPurple
-        
         default:
             return .black
         }
+    }
+    
+    func makeComparable() -> String {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 }

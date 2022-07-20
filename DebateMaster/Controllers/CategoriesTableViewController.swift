@@ -26,7 +26,7 @@ class CategoriesTableViewController: UITableViewController {
 
     }
     
-    private func findEmptyRoom(withCategory category:String) {
+    private func openLoadingVC(withCategory category:String) {
         let vc = LoadingViewController()
         vc.categoryLabel.text = category
         self.navigationController?.pushViewController(vc, animated: true)
@@ -43,7 +43,7 @@ class CategoriesTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        findEmptyRoom(withCategory: tempDict[indexPath.row]["title"]!)
+        openLoadingVC(withCategory: tempDict[indexPath.row]["title"]!)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

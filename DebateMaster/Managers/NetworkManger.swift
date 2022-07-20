@@ -9,12 +9,63 @@ import Foundation
 
 struct NetworkManger {
     
-    let getColorsURL = "http://127.0.0.1:8080/colors"
-    let getPostPositionURL = "http://127.0.0.1:8080/positions"
+    let roomsURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.rooms
+    let socketURL = Constants.Network.baseSocketURL + Constants.Network.EndPoints.socket
     
-    let socketURL = "ws://127.0.0.1:8080/socket"
-
-    let urlSession = URLSession(configuration: .default)
-    lazy var webSocketTask = urlSession.webSocketTask(with: URL(string:socketURL)!)
+    lazy var webSocketTask = URLSession(configuration: .default).webSocketTask(with: URL(string:socketURL)!)
+    
+    func fetchData<T:Decodable>(type:T.Type, url:String, completionHandler: @escaping (T)->()) {
+        guard let url = URL(string: url) else {return}
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error fetching: \(error)")
+            } else {
+                guard let data = data else {return}
+                do {
+                    let decodedData = try JSONDecoder().decode(type, from: data)
+                    completionHandler(decodedData)
+                } catch {
+                    print("Error decoding fetched data: \(error)")
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    func sendData<T:Encodable>(object:T, url:String, httpMethod:String, completionHandler: @escaping (URLResponse)->()) {
+        guard let url = URL(string: url) else {return}
+        var request = URLRequest(url: url)
+        request.httpMethod = httpMethod
+        do {
+            request.httpBody = try JSONEncoder().encode(object)
+        } catch {
+            print("Error encoding the request body : \(error)")
+            return
+        }
+        let task = URLSession.shared.dataTask(with: request) { (_, response, error) in
+            if let error = error {
+                print("Error posting to server: \(error)")
+            } else {
+                guard let response = response else {return}
+                completionHandler(response)
+            }
+        }
+        task.resume()
+    }
+    
+    func delete(url: String, completionHandler: @escaping (URLResponse)->()) {
+        guard let url = URL(string:url) else {return}
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        let task = URLSession.shared.dataTask(with: request) { (_,response,error) in
+            if let error = error {
+                print("Error deleting object from server: \(error)")
+            } else {
+                guard let response = response else {return}
+                completionHandler(response)
+            }
+        }
+        task.resume()
+    }
     
 }

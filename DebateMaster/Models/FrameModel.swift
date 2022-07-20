@@ -22,5 +22,4 @@ struct FrameModel:Identifiable {
     mutating func setColor(color:CGColor) {
         self.color = color
     }
-    var isOccupied = false
 }
