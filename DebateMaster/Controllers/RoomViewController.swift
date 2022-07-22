@@ -530,9 +530,10 @@ class RoomViewController: UIViewController {
         mainStackView.addArrangedSubview(bottomVideoStack)
         
         
-        topVideoStack.addArrangedSubview(frames[3].container)
-        topVideoStack.addArrangedSubview(frames[4].container)
-        topVideoStack.addArrangedSubview(frames[5].container)
+        for i in 3...5 {
+            topVideoStack.addArrangedSubview(frames[i].container)
+        }
+
         
         middleQustionsStack.addArrangedSubview(discussionTopic)
         
@@ -542,9 +543,10 @@ class RoomViewController: UIViewController {
         
         middleSkipCounterStack.addArrangedSubview(newTopicVotesLabel)
         
-        bottomVideoStack.addArrangedSubview(frames[0].container)
-        bottomVideoStack.addArrangedSubview(frames[1].container)
-        bottomVideoStack.addArrangedSubview(frames[2].container)
+        for i in 0...2 {
+            bottomVideoStack.addArrangedSubview(frames[i].container)
+        }
+
         
     }
     
@@ -568,7 +570,6 @@ class RoomViewController: UIViewController {
             return i
         }
         return nil
-       
     }
         
     private func updateAvailablePositions(withIndex i:Int) {
@@ -576,8 +577,9 @@ class RoomViewController: UIViewController {
         
         room.availablePositions[i] = true
         
-        networkManager.sendData(object: room, url: networkManager.roomsURL, httpMethod: "PUT") { response in
-            print(response)
+        networkManager.sendData(object: room, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.PUT.rawValue)
+        { response in
+            print("PUT response: \(response)")
         }
     }
     

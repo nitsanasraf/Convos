@@ -35,6 +35,7 @@ struct NetworkManger {
     func sendData<T:Encodable>(object:T, url:String, httpMethod:String, completionHandler: @escaping (URLResponse)->()) {
         guard let url = URL(string: url) else {return}
         var request = URLRequest(url: url)
+        request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = httpMethod
         do {
             request.httpBody = try JSONEncoder().encode(object)
@@ -56,7 +57,7 @@ struct NetworkManger {
     func delete(url: String, completionHandler: @escaping (URLResponse)->()) {
         guard let url = URL(string:url) else {return}
         var request = URLRequest(url: url)
-        request.httpMethod = "DELETE"
+        request.httpMethod = Constants.HttpMethods.DELETE.rawValue
         let task = URLSession.shared.dataTask(with: request) { (_,response,error) in
             if let error = error {
                 print("Error deleting object from server: \(error)")

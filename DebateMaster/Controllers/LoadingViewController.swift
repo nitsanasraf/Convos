@@ -86,10 +86,10 @@ class LoadingViewController: UIViewController {
     }
     
     
-    private func moveToRoom(withCategory category:String, room:RoomModel) {
+    private func moveToRoom(withRoom room:RoomModel) {
         DispatchQueue.main.async {
             let roomVC = RoomViewController()
-            roomVC.title = category
+            roomVC.title = room.category
             roomVC.room = room
             self.navigationController?.pushViewController(roomVC, animated: true)
         }
@@ -112,10 +112,11 @@ class LoadingViewController: UIViewController {
     }
     
     private func createEmptyRoom(withCategory category:String) {
-        let newRoom = RoomModel(category: category)
-        networkManager.sendData(object: newRoom, url: networkManager.roomsURL, httpMethod: "POST") { [weak self] response in
-            print(response)
-            self?.moveToRoom(withCategory: category, room: newRoom)
+        let newRoom = RoomModel(id: UUID(), category: category)
+        networkManager.sendData(object: newRoom, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.POST.rawValue)
+        { [weak self] response in
+            print("POST response: \(response)")
+            self?.moveToRoom(withRoom: newRoom)
         }
     }
 
@@ -124,7 +125,7 @@ class LoadingViewController: UIViewController {
         networkManager.fetchData(type: [RoomModel].self, url: networkManager.roomsURL) { [weak self] results in
             let relevantRooms = results.filter { $0.category.makeComparable() == category.makeComparable() }
             if let emptyRoom = self?.searchFirstEmpty(results: relevantRooms) {
-                self?.moveToRoom(withCategory: category, room: emptyRoom)
+                self?.moveToRoom(withRoom: emptyRoom)
             } else {
                 self?.createEmptyRoom(withCategory:category)
             }

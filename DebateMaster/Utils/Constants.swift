@@ -12,9 +12,16 @@ struct Constants {
     struct Network {
         static let baseHttpURL = "http://127.0.0.1:8080/"
         static let baseSocketURL = "ws://127.0.0.1:8080/"
+        
         struct EndPoints {
             static let rooms = "rooms"
             static let socket = "socket"
         }
+    }
+    
+    enum HttpMethods:String {
+        case POST
+        case PUT
+        case DELETE
     }
 }

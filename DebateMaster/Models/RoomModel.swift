@@ -8,21 +8,17 @@
 import Foundation
 
 class RoomModel:Codable {
-    let id:UUID?
+    let id:UUID
     let name:String
     let colors:[String]
     let category:String
     var availablePositions:[Bool]
     
-    init(id:UUID? = nil,
-         name:String = "Example",
-         colors:[String] = ["white","purple","vibrant yellow","green","orange","cyan blue"].shuffled(),
-         category:String,
-         availablePositions:[Bool] = [false,false,false,false,false,false]) {
+    init(id: UUID, category: String) {
         self.id = id
-        self.name = name
-        self.colors = colors
+        self.name = category + id.uuidString
+        self.colors = ["white","purple","vibrant yellow","green","orange","cyan blue"].shuffled()
         self.category = category
-        self.availablePositions = availablePositions
+        self.availablePositions = [false,false,false,false,false,false]
     }
 }
