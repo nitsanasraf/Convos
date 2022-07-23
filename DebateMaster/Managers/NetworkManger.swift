@@ -12,7 +12,11 @@ struct NetworkManger {
     let roomsURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.rooms
     let socketURL = Constants.Network.baseSocketURL + Constants.Network.EndPoints.socket
     
-    lazy var webSocketTask = URLSession(configuration: .default).webSocketTask(with: URL(string:socketURL)!)
+    var webSocketTask:URLSessionWebSocketTask?
+    
+    mutating func configureWebSocketTask(roomID:String) {
+        self.webSocketTask = URLSession(configuration: .default).webSocketTask(with: URL(string:"\(socketURL)/\(roomID)")!)
+    }
     
     func fetchData<T:Decodable>(type:T.Type, url:String, completionHandler: @escaping (T)->()) {
         guard let url = URL(string: url) else {return}

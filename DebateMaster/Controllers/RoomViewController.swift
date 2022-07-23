@@ -12,7 +12,13 @@ class RoomViewController: UIViewController {
     
     private var agoraKit: AgoraRtcEngineKit?
     
-    private var networkManager = NetworkManger()
+    private lazy var networkManager:NetworkManger = {
+        var manager = NetworkManger()
+        if let room = self.room {
+            manager.configureWebSocketTask(roomID: room.id.uuidString)
+        }
+        return manager
+    }()
     
     private var newTopicVotes = [ParticipantModel]()
     
@@ -34,7 +40,7 @@ class RoomViewController: UIViewController {
     
     //MARK: - Web Socket Functions
     private func receiveData() {
-        networkManager.webSocketTask.receive { [weak self] result in
+        networkManager.webSocketTask?.receive { [weak self] result in
             guard let self = self else {return}
             switch result {
             case .success(let msg):
@@ -65,13 +71,13 @@ class RoomViewController: UIViewController {
     }
     
     private func resumeSocket() {
-        networkManager.webSocketTask.resume()
+        networkManager.webSocketTask?.resume()
     }
     
     private func sendData() {
         do {
             let dummyJSON = try JSONEncoder().encode(newTopicVotes)
-            networkManager.webSocketTask.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
+            networkManager.webSocketTask?.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
                 if let error = error {
                     print("Web socket couldn't send message: \(error)")
                 }
@@ -83,7 +89,7 @@ class RoomViewController: UIViewController {
     
     
     private func ping() {
-        networkManager.webSocketTask.sendPing { error in
+        networkManager.webSocketTask?.sendPing { error in
             if let error = error {
                 print("Ping Error: \(error)")
             }
@@ -91,7 +97,7 @@ class RoomViewController: UIViewController {
     }
     
     private func closeSocket() {
-        networkManager.webSocketTask.cancel(with: .goingAway, reason: "Room left".data(using: .utf8))
+        networkManager.webSocketTask?.cancel(with: .goingAway, reason: "User left".data(using: .utf8))
     }
     
     //MARK: - UI Views
@@ -232,7 +238,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newRoomPressed() {
-        networkManager.webSocketTask.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
+        networkManager.webSocketTask?.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
             if let error = error {
                 print("Web socket couldn't send message: \(error)")
             }
@@ -487,7 +493,7 @@ class RoomViewController: UIViewController {
         
         configureSkeleton()
 
-        networkManager.webSocketTask.delegate = self
+        networkManager.webSocketTask?.delegate = self
         resumeSocket()
 
         addViews()
@@ -504,6 +510,11 @@ class RoomViewController: UIViewController {
         initializeAndJoinChannel()
         
     }
+    
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//    }
     
     deinit {
         agoraKit?.leaveChannel(nil)
