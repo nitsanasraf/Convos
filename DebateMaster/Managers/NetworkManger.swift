@@ -36,7 +36,7 @@ struct NetworkManger {
         task.resume()
     }
     
-    func sendData<T:Encodable>(object:T, url:String, httpMethod:String, completionHandler: @escaping (URLResponse)->()) {
+    func sendData<T:Encodable>(object:T, url:String, httpMethod:String, completionHandler: @escaping (Data,URLResponse)->()) {
         guard let url = URL(string: url) else {return}
         var request = URLRequest(url: url)
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
@@ -47,17 +47,19 @@ struct NetworkManger {
             print("Error encoding the request body : \(error)")
             return
         }
-        let task = URLSession.shared.dataTask(with: request) { (_, response, error) in
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let error = error {
                 print("Error posting to server: \(error)")
             } else {
+                guard let data = data else {return}
                 guard let response = response else {return}
-                completionHandler(response)
+                
+                completionHandler(data,response)
             }
         }
         task.resume()
     }
-    
+        
     func delete(url: String, completionHandler: @escaping (URLResponse)->()) {
         guard let url = URL(string:url) else {return}
         var request = URLRequest(url: url)

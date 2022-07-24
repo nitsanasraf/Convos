@@ -511,10 +511,11 @@ class RoomViewController: UIViewController {
         
     }
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//
-//    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        guard let localFrameIndex = self.localFrameIndex else {return}
+        updateAvailablePositions(index: localFrameIndex) {_ in}
+    }
     
     deinit {
         agoraKit?.leaveChannel(nil)
@@ -571,7 +572,26 @@ class RoomViewController: UIViewController {
         NSLayoutConstraint.activate(mainStackViewConstraints)
     }
     
-    //MARK: - Frames & Positions Functions
+    //MARK: - Positions Functions
+    private func updateAvailablePositions(index:Int?,completionHandler: @escaping (Int?)->() ) {
+        guard let room = room else {return}
+        
+        self.networkManager.sendData(object: room, url: "\(self.networkManager.roomsURL)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { data, response in
+            print("PUT response: \(response)")
+            do {
+                let ix = try JSONDecoder().decode(Int.self, from: data)
+                if ix != -1 {
+                    completionHandler(ix)
+                } else {
+                    completionHandler(nil)
+                }
+            } catch {
+                print("Decoding data failed: \(error)")
+            }
+        }
+    }
+    
+    
     private func findEmptyPosition() -> Int? {
         guard let room = room else {return nil}
         for (i,isOccupied) in room.availablePositions.enumerated() {
@@ -582,41 +602,30 @@ class RoomViewController: UIViewController {
         }
         return nil
     }
-        
-    private func updateAvailablePositions(withIndex i:Int) {
-        guard let room = room else {return}
-        
-        room.availablePositions[i] = true
-        
-        networkManager.sendData(object: room, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.PUT.rawValue)
-        { response in
-            print("PUT response: \(response)")
-        }
-    }
     
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
         guard let room = room else {return}
-        
-        agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.AppId, delegate: self)
-        self.agoraKit?.enableVideo()
-        let videoCanvas = AgoraRtcVideoCanvas()
-        
-        guard let emptyPositionIX = self.findEmptyPosition() else {return}
-        self.localFrameIndex = emptyPositionIX
-        
-        videoCanvas.uid = self.frames[self.localFrameIndex!].uid
-        videoCanvas.renderMode = .hidden
-        videoCanvas.view = self.frames[self.localFrameIndex!].videoView
-        
-        self.updateAvailablePositions(withIndex:localFrameIndex!)
-
-        self.agoraKit?.setupLocalVideo(videoCanvas)
-      
-        // Join the channel with a token. Pass in your token and channel name here
-        agoraKit?.joinChannel(byToken: KeyCenter.Token, channelId: room.name, info: nil, uid: 0, joinSuccess: { (channel, uid, elapsed) in
+        updateAvailablePositions(index:nil) { availablePositionIX in
+            guard let availablePositionIX = availablePositionIX else {return}
             
-        })
+            self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.AppId, delegate: self)
+            self.agoraKit?.enableVideo()
+            let videoCanvas = AgoraRtcVideoCanvas()
+            
+            self.localFrameIndex = availablePositionIX
+            
+            videoCanvas.uid = self.frames[self.localFrameIndex!].uid
+            videoCanvas.renderMode = .hidden
+            videoCanvas.view = self.frames[self.localFrameIndex!].videoView
+            
+            self.agoraKit?.setupLocalVideo(videoCanvas)
+            
+            // Join the channel with a token. Pass in your token and channel name here
+            self.agoraKit?.joinChannel(byToken: KeyCenter.Token, channelId: room.name, info: nil, uid: 0, joinSuccess: { (channel, uid, elapsed) in
+                
+            })
+        }
     }
     
 }
@@ -640,7 +649,6 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
         print("User left channel")
-        //updateAvailablePositions()
     }
     
 }
