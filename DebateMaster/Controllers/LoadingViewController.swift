@@ -115,7 +115,6 @@ class LoadingViewController: UIViewController {
         let newRoom = RoomModel(id: UUID(), category: category)
         networkManager.sendData(object: newRoom, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.POST.rawValue)
         { [weak self] _, response in
-            print("POST response: \(response)")
             self?.moveToRoom(withRoom: newRoom)
         }
     }

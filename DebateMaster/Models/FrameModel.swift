@@ -1,5 +1,5 @@
 //
-//  ParticipantModel.swift
+//  FrameModel.swift
 //  DebateMaster
 //
 //  Created by Nitsan Asraf on 04/07/2022.

@@ -11,11 +11,15 @@ struct NetworkManger {
     
     let roomsURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.rooms
     let socketURL = Constants.Network.baseSocketURL + Constants.Network.EndPoints.socket
+    let authGoogleURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.google
+    let authFacebookURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.facebook
+    let schemeName = Constants.Network.schemeName
     
     var webSocketTask:URLSessionWebSocketTask?
     
-    mutating func configureWebSocketTask(roomID:String) {
-        self.webSocketTask = URLSession(configuration: .default).webSocketTask(with: URL(string:"\(socketURL)/\(roomID)")!)
+    mutating func configureWebSocketTask(userID:String, roomID:String) {
+        guard let url = URL(string:"\(socketURL)/\(userID)/\(roomID)") else {return}
+        self.webSocketTask = URLSession(configuration: .default).webSocketTask(with: url)
     }
     
     func fetchData<T:Decodable>(type:T.Type, url:String, completionHandler: @escaping (T)->()) {
@@ -35,6 +39,7 @@ struct NetworkManger {
         }
         task.resume()
     }
+    
     
     func sendData<T:Encodable>(object:T, url:String, httpMethod:String, completionHandler: @escaping (Data,URLResponse)->()) {
         guard let url = URL(string: url) else {return}

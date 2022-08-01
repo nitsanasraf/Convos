@@ -12,10 +12,12 @@ class RoomViewController: UIViewController {
     
     private var agoraKit: AgoraRtcEngineKit?
     
-    private lazy var networkManager:NetworkManger = {
+    private lazy var networkManager:NetworkManger? = {
+        guard let userID = UserModel.shared.id else {return nil}
+        
         var manager = NetworkManger()
         if let room = self.room {
-            manager.configureWebSocketTask(roomID: room.id.uuidString)
+            manager.configureWebSocketTask(userID: userID, roomID: room.id.uuidString)
         }
         return manager
     }()
@@ -40,7 +42,7 @@ class RoomViewController: UIViewController {
     
     //MARK: - Web Socket Functions
     private func receiveData() {
-        networkManager.webSocketTask?.receive { [weak self] result in
+        networkManager?.webSocketTask?.receive { [weak self] result in
             guard let self = self else {return}
             switch result {
             case .success(let msg):
@@ -71,13 +73,13 @@ class RoomViewController: UIViewController {
     }
     
     private func resumeSocket() {
-        networkManager.webSocketTask?.resume()
+        networkManager?.webSocketTask?.resume()
     }
     
     private func sendData() {
         do {
             let dummyJSON = try JSONEncoder().encode(newTopicVotes)
-            networkManager.webSocketTask?.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
+            networkManager?.webSocketTask?.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
                 if let error = error {
                     print("Web socket couldn't send message: \(error)")
                 }
@@ -89,7 +91,7 @@ class RoomViewController: UIViewController {
     
     
     private func ping() {
-        networkManager.webSocketTask?.sendPing { error in
+        networkManager?.webSocketTask?.sendPing { error in
             if let error = error {
                 print("Ping Error: \(error)")
             }
@@ -97,7 +99,7 @@ class RoomViewController: UIViewController {
     }
     
     private func closeSocket() {
-        networkManager.webSocketTask?.cancel(with: .goingAway, reason: "User left".data(using: .utf8))
+        networkManager?.webSocketTask?.cancel(with: .goingAway, reason: "User left".data(using: .utf8))
     }
     
     //MARK: - UI Views
@@ -238,7 +240,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newRoomPressed() {
-        networkManager.webSocketTask?.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
+        networkManager?.webSocketTask?.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
             if let error = error {
                 print("Web socket couldn't send message: \(error)")
             }
@@ -493,7 +495,7 @@ class RoomViewController: UIViewController {
         
         configureSkeleton()
 
-        networkManager.webSocketTask?.delegate = self
+        networkManager?.webSocketTask?.delegate = self
         resumeSocket()
 
         addViews()
@@ -515,6 +517,7 @@ class RoomViewController: UIViewController {
         super.viewWillDisappear(animated)
         guard let localFrameIndex = self.localFrameIndex else {return}
         updateAvailablePositions(index: localFrameIndex) {_ in}
+        closeSocket()
     }
     
     deinit {
@@ -575,9 +578,9 @@ class RoomViewController: UIViewController {
     //MARK: - Positions Functions
     private func updateAvailablePositions(index:Int?,completionHandler: @escaping (Int?)->() ) {
         guard let room = room else {return}
+        guard let networkManager = networkManager else {return}
         
-        self.networkManager.sendData(object: room, url: "\(self.networkManager.roomsURL)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { data, response in
-            print("PUT response: \(response)")
+        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { data, response in
             do {
                 let ix = try JSONDecoder().decode(Int.self, from: data)
                 if ix != -1 {
