@@ -89,45 +89,16 @@ class LoadingViewController: UIViewController {
     private func moveToRoom(withRoom room:RoomModel) {
         DispatchQueue.main.async {
             let roomVC = RoomViewController()
-            roomVC.title = room.category
+            roomVC.title = self.categoryLabel.text ?? ""
             roomVC.room = room
             self.navigationController?.pushViewController(roomVC, animated: true)
         }
     }
     
-    private func searchFirstEmpty(results:[RoomModel]) -> RoomModel? {
-        var emptyPositionIX = -1
-        for room in results {
-            for i in 0..<room.availablePositions.count {
-                if (!room.availablePositions[i]) {
-                    emptyPositionIX = i
-                    break
-                }
-            }
-            if (emptyPositionIX > -1) {
-                return room
-            }
-        }
-        return nil
-    }
-    
-    private func createEmptyRoom(withCategory category:String) {
-        let newRoom = RoomModel(id: UUID(), category: category)
-        networkManager.sendData(object: newRoom, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.POST.rawValue)
-        { [weak self] _, response in
-            self?.moveToRoom(withRoom: newRoom)
-        }
-    }
-
     private func findEmptyRoom() {
-        guard let category = self.categoryLabel.text else {return}
-        networkManager.fetchData(type: [RoomModel].self, url: networkManager.roomsURL) { [weak self] results in
-            let relevantRooms = results.filter { $0.category.makeComparable() == category.makeComparable() }
-            if let emptyRoom = self?.searchFirstEmpty(results: relevantRooms) {
-                self?.moveToRoom(withRoom: emptyRoom)
-            } else {
-                self?.createEmptyRoom(withCategory:category)
-            }
+        guard let category = categoryLabel.text?.makeURLSafe() else {return}
+        networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(category)") { [weak self] room in
+            self?.moveToRoom(withRoom: room)
         }
     }
     

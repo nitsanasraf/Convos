@@ -12,7 +12,7 @@ class RoomViewController: UIViewController {
     
     private var agoraKit: AgoraRtcEngineKit?
     
-    private lazy var networkManager:NetworkManger? = {
+    private lazy var networkManager: NetworkManger? = {
         guard let userID = UserModel.shared.id else {return nil}
         
         var manager = NetworkManger()
@@ -24,11 +24,9 @@ class RoomViewController: UIViewController {
     
     private var newTopicVotes = [ParticipantModel]()
     
-    private var localFrameIndex:Int?
+    private var localFrameIndex: Int?
     
-    private var textAnimationTimer:Timer?
-    
-    var room:RoomModel?
+    var room: RoomModel?
     
     private lazy var frames = [
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
@@ -240,16 +238,7 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newRoomPressed() {
-        networkManager?.webSocketTask?.send( URLSessionWebSocketTask.Message.string("Some new topic coming from the sever") ) { error in
-            if let error = error {
-                print("Web socket couldn't send message: \(error)")
-            }
-            self.textAnimationTimer?.invalidate()
-            DispatchQueue.main.async {
-                self.newTopicButton.isEnabled = true
-            }
-
-        }
+        
     }
     
     private lazy var newTopicButton: UIButton = {
@@ -269,7 +258,6 @@ class RoomViewController: UIViewController {
         let button = UIButton(configuration: config)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(newTopicPressed(_:)), for: .touchUpInside)
-        button.isEnabled = false
         return button
     }()
     
@@ -458,7 +446,7 @@ class RoomViewController: UIViewController {
     
     private let discussionTopic:UILabel = {
         let label = UILabel()
-        label.text = "Searching for participants"
+        label.text = "Some Topic..."
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = .white
         label.numberOfLines = 0
@@ -466,19 +454,7 @@ class RoomViewController: UIViewController {
         return label
     }()
         
-    private func animateLoadingText() {
-        var counter = 0
-        textAnimationTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: true) { timer in
-            counter += 1
-            if counter == 4 {
-                counter = 0
-                self.discussionTopic.text = "Searching for participants"
-            } else {
-                self.discussionTopic.text?.append(".")
-            }
-        }
-      }
-    
+
     @objc private func goBack() {
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You wont have the option to rejoin this room.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
@@ -507,14 +483,13 @@ class RoomViewController: UIViewController {
         configureVideoStackViews()
         configureButtonsStackViews()
         
-        animateLoadingText()
         setFramesColors()
         initializeAndJoinChannel()
         
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         guard let localFrameIndex = self.localFrameIndex else {return}
         updateAvailablePositions(index: localFrameIndex) {_ in}
         closeSocket()
@@ -576,11 +551,11 @@ class RoomViewController: UIViewController {
     }
     
     //MARK: - Positions Functions
-    private func updateAvailablePositions(index:Int?,completionHandler: @escaping (Int?)->() ) {
+    private func updateAvailablePositions(index:Int?, completionHandler: @escaping (Int?)->() ) {
         guard let room = room else {return}
         guard let networkManager = networkManager else {return}
         
-        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { data, response in
+        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { data, _ in
             do {
                 let ix = try JSONDecoder().decode(Int.self, from: data)
                 if ix != -1 {
@@ -609,6 +584,7 @@ class RoomViewController: UIViewController {
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
         guard let room = room else {return}
+        
         updateAvailablePositions(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             

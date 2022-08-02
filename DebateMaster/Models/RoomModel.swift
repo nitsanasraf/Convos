@@ -13,12 +13,4 @@ class RoomModel:Codable {
     let colors:[String]
     let category:String
     var availablePositions:[Bool]
-    
-    init(id: UUID, category: String) {
-        self.id = id
-        self.name = category + id.uuidString
-        self.colors = ["white","purple","vibrant yellow","green","orange","cyan blue"].shuffled()
-        self.category = category
-        self.availablePositions = [false,false,false,false,false,false]
-    }
 }
