@@ -13,4 +13,5 @@ class RoomModel:Codable {
     let colors:[String]
     let category:String
     var availablePositions:[Bool]
+    
 }

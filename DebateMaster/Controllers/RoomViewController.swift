@@ -237,8 +237,22 @@ class RoomViewController: UIViewController {
         return button
     }()
     
+    private func moveToRoom(withRoom room:RoomModel) {
+        DispatchQueue.main.async {
+            let roomVC = RoomViewController()
+            roomVC.title = self.title
+            roomVC.room = room
+            self.navigationController?.pushViewController(roomVC, animated: true)
+        }
+    }
+    
     @objc private func newRoomPressed() {
-        
+        guard let room = room else {return}
+        guard let networkManager = networkManager else {return}
+
+        networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(room.category)/\(room.id)") { [weak self] room in
+            self?.moveToRoom(withRoom: room)
+        }
     }
     
     private lazy var newTopicButton: UIButton = {
