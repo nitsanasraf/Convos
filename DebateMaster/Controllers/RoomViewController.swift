@@ -249,10 +249,15 @@ class RoomViewController: UIViewController {
     @objc private func newRoomPressed() {
         guard let room = room else {return}
         guard let networkManager = networkManager else {return}
-
-        networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(room.category)/\(room.id)") { [weak self] room in
-            self?.moveToRoom(withRoom: room)
-        }
+        
+        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
+            networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(room.category)/\(room.id)") { [weak self] room in
+                self?.moveToRoom(withRoom: room)
+            }
+        })
+        alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     private lazy var newTopicButton: UIButton = {
@@ -470,7 +475,7 @@ class RoomViewController: UIViewController {
         
 
     @objc private func goBack() {
-        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You wont have the option to rejoin this room.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
             self.navigationController?.popToRootViewController(animated: true)
         })
