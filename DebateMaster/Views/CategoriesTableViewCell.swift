@@ -62,7 +62,7 @@ class CategoriesTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = .systemPink
+        contentView.backgroundColor = Constants.Colors.primary
         addViews()
         addLayouts()
     }

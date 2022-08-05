@@ -157,7 +157,7 @@ class RoomViewController: UIViewController {
             config.baseForegroundColor = .white
         } else {
             config.baseBackgroundColor = .white
-            config.baseForegroundColor = .systemPink
+            config.baseForegroundColor = Constants.Colors.primary
         }
     }
     
@@ -238,12 +238,42 @@ class RoomViewController: UIViewController {
     }()
     
     private func moveToRoom(withRoom room:RoomModel) {
-        DispatchQueue.main.async {
-            let roomVC = RoomViewController()
-            roomVC.title = self.title
-            roomVC.room = room
-            self.navigationController?.pushViewController(roomVC, animated: true)
-        }
+        let roomVC = RoomViewController()
+        roomVC.title = self.title
+        roomVC.room = room
+        self.navigationController?.pushViewController(roomVC, animated: true)
+    }
+    
+    private func createLoadingModal() {
+        let modal = UIView()
+        modal.backgroundColor = UIColor.init(white: 0, alpha: 0.8)
+        modal.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let label = UILabel()
+        label.text = "Looking for a new room..."
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 16)
+        
+        let indicator = UIActivityIndicatorView()
+        indicator.color = .white
+        indicator.startAnimating()
+        
+        self.view.addSubview(modal)
+        modal.addSubview(stackView)
+        stackView.addArrangedSubview(indicator)
+        stackView.addArrangedSubview(label)
+        
+        modal.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        modal.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        
+        stackView.centerXAnchor.constraint(equalTo: modal.centerXAnchor).isActive = true
+        stackView.centerYAnchor.constraint(equalTo: modal.centerYAnchor).isActive = true
     }
     
     @objc private func newRoomPressed() {
@@ -252,8 +282,11 @@ class RoomViewController: UIViewController {
         
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
+            self.createLoadingModal()
             networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(room.category)/\(room.id)") { [weak self] room in
-                self?.moveToRoom(withRoom: room)
+                DispatchQueue.main.async {
+                    self?.moveToRoom(withRoom: room)
+                }
             }
         })
         alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
@@ -472,8 +505,8 @@ class RoomViewController: UIViewController {
         label.textAlignment = .center
         return label
     }()
-        
-
+    
+    
     @objc private func goBack() {
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
@@ -489,10 +522,10 @@ class RoomViewController: UIViewController {
         super.viewDidLoad()
         
         configureSkeleton()
-
+        
         networkManager?.webSocketTask?.delegate = self
         resumeSocket()
-
+        
         addViews()
         addLayouts()
         
@@ -520,9 +553,9 @@ class RoomViewController: UIViewController {
     }
     
     //MARK: - Utils Setups
-
+    
     private func configureSkeleton() {
-        view.backgroundColor = .systemPink
+        view.backgroundColor = Constants.Colors.primary
         self.navigationItem.hidesBackButton = true
         
         let newBackButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(goBack))
@@ -542,7 +575,7 @@ class RoomViewController: UIViewController {
         for i in 3...5 {
             topVideoStack.addArrangedSubview(frames[i].container)
         }
-
+        
         
         middleQustionsStack.addArrangedSubview(discussionTopic)
         
@@ -555,7 +588,7 @@ class RoomViewController: UIViewController {
         for i in 0...2 {
             bottomVideoStack.addArrangedSubview(frames[i].container)
         }
-
+        
         
     }
     
@@ -636,7 +669,7 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         
         guard let emptyPositionIX = findEmptyPosition() else {return}
         room.availablePositions[emptyPositionIX] = true
-
+        
         let videoCanvas = AgoraRtcVideoCanvas()
         videoCanvas.uid = uid
         videoCanvas.renderMode = .hidden

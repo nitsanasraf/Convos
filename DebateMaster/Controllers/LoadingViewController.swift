@@ -87,18 +87,18 @@ class LoadingViewController: UIViewController {
     
     
     private func moveToRoom(withRoom room:RoomModel) {
-        DispatchQueue.main.async {
-            let roomVC = RoomViewController()
-            roomVC.title = self.categoryLabel.text ?? ""
-            roomVC.room = room
-            self.navigationController?.pushViewController(roomVC, animated: true)
-        }
+        let roomVC = RoomViewController()
+        roomVC.title = self.categoryLabel.text ?? ""
+        roomVC.room = room
+        self.navigationController?.pushViewController(roomVC, animated: true)
     }
     
     private func findEmptyRoom() {
         guard let category = categoryLabel.text?.makeURLSafe() else {return}
         networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(category)") { [weak self] room in
-            self?.moveToRoom(withRoom: room)
+            DispatchQueue.main.async {
+                self?.moveToRoom(withRoom: room)
+            }
         }
     }
     
@@ -112,7 +112,7 @@ class LoadingViewController: UIViewController {
     }
     
     private func configureSkeleton() {
-        view.backgroundColor = .systemPink
+        view.backgroundColor = Constants.Colors.primary
         self.navigationItem.hidesBackButton = true
     }
     
@@ -134,5 +134,5 @@ class LoadingViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(stackViewConstraints)
     }
-
+    
 }

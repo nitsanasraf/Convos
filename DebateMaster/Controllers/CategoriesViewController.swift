@@ -26,7 +26,7 @@ class CategoriesViewController: UIViewController {
     }
     
     private func configureSkeleton() {
-        view.backgroundColor = .systemPink
+        view.backgroundColor = Constants.Colors.primary
         title = "All Categories"
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.square"), style: .plain, target: self, action: #selector(logout))
     }

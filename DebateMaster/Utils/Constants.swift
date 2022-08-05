@@ -5,7 +5,7 @@
 //  Created by Nitsan Asraf on 19/07/2022.
 //
 
-import Foundation
+import UIKit
 
 
 struct Constants {
@@ -32,5 +32,8 @@ struct Constants {
             static let userEmail = "userEmail"
             static let userAgoraToken = "userAgoraToken"
         }
+    }
+    struct Colors {
+        static let primary: UIColor = .systemPink
     }
 }
