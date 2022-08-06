@@ -498,7 +498,6 @@ class RoomViewController: UIViewController {
     
     private let discussionTopic:UILabel = {
         let label = UILabel()
-        label.text = "Some Topic..."
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = .white
         label.numberOfLines = 0

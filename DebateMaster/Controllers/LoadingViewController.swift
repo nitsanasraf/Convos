@@ -107,7 +107,6 @@ class LoadingViewController: UIViewController {
         configureSkeleton()
         addViews()
         addLayouts()
-        
         findEmptyRoom()
     }
     

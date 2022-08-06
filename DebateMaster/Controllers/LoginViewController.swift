@@ -109,7 +109,7 @@ class LoginViewController: UIViewController {
                   let email = queryItems?.first { $0.name == "email" }?.value
                   let id = queryItems?.first { $0.name == "id" }?.value
 
-                  UserModel.shared.populateUserModel(token: token, email: email, id: id)
+                  UserModel.shared.populateUser(token: token, email: email, id: id)
                   self?.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async {
@@ -142,7 +142,7 @@ class LoginViewController: UIViewController {
                   let email = queryItems?.first { $0.name == "email" }?.value
                   let id = queryItems?.first { $0.name == "id" }?.value
 
-                  UserModel.shared.populateUserModel(token: token, email: email, id: id)
+                  UserModel.shared.populateUser(token: token, email: email, id: id)
                   self?.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async {

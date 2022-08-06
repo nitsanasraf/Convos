@@ -19,7 +19,7 @@ struct UserModel:Codable {
     
     private init() {}
     
-    func populateUserModel(token:String?, email:String?, id:String?) {
+    func populateUser(token:String?, email:String?, id:String?) {
         UserModel.shared.authToken = token
         UserModel.shared.email = email
         UserModel.shared.id = id
@@ -30,7 +30,7 @@ struct UserModel:Codable {
            let email = KeyChain.shared[Constants.KeyChain.Keys.userEmail],
            let id = KeyChain.shared[Constants.KeyChain.Keys.userID] {
             
-            populateUserModel(token: authToken, email: email, id: id)
+            populateUser(token: authToken, email: email, id: id)
             
             if let agoraToken = KeyChain.shared[Constants.KeyChain.Keys.userAgoraToken] {
                 UserModel.shared.agoraToken = agoraToken
