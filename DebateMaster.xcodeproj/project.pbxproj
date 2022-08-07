@@ -30,6 +30,7 @@
 		C6561A8628873D1400F96160 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6561A8528873D1400F96160 /* Constants.swift */; };
 		C6561A8828873EE600F96160 /* RoomModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6561A8728873EE600F96160 /* RoomModel.swift */; };
 		C65F1FCB289075CE003DD331 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65F1FCA289075CE003DD331 /* LoginViewController.swift */; };
+		C660F9F4289FFB0F00866C43 /* TopicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C660F9F3289FFB0F00866C43 /* TopicModel.swift */; };
 		C679630028942E4F003E179F /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67962FF28942E4F003E179F /* UserModel.swift */; };
 		C67F68362896CA9B005F1D67 /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67F68352896CA9B005F1D67 /* KeyChain.swift */; };
 		C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09902880242B004AF0DD /* CategoriesViewController.swift */; };
@@ -56,6 +57,7 @@
 		C6561A8528873D1400F96160 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C6561A8728873EE600F96160 /* RoomModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomModel.swift; sourceTree = "<group>"; };
 		C65F1FCA289075CE003DD331 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		C660F9F3289FFB0F00866C43 /* TopicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicModel.swift; sourceTree = "<group>"; };
 		C67962FF28942E4F003E179F /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		C67F68352896CA9B005F1D67 /* KeyChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
 		C6AD09902880242B004AF0DD /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				C63905F02872583900AE11C5 /* FrameModel.swift */,
 				C6561A8728873EE600F96160 /* RoomModel.swift */,
 				C67962FF28942E4F003E179F /* UserModel.swift */,
+				C660F9F3289FFB0F00866C43 /* TopicModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				C61DCD1D28770E79007E5EBE /* NetworkManger.swift in Sources */,
 				C6301475286F11F900128576 /* AppDelegate.swift in Sources */,
 				C65F1FCB289075CE003DD331 /* LoginViewController.swift in Sources */,
+				C660F9F4289FFB0F00866C43 /* TopicModel.swift in Sources */,
 				C6CBE82328707458007D1F95 /* KeyCenter.swift in Sources */,
 				C6AD0997288039C8004AF0DD /* CategoriesTableViewCell.swift in Sources */,
 				C6301477286F11F900128576 /* SceneDelegate.swift in Sources */,

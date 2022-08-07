@@ -13,6 +13,8 @@ struct NetworkManger {
     let socketURL = Constants.Network.baseSocketURL + Constants.Network.EndPoints.socket
     let authGoogleURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.google
     let authFacebookURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.facebook
+    let usersURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.users
+    let topicsURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.topics
     let schemeName = Constants.Network.schemeName
     
     var webSocketTask:URLSessionWebSocketTask?

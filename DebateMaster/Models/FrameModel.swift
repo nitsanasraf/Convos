@@ -10,9 +10,9 @@ import UIKit
 
 struct FrameModel:Identifiable {
     let id = UUID().hashValue
-    let container:UIStackView
-    let videoView:UIView
-    let buttonContainer:UIStackView
+    let container: UIStackView
+    let videoView: UIView
+    let buttonContainer: UIStackView
     let muteButton: UIButton
     var color: CGColor
     var uid:UInt {

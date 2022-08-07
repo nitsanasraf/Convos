@@ -12,10 +12,10 @@ struct UserModel:Codable {
     
     static var shared = UserModel()
     
-    var email:String?
-    var id:String?
-    var authToken:String?
-    var agoraToken:String?
+    var email: String?
+    var id: String?
+    var authToken: String?
+    var agoraToken: String?
     
     private init() {}
     

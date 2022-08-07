@@ -28,6 +28,8 @@ class RoomViewController: UIViewController {
     
     var room: RoomModel?
     
+    var topics: [TopicModel]?
+    
     private lazy var frames = [
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
@@ -237,13 +239,6 @@ class RoomViewController: UIViewController {
         return button
     }()
     
-    private func moveToRoom(withRoom room:RoomModel) {
-        let roomVC = RoomViewController()
-        roomVC.title = self.title
-        roomVC.room = room
-        self.navigationController?.pushViewController(roomVC, animated: true)
-    }
-    
     private func createLoadingModal() {
         let modal = UIView()
         modal.backgroundColor = UIColor.init(white: 0, alpha: 0.8)
@@ -284,8 +279,11 @@ class RoomViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
             self.createLoadingModal()
             networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(room.category)/\(room.id)") { [weak self] room in
-                DispatchQueue.main.async {
-                    self?.moveToRoom(withRoom: room)
+                guard let self = self else {return}
+                networkManager.fetchData(type: [TopicModel].self, url: "\(networkManager.topicsURL)/\(room.category)") { topics in
+                    DispatchQueue.main.async {
+                        RoomModel.moveToRoom(room: room, topics: topics, fromViewController: self, withTitle: self.title)
+                    }
                 }
             }
         })

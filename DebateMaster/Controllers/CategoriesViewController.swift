@@ -32,7 +32,7 @@ class CategoriesViewController: UIViewController {
     }
     
     @objc private func logout() {
-        guard let url = URL(string: "http://localhost:8080/users/logout") else {return}
+        guard let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
         let task = URLSession.shared.dataTask(with: url) { [weak self] (_, response, error) in
             if let error = error {
                 print("Error fetching: \(error)")

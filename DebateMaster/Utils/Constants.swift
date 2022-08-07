@@ -18,6 +18,9 @@ struct Constants {
             static let socket = "socket"
             static let google = "google"
             static let facebook = "facebook"
+            static let users = "users"
+            static let topics = "topics"
+            static let logout = "logout"
         }
     }
     enum HttpMethods:String {

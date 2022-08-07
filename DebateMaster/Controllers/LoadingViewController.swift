@@ -85,21 +85,18 @@ class LoadingViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    
-    private func moveToRoom(withRoom room:RoomModel) {
-        let roomVC = RoomViewController()
-        roomVC.title = self.categoryLabel.text ?? ""
-        roomVC.room = room
-        self.navigationController?.pushViewController(roomVC, animated: true)
-    }
-    
     private func findEmptyRoom() {
         guard let category = categoryLabel.text?.makeURLSafe() else {return}
+        
         networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(category)") { [weak self] room in
-            DispatchQueue.main.async {
-                self?.moveToRoom(withRoom: room)
+            guard let self = self else {return}
+            self.networkManager.fetchData(type: [TopicModel].self, url: "\(self.networkManager.topicsURL)/\(category)") { topics in
+                DispatchQueue.main.async {
+                    RoomModel.moveToRoom(room: room, topics: topics, fromViewController: self, withTitle: self.categoryLabel.text)
+                }
             }
         }
+        
     }
     
     override func viewDidLoad() {
