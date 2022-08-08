@@ -13,13 +13,13 @@ class RoomModel:Codable {
     let colors: [String]
     let category: String
     var availablePositions: [Bool]
+    let currentTopic: String
  
     
-    static func moveToRoom(room:RoomModel, topics: [TopicModel], fromViewController vc: UIViewController, withTitle title :String?) {
+    static func moveToRoom(room:RoomModel, fromViewController vc: UIViewController, withTitle title :String?) {
         let roomVC = RoomViewController()
         roomVC.title = title
         roomVC.room = room
-        roomVC.topics = topics
         vc.navigationController?.pushViewController(roomVC, animated: true)
     }
     

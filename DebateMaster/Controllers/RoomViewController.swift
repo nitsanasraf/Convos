@@ -28,8 +28,6 @@ class RoomViewController: UIViewController {
     
     var room: RoomModel?
     
-    var topics: [TopicModel]?
-    
     private lazy var frames = [
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
         FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
@@ -280,11 +278,9 @@ class RoomViewController: UIViewController {
             self.createLoadingModal()
             networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(room.category)/\(room.id)") { [weak self] room in
                 guard let self = self else {return}
-                networkManager.fetchData(type: [TopicModel].self, url: "\(networkManager.topicsURL)/\(room.category)") { topics in
-                    DispatchQueue.main.async {
-                        RoomModel.moveToRoom(room: room, topics: topics, fromViewController: self, withTitle: self.title)
-                    }
-                }
+                DispatchQueue.main.async {
+                    RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: self.title)
+                } 
             }
         })
         alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
@@ -494,11 +490,12 @@ class RoomViewController: UIViewController {
         }
     }
     
-    private let discussionTopic:UILabel = {
+    private lazy var discussionTopic:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = .white
         label.numberOfLines = 0
+        label.text = room?.currentTopic
         label.textAlignment = .center
         return label
     }()

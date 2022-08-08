@@ -90,13 +90,10 @@ class LoadingViewController: UIViewController {
         
         networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(category)") { [weak self] room in
             guard let self = self else {return}
-            self.networkManager.fetchData(type: [TopicModel].self, url: "\(self.networkManager.topicsURL)/\(category)") { topics in
-                DispatchQueue.main.async {
-                    RoomModel.moveToRoom(room: room, topics: topics, fromViewController: self, withTitle: self.categoryLabel.text)
-                }
+            DispatchQueue.main.async {
+                RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: self.categoryLabel.text)
             }
         }
-        
     }
     
     override func viewDidLoad() {
