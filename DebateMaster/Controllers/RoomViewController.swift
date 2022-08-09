@@ -28,15 +28,7 @@ class RoomViewController: UIViewController {
     
     var room: RoomModel?
     
-    private lazy var frames = [
-        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-        FrameModel(container: UIStackView(), videoView: UIView(),buttonContainer: UIStackView(), muteButton: UIButton(),color: UIColor.clear.cgColor),
-    ]
-    
+    private lazy var frames = [FrameModel(), FrameModel(), FrameModel(), FrameModel(), FrameModel(), FrameModel()]
     
     //MARK: - Web Socket Functions
     private func receiveData() {
@@ -58,6 +50,9 @@ class RoomViewController: UIViewController {
                 case .string(let str):
                     DispatchQueue.main.async {
                         self.changeTopic(topic: str)
+                        self.newTopicVotes = []
+                        self.renderVoteOrbs()
+                        self.changeActionButtonUI(isPressed: true, config: &self.newTopicButton.configuration!)
                     }
                 default:
                     break
@@ -207,13 +202,14 @@ class RoomViewController: UIViewController {
     
     private func appendNewTopicVote(isPressed:Bool) {
         guard let localIX = localFrameIndex else {return}
+        guard let userID = UserModel.shared.id else {return}
         if isPressed {
-            if let participantIndex = newTopicVotes.firstIndex(where: {$0.id == frames[localIX].uid}) {
+            if let participantIndex = newTopicVotes.firstIndex(where: { $0.userID == userID}) {
                 newTopicVotes.remove(at: participantIndex)
             }
         } else {
             let colorName = UIColor(cgColor:frames[localIX].color).accessibilityName
-            newTopicVotes.append(ParticipantModel(id: frames[localIX].uid, color: colorName))
+            newTopicVotes.append(ParticipantModel(userID: userID, color: colorName))
         }
     }
     
@@ -280,7 +276,7 @@ class RoomViewController: UIViewController {
                 guard let self = self else {return}
                 DispatchQueue.main.async {
                     RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: self.title)
-                } 
+                }
             }
         })
         alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))

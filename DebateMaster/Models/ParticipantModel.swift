@@ -8,8 +8,8 @@
 import Foundation
 
 
-struct ParticipantModel:Codable,Identifiable {
-    let id: UInt
+struct ParticipantModel:Codable{
+    let userID: String
     let color: String
     
 }
