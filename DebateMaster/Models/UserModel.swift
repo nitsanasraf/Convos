@@ -29,16 +29,9 @@ struct UserModel:Codable {
         if let authToken = KeyChain.shared[Constants.KeyChain.Keys.userAuthToken],
            let email = KeyChain.shared[Constants.KeyChain.Keys.userEmail],
            let id = KeyChain.shared[Constants.KeyChain.Keys.userID] {
-            
             populateUser(token: authToken, email: email, id: id)
-            
-            if let agoraToken = KeyChain.shared[Constants.KeyChain.Keys.userAgoraToken] {
-                UserModel.shared.agoraToken = agoraToken
-            }
-            
             return true
         }
-        
         return false
     }
     
@@ -48,10 +41,10 @@ struct UserModel:Codable {
         UserModel.shared.authToken = nil
         UserModel.shared.agoraToken = nil
     }
-
- 
-    func printDetails() -> Void{
-        print("ID: \(self.id ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")\nAgora Token: \(self.agoraToken ?? "")")
+    
+    
+    func printDetails() -> Void {
+        print("ID: \(self.id ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
     }
     
 }

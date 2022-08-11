@@ -87,12 +87,27 @@ class LoadingViewController: UIViewController {
     
     private func findEmptyRoom() {
         guard let category = categoryLabel.text?.makeURLSafe() else {return}
+        guard let userID = UserModel.shared.id else {return}
         
         networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(category)") { [weak self] room in
             guard let self = self else {return}
-            DispatchQueue.main.async {
-                RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: self.categoryLabel.text)
+            
+            let url = "\(self.networkManager.rtcURL)/\(KeyCenter.appID)/\(KeyCenter.appCertificate)/\(room.name)/\(userID)"
+            guard let url = URL(string: url) else {return}
+            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                if let error = error {
+                    print("Error fetching: \(error)")
+                } else {
+                    guard let data = data else {return}
+                    guard let token = String(data: data, encoding: .utf8) else {return}
+                    UserModel.shared.agoraToken = token
+                    DispatchQueue.main.async {
+                        RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: self.categoryLabel.text)
+                    }
+                }
             }
+            task.resume()
+            
         }
     }
     

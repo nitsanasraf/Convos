@@ -8,8 +8,6 @@
 import Foundation
 
 struct KeyCenter {
-//    static let AppId: String = "68aec75811214c85a87524b6442e936b"
-    static let AppId: String = ""
-    static var Token: String? = ""
-        
+    static let appID = "68aec75811214c85a87524b6442e936b"
+    static let appCertificate = "b29fc3cb13b945e09d397ca3365f9014"
 }

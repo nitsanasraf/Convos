@@ -626,26 +626,27 @@ class RoomViewController: UIViewController {
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
         guard let room = room else {return}
+        guard let userID = UserModel.shared.id else {return}
         
         updateAvailablePositions(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
-            
-            self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.AppId, delegate: self)
-            self.agoraKit?.enableVideo()
-            let videoCanvas = AgoraRtcVideoCanvas()
-            
-            self.localFrameIndex = availablePositionIX
-            
-            videoCanvas.uid = self.frames[self.localFrameIndex!].uid
-            videoCanvas.renderMode = .hidden
-            videoCanvas.view = self.frames[self.localFrameIndex!].videoView
-            
-            self.agoraKit?.setupLocalVideo(videoCanvas)
-            
-            // Join the channel with a token. Pass in your token and channel name here
-            self.agoraKit?.joinChannel(byToken: KeyCenter.Token, channelId: room.name, info: nil, uid: 0, joinSuccess: { (channel, uid, elapsed) in
+            DispatchQueue.main.async {
+                self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
+                self.agoraKit?.enableVideo()
+                let videoCanvas = AgoraRtcVideoCanvas()
                 
-            })
+                self.localFrameIndex = availablePositionIX
+                
+                videoCanvas.uid = self.frames[self.localFrameIndex!].uid
+                videoCanvas.renderMode = .hidden
+                videoCanvas.view = self.frames[self.localFrameIndex!].videoView
+                
+                self.agoraKit?.setupLocalVideo(videoCanvas)
+                
+                self.agoraKit?.joinChannel(byUserAccount: userID, token: UserModel.shared.agoraToken, channelId: room.name, joinSuccess: { (_,_,_) in
+                    print("User has successfully joined the channel")
+                })
+            }
         }
     }
     
@@ -669,7 +670,21 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
-        print("User left channel")
+        print("User left the channel")
+    }
+    
+    func rtcEngine(_ engine: AgoraRtcEngineKit, didApiCallExecute error: Int, api: String, result: String) {
+        if error != 0 {
+            print("SDK ERROR: ",error)
+        }
+    }
+    
+    func rtcEngine(_ engine: AgoraRtcEngineKit, didRegisteredLocalUser userAccount: String, withUid uid: UInt) {
+        print("Successfully registered local user")
+    }
+    
+    func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinChannel channel: String, withUid uid: UInt, elapsed: Int) {
+        print("Joined Channel!")
     }
     
 }

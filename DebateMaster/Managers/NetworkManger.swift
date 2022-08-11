@@ -15,6 +15,7 @@ struct NetworkManger {
     let authFacebookURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.facebook
     let usersURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.users
     let topicsURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.topics
+    let rtcURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.rtc
     let schemeName = Constants.Network.schemeName
     
     var webSocketTask:URLSessionWebSocketTask?

@@ -10,8 +10,8 @@ import UIKit
 
 struct Constants {
     struct Network {
-        static let baseHttpURL = "http://127.0.0.1:8080/"
-        static let baseSocketURL = "ws://127.0.0.1:8080/"
+        static let baseHttpURL = "https://76bc-157-25-124-212.eu.ngrok.io/"
+        static let baseSocketURL = "wss://76bc-157-25-124-212.eu.ngrok.io/"
         static let schemeName = "debatemaster"
         struct EndPoints {
             static let rooms = "rooms"
@@ -21,6 +21,7 @@ struct Constants {
             static let users = "users"
             static let topics = "topics"
             static let logout = "logout"
+            static let rtc = "rtc"
         }
     }
     enum HttpMethods:String {
@@ -33,7 +34,6 @@ struct Constants {
             static let userID = "userID"
             static let userAuthToken = "userAuthToken"
             static let userEmail = "userEmail"
-            static let userAgoraToken = "userAgoraToken"
         }
     }
     struct Colors {
