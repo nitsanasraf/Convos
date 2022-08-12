@@ -17,6 +17,14 @@ struct UserModel:Codable {
     var authToken: String?
     var agoraToken: String?
     
+    var uid: UInt? {
+        guard let id = id else {return nil}
+        if let uid = UInt.parse(from: id) {
+            return uid
+        } 
+        return nil
+    }
+    
     private init() {}
     
     func populateUser(token:String?, email:String?, id:String?) {
@@ -44,7 +52,7 @@ struct UserModel:Codable {
     
     
     func printDetails() -> Void {
-        print("ID: \(self.id ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
+        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? 0)\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
     }
     
 }

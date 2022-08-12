@@ -626,7 +626,7 @@ class RoomViewController: UIViewController {
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
         guard let room = room else {return}
-        guard let userID = UserModel.shared.id else {return}
+        guard let userUID = UserModel.shared.uid else {return}
         
         updateAvailablePositions(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
@@ -643,9 +643,10 @@ class RoomViewController: UIViewController {
                 
                 self.agoraKit?.setupLocalVideo(videoCanvas)
                 
-                self.agoraKit?.joinChannel(byUserAccount: userID, token: UserModel.shared.agoraToken, channelId: room.name, joinSuccess: { (_,_,_) in
+                self.agoraKit?.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: userUID, joinSuccess: { (_,_,_) in
                     print("User has successfully joined the channel")
                 })
+                
             }
         }
     }

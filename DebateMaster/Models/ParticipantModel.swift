@@ -11,5 +11,4 @@ import Foundation
 struct ParticipantModel:Codable{
     let userID: String
     let color: String
-    
 }

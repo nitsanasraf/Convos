@@ -10,8 +10,8 @@ import UIKit
 
 struct Constants {
     struct Network {
-        static let baseHttpURL = "https://76bc-157-25-124-212.eu.ngrok.io/"
-        static let baseSocketURL = "wss://76bc-157-25-124-212.eu.ngrok.io/"
+        static let baseHttpURL = "https://cffa-157-25-124-212.eu.ngrok.io/"
+        static let baseSocketURL = "wss://cffa-157-25-124-212.eu.ngrok.io/"
         static let schemeName = "debatemaster"
         struct EndPoints {
             static let rooms = "rooms"
