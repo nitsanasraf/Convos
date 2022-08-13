@@ -10,17 +10,11 @@ import UIKit
 
 struct FrameModel {
     
-    let id = UUID().hashValue
     let container = UIStackView()
     let videoView = UIView()
     let buttonContainer = UIStackView()
     let muteButton = UIButton()
     var color = UIColor.clear.cgColor
-    
-    var uid:UInt {
-        let uid = self.id < 0 ? self.id * -1 : self.id
-        return UInt(uid)
-    }
     
     mutating func setColor(color:CGColor) {
         self.color = color

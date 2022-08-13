@@ -268,17 +268,16 @@ class RoomViewController: UIViewController {
     @objc private func newRoomPressed() {
         guard let room = room else {return}
         guard let networkManager = networkManager else {return}
+        guard let agoraKit = agoraKit else {return}
         
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
+        
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
             self.createLoadingModal()
-            networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(room.category)/\(room.id)") { [weak self] room in
-                guard let self = self else {return}
-                DispatchQueue.main.async {
-                    RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: self.title)
-                }
-            }
+            self.closeSocket()
+            RoomModel.findEmptyRoom(fromRoom: room, networkManager: networkManager, category: self.title, viewController: self, agoraKit: agoraKit)
         })
+        
         alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
@@ -538,7 +537,7 @@ class RoomViewController: UIViewController {
     }
     
     deinit {
-        agoraKit?.leaveChannel(nil)
+        agoraKit?.leaveChannel()
         AgoraRtcEngineKit.destroy()
     }
     
@@ -601,6 +600,7 @@ class RoomViewController: UIViewController {
             do {
                 let ix = try JSONDecoder().decode(Int.self, from: data)
                 if ix != -1 {
+                    room.availablePositions[ix] = true
                     completionHandler(ix)
                 } else {
                     completionHandler(nil)
@@ -625,28 +625,23 @@ class RoomViewController: UIViewController {
     
     //MARK: - Agora Funcs
     private func initializeAndJoinChannel() {
-        guard let room = room else {return}
         guard let userUID = UserModel.shared.uid else {return}
         
         updateAvailablePositions(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             DispatchQueue.main.async {
+
                 self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
                 self.agoraKit?.enableVideo()
                 let videoCanvas = AgoraRtcVideoCanvas()
                 
                 self.localFrameIndex = availablePositionIX
                 
-                videoCanvas.uid = self.frames[self.localFrameIndex!].uid
+                videoCanvas.uid = userUID
                 videoCanvas.renderMode = .hidden
                 videoCanvas.view = self.frames[self.localFrameIndex!].videoView
                 
                 self.agoraKit?.setupLocalVideo(videoCanvas)
-                
-                self.agoraKit?.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: userUID, joinSuccess: { (_,_,_) in
-                    print("User has successfully joined the channel")
-                })
-                
             }
         }
     }
@@ -671,7 +666,7 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
-        print("User left the channel")
+        print("User left the channel: \(room?.name ?? "nil")")
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didApiCallExecute error: Int, api: String, result: String) {

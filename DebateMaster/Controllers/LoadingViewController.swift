@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import AgoraRtcKit
 
 class LoadingViewController: UIViewController {
     
     private var networkManager = NetworkManger()
+    
+    private lazy var agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -84,40 +87,14 @@ class LoadingViewController: UIViewController {
     @objc private func cancelSearch() {
         navigationController?.popViewController(animated: true)
     }
-    
-    private func findEmptyRoom() {
-        guard let category = categoryLabel.text?.makeURLSafe() else {return}
-        guard let userUID = UserModel.shared.uid else {return}
         
-        networkManager.fetchData(type: RoomModel.self, url: "\(networkManager.roomsURL)/\(category)") { [weak self] room in
-            guard let self = self else {return}
-            
-            let url = "\(self.networkManager.rtcURL)/\(KeyCenter.appID)/\(KeyCenter.appCertificate)/\(room.name)/\(userUID)"
-            guard let url = URL(string: url) else {return}
-            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if let error = error {
-                    print("Error fetching: \(error)")
-                } else {
-                    guard let data = data else {return}
-                    guard let token = String(data: data, encoding: .utf8) else {return}
-                    print(token)
-                    UserModel.shared.agoraToken = token
-                    DispatchQueue.main.async {
-                        RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: self.categoryLabel.text)
-                    }
-                }
-            }
-            task.resume()
-            
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureSkeleton()
         addViews()
         addLayouts()
-        findEmptyRoom()
+        RoomModel.findEmptyRoom(fromRoom: nil, networkManager: networkManager, category: categoryLabel.text, viewController: self, agoraKit: agoraKit)
+
     }
     
     private func configureSkeleton() {
@@ -145,3 +122,6 @@ class LoadingViewController: UIViewController {
     }
     
 }
+
+
+extension LoadingViewController: AgoraRtcEngineDelegate {}
