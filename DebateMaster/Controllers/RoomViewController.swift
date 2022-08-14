@@ -647,6 +647,7 @@ class RoomViewController: UIViewController {
                 
                 self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
                 self.agoraKit?.enableVideo()
+                self.agoraKit?.setEnableSpeakerphone(true)
                 
                 let videoCanvas = AgoraRtcVideoCanvas()
                 
