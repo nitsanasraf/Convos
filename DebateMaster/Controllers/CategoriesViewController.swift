@@ -9,7 +9,7 @@ import UIKit
 
 class CategoriesViewController: UIViewController {
     private let networkManager = NetworkManger()
-    
+        
     private let tableView:UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -18,38 +18,13 @@ class CategoriesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        configureSkeleton()
+        view.backgroundColor = Constants.Colors.primary
+    
         addViews()
         addLayouts()
         UserModel.shared.printDetails()
     }
-    
-    private func configureSkeleton() {
-        view.backgroundColor = Constants.Colors.primary
-        title = "All Categories"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.square"), style: .plain, target: self, action: #selector(logout))
-    }
-    
-    @objc private func logout() {
-        guard let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
-        let task = URLSession.shared.dataTask(with: url) { [weak self] (_, response, error) in
-            if let error = error {
-                print("Error fetching: \(error)")
-            } else {
-                KeyChain.shared.deleteAll()
-                UserModel.shared.resetUser()
-                DispatchQueue.main.async {
-                    let loginVC = LoginViewController()
-                    loginVC.modalPresentationStyle = .fullScreen
-                    self?.present(loginVC, animated: true)
-                }
-            }
-        }
-        task.resume()
-    
-    }
-    
+        
     private func addViews() {
         view.addSubview(tableView)
         embed(CategoriesTableViewController(), inView: tableView)

@@ -113,9 +113,8 @@ class LoginViewController: UIViewController {
                   self?.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async {
-                      let catVC = UINavigationController(rootViewController: CategoriesViewController())
-                      catVC.modalPresentationStyle = .fullScreen
-                      self?.present(catVC, animated: true)
+                      let tabVC = TabBarViewController()
+                      self?.navigationController?.pushViewController(tabVC, animated: true)
                   }
               }
           }
@@ -146,9 +145,8 @@ class LoginViewController: UIViewController {
                   self?.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async {
-                      let catVC = UINavigationController(rootViewController: CategoriesViewController())
-                      catVC.modalPresentationStyle = .fullScreen
-                      self?.present(catVC, animated: true)
+                      let tabVC = TabBarViewController()
+                      self?.navigationController?.pushViewController(tabVC, animated: true)
                   }
               }
           }
@@ -160,6 +158,9 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if UserModel.shared.isUserLoggedIn() {
+            self.navigationController?.pushViewController(TabBarViewController(), animated: false)
+        }
         view.backgroundColor = Constants.Colors.primary
         addViews()
         addLayouts()

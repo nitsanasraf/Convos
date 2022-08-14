@@ -32,6 +32,8 @@
 		C65F1FCB289075CE003DD331 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65F1FCA289075CE003DD331 /* LoginViewController.swift */; };
 		C679630028942E4F003E179F /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67962FF28942E4F003E179F /* UserModel.swift */; };
 		C67F68362896CA9B005F1D67 /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67F68352896CA9B005F1D67 /* KeyChain.swift */; };
+		C6A1F37D28A92F20000F3A56 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */; };
+		C6A1F37F28A92FEF000F3A56 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A1F37E28A92FEF000F3A56 /* ProfileViewController.swift */; };
 		C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09902880242B004AF0DD /* CategoriesViewController.swift */; };
 		C6AD09932880360A004AF0DD /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09922880360A004AF0DD /* UIViewController+Extensions.swift */; };
 		C6AD0995288037A2004AF0DD /* CategoriesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD0994288037A2004AF0DD /* CategoriesTableViewController.swift */; };
@@ -59,6 +61,8 @@
 		C65F1FCA289075CE003DD331 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		C67962FF28942E4F003E179F /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		C67F68352896CA9B005F1D67 /* KeyChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
+		C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
+		C6A1F37E28A92FEF000F3A56 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		C6AD09902880242B004AF0DD /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		C6AD09922880360A004AF0DD /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		C6AD0994288037A2004AF0DD /* CategoriesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesTableViewController.swift; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 				C6AD0994288037A2004AF0DD /* CategoriesTableViewController.swift */,
 				C63804622882C7BC0028B6D5 /* LoadingViewController.swift */,
 				C65F1FCA289075CE003DD331 /* LoginViewController.swift */,
+				C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */,
+				C6A1F37E28A92FEF000F3A56 /* ProfileViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -283,7 +289,9 @@
 				C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */,
 				C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,
+				C6A1F37D28A92F20000F3A56 /* TabBarViewController.swift in Sources */,
 				C6AD0995288037A2004AF0DD /* CategoriesTableViewController.swift in Sources */,
+				C6A1F37F28A92FEF000F3A56 /* ProfileViewController.swift in Sources */,
 				C63905F12872583900AE11C5 /* FrameModel.swift in Sources */,
 				C6561A8628873D1400F96160 /* Constants.swift in Sources */,
 				C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */,

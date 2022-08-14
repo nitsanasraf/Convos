@@ -335,10 +335,13 @@ class RoomViewController: UIViewController {
         for frame in frames {
             if isPressed {
                 mute(with: frame, button: frame.muteButton, unmute: true)
+                agoraKit?.adjustPlaybackSignalVolume(0)
+                agoraKit?.adjustAudioMixingPlayoutVolume(0)
             } else {
                 mute(with: frame, button: frame.muteButton, unmute: false)
+                agoraKit?.adjustPlaybackSignalVolume(100)
+                agoraKit?.adjustAudioMixingPlayoutVolume(100)
             }
-            
         }
     }
     
@@ -449,8 +452,14 @@ class RoomViewController: UIViewController {
         for frame in frames {
             if frame.muteButton.tag == button.tag {
                 if isMuted {
+                    if frame.muteButton.tag == localFrameIndex {
+                        agoraKit?.adjustRecordingSignalVolume(100)
+                    }
                     mute(with: frame, button: button, unmute: true)
                 } else {
+                    if frame.muteButton.tag == localFrameIndex {
+                        agoraKit?.adjustRecordingSignalVolume(0)
+                    }
                     mute(with: frame, button: button, unmute: false)
                 }
             }
@@ -499,7 +508,8 @@ class RoomViewController: UIViewController {
     @objc private func goBack() {
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
-            self.navigationController?.popToRootViewController(animated: true)
+            let tabVC = self.navigationController!.viewControllers.filter { $0 is TabBarViewController }.first!
+            self.navigationController!.popToViewController(tabVC, animated: true)
         })
         alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -541,6 +551,10 @@ class RoomViewController: UIViewController {
         AgoraRtcEngineKit.destroy()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+    }
     //MARK: - Utils Setups
     
     private func configureSkeleton() {
@@ -630,9 +644,10 @@ class RoomViewController: UIViewController {
         updateAvailablePositions(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             DispatchQueue.main.async {
-
+                
                 self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
                 self.agoraKit?.enableVideo()
+                
                 let videoCanvas = AgoraRtcVideoCanvas()
                 
                 self.localFrameIndex = availablePositionIX
@@ -663,6 +678,9 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         videoCanvas.view = frames[emptyPositionIX].videoView
         
         agoraKit?.setupRemoteVideo(videoCanvas)
+        self.agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 100)
+        
+        print("A remote user has joinned the channel with uid: \(uid)")
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
