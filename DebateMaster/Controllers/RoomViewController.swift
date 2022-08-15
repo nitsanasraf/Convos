@@ -642,6 +642,24 @@ class RoomViewController: UIViewController {
         return nil
     }
     
+    private func setRecentPositions() {
+        guard let room = room else {return}
+        guard let userUID = UserModel.shared.uid else {return}
+        
+        for (ix,position) in room.positions.enumerated() {
+            if position != userUID && !position.isEmpty {
+                guard let uid = UInt(position) else {return}
+                
+                let videoCanvas = AgoraRtcVideoCanvas()
+                videoCanvas.uid = uid
+                videoCanvas.renderMode = .hidden
+                videoCanvas.view = frames[ix].videoView
+                
+                frames[ix].userUID = uid
+                agoraKit?.setupRemoteVideo(videoCanvas)
+            }
+        }
+    }
     //MARK: - Agora Functionss
     private func initializeAndJoinChannel() {
         guard let userUID = UserModel.shared.uid,
@@ -667,6 +685,8 @@ class RoomViewController: UIViewController {
                 self.frames[self.localFrameIndex!].userUID  = uid
                 
                 self.agoraKit?.setupLocalVideo(videoCanvas)
+                
+                self.setRecentPositions()
             }
         }
     }
