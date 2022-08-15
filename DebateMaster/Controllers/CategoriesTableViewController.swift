@@ -29,17 +29,17 @@ class CategoriesTableViewController: UITableViewController {
         view.backgroundColor = Constants.Colors.primary
         tableView.register(CategoriesTableViewCell.self, forCellReuseIdentifier: CategoriesTableViewCell.identifier)
         tableView.separatorStyle = .none
-
+        
     }
     
     private func openLoadingVC(withCategory category:String) {
         let vc = LoadingViewController()
-        vc.categoryLabel.text = category	
+        vc.categoryLabel.text = category
         CategoriesTableViewController.delegate?.pushRoom(viewController: vc)
     }
-
+    
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }

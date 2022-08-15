@@ -20,8 +20,8 @@ extension String {
             return .orange
         case "vibrant yellow":
             return .systemYellow
-        case "purple":
-            return .systemPurple
+        case "pink red":
+            return .systemPink
         default:
             return .black
         }

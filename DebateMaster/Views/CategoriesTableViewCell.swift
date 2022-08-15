@@ -29,7 +29,7 @@ class CategoriesTableViewCell: UITableViewCell {
         let image = UIImage(systemName: "chevron.right")
         let accessory = UIImageView(frame:CGRect(x:0, y:0, width:(image?.size.width) ?? 0, height:(image?.size.height) ?? 0))
         accessory.image = image
-        accessory.tintColor = .white
+        accessory.tintColor = Constants.Colors.secondary
         accessory.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return accessory
     }
@@ -45,7 +45,7 @@ class CategoriesTableViewCell: UITableViewCell {
     var categoryTitle:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -54,7 +54,7 @@ class CategoriesTableViewCell: UITableViewCell {
     var categoryDescription:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label

@@ -149,9 +149,9 @@ class RoomViewController: UIViewController {
     private func changeActionButtonUI(isPressed:Bool,config: inout UIButton.Configuration) {
         if isPressed {
             config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-            config.baseForegroundColor = .white
+            config.baseForegroundColor = Constants.Colors.secondary
         } else {
-            config.baseBackgroundColor = .white
+            config.baseBackgroundColor = Constants.Colors.secondary
             config.baseForegroundColor = Constants.Colors.primary
         }
     }
@@ -161,7 +161,7 @@ class RoomViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 14,weight: .regular)
         label.text = "New Topic Votes: \(newTopicVotes.count)"
         label.numberOfLines = 0
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         return label
     }()
     
@@ -217,7 +217,7 @@ class RoomViewController: UIViewController {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-        config.baseForegroundColor = .white
+        config.baseForegroundColor = Constants.Colors.secondary
         config.title = "New room"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
@@ -246,11 +246,11 @@ class RoomViewController: UIViewController {
         
         let label = UILabel()
         label.text = "Looking for a new room..."
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.font = UIFont.systemFont(ofSize: 16)
         
         let indicator = UIActivityIndicatorView()
-        indicator.color = .white
+        indicator.color = Constants.Colors.secondary
         indicator.startAnimating()
         
         self.view.addSubview(modal)
@@ -286,7 +286,7 @@ class RoomViewController: UIViewController {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-        config.baseForegroundColor = .white
+        config.baseForegroundColor = Constants.Colors.secondary
         config.title = "New topic"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
@@ -313,7 +313,7 @@ class RoomViewController: UIViewController {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-        config.baseForegroundColor = .white
+        config.baseForegroundColor = Constants.Colors.secondary
         config.title = "Mute all"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
@@ -413,7 +413,7 @@ class RoomViewController: UIViewController {
             indicator.translatesAutoresizingMaskIntoConstraints = false
             frame.videoView.addSubview(indicator)
             indicator.style = .medium
-            indicator.color = .white
+            indicator.color = Constants.Colors.secondary
             indicator.centerXAnchor.constraint(equalTo: frame.videoView.centerXAnchor).isActive = true
             indicator.centerYAnchor.constraint(equalTo: frame.videoView.centerYAnchor).isActive = true
             indicator.startAnimating()
@@ -497,7 +497,7 @@ class RoomViewController: UIViewController {
     private lazy var discussionTopic:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.text = room?.currentTopic
         label.textAlignment = .center
@@ -643,8 +643,8 @@ class RoomViewController: UIViewController {
         
         updateAvailablePositions(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
+            
             DispatchQueue.main.async {
-                
                 self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
                 self.agoraKit?.enableVideo()
                 self.agoraKit?.setEnableSpeakerphone(true)

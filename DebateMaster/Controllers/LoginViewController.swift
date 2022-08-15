@@ -29,7 +29,7 @@ class LoginViewController: UIViewController {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.systemFont(ofSize: 40,weight: .bold)
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.textAlignment = .center
         return label
     }()

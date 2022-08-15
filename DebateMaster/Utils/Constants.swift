@@ -19,7 +19,6 @@ struct Constants {
             static let google = "google"
             static let facebook = "facebook"
             static let users = "users"
-            static let topics = "topics"
             static let logout = "logout"
             static let rtc = "rtc"
         }
@@ -37,6 +36,7 @@ struct Constants {
         }
     }
     struct Colors {
-        static let primary: UIColor = .systemPink
+        static let primary: UIColor = UIColor(red: 0.37, green: 0.15, blue: 0.80, alpha: 1.00)
+        static let secondary: UIColor = .white
     }
 }

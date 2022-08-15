@@ -28,14 +28,14 @@ class LoadingViewController: UIViewController {
     private let activityIndicator:UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
         indicator.style = .medium
-        indicator.color = .white
+        indicator.color = Constants.Colors.secondary
         indicator.startAnimating()
         return indicator
     }()
     
     lazy var categoryLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byCharWrapping
@@ -46,7 +46,7 @@ class LoadingViewController: UIViewController {
     private let loadingLabel: UILabel = {
         let label = UILabel()
         label.text = "Looking for an available room"
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byCharWrapping
@@ -57,7 +57,7 @@ class LoadingViewController: UIViewController {
     private let timeAssessmentLabel: UILabel = {
         let label = UILabel()
         label.text = "(No more than 2 minutes)"
-        label.textColor = .white
+        label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byCharWrapping
@@ -75,8 +75,8 @@ class LoadingViewController: UIViewController {
             return outgoing
         }
         config.image = UIImage(systemName: "xmark",withConfiguration: imgConfig)
-        config.baseBackgroundColor = .white
-        config.baseForegroundColor = .white
+        config.baseBackgroundColor = Constants.Colors.secondary
+        config.baseForegroundColor = Constants.Colors.secondary
         config.imagePadding = 5
         config.imagePlacement = .trailing
         let btn = UIButton(configuration: config)
