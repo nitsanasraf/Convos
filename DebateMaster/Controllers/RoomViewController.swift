@@ -335,12 +335,8 @@ class RoomViewController: UIViewController {
         for frame in frames {
             if isPressed {
                 mute(with: frame, button: frame.muteButton, unmute: true)
-                agoraKit?.adjustPlaybackSignalVolume(0)
-                agoraKit?.adjustAudioMixingPlayoutVolume(0)
             } else {
                 mute(with: frame, button: frame.muteButton, unmute: false)
-                agoraKit?.adjustPlaybackSignalVolume(100)
-                agoraKit?.adjustAudioMixingPlayoutVolume(100)
             }
         }
     }
@@ -437,14 +433,27 @@ class RoomViewController: UIViewController {
     }
     
     private func mute(with frame:FrameModel, button:UIButton, unmute:Bool) {
+        guard let uid = frame.userUID else {return}
         if !unmute {
             button.setBackgroundImage(UIImage(systemName: "mic.slash.circle"), for: .normal)
             frame.container.alpha = 0.5
             button.alpha = 0.5
+            if uid == UserModel.shared.uid {
+                agoraKit?.adjustRecordingSignalVolume(0)
+            } else {
+                agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 0)
+                agoraKit?.adjustAudioMixingVolume(0)
+            }
         } else {
             button.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
             frame.container.alpha = 1
             button.alpha = 1
+            if uid == UserModel.shared.uid {
+                agoraKit?.adjustRecordingSignalVolume(100)
+            } else {
+                agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 100)
+                agoraKit?.adjustAudioMixingVolume(100)
+            }
         }
     }
     
@@ -452,14 +461,8 @@ class RoomViewController: UIViewController {
         for frame in frames {
             if frame.muteButton.tag == button.tag {
                 if isMuted {
-                    if frame.muteButton.tag == localFrameIndex {
-                        agoraKit?.adjustRecordingSignalVolume(100)
-                    }
                     mute(with: frame, button: button, unmute: true)
                 } else {
-                    if frame.muteButton.tag == localFrameIndex {
-                        agoraKit?.adjustRecordingSignalVolume(0)
-                    }
                     mute(with: frame, button: button, unmute: false)
                 }
             }
@@ -637,7 +640,7 @@ class RoomViewController: UIViewController {
         return nil
     }
     
-    //MARK: - Agora Funcs
+    //MARK: - Agora Functionss
     private func initializeAndJoinChannel() {
         guard let userUID = UserModel.shared.uid else {return}
         
@@ -648,6 +651,7 @@ class RoomViewController: UIViewController {
                 self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
                 self.agoraKit?.enableVideo()
                 self.agoraKit?.setEnableSpeakerphone(true)
+                self.agoraKit?.setDefaultAudioRouteToSpeakerphone(true)
                 
                 let videoCanvas = AgoraRtcVideoCanvas()
                 
@@ -656,6 +660,8 @@ class RoomViewController: UIViewController {
                 videoCanvas.uid = userUID
                 videoCanvas.renderMode = .hidden
                 videoCanvas.view = self.frames[self.localFrameIndex!].videoView
+                
+                self.frames[self.localFrameIndex!].userUID  = userUID
                 
                 self.agoraKit?.setupLocalVideo(videoCanvas)
             }
@@ -678,14 +684,15 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         videoCanvas.renderMode = .hidden
         videoCanvas.view = frames[emptyPositionIX].videoView
         
+        frames[emptyPositionIX].userUID  = uid
+
         agoraKit?.setupRemoteVideo(videoCanvas)
-        self.agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 100)
         
-        print("A remote user has joinned the channel with uid: \(uid)")
+        print("A remote user has joined the channel with uid: \(uid)")
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
-        print("User left the channel: \(room?.name ?? "nil")")
+        print("User has left the channel: \(room?.name ?? "nil")")
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didApiCallExecute error: Int, api: String, result: String) {

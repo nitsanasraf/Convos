@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 struct FrameModel {
-    
+    var userUID: UInt? = nil
     let container = UIStackView()
     let videoView = UIView()
     let buttonContainer = UIStackView()
