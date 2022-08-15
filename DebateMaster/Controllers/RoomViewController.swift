@@ -434,11 +434,12 @@ class RoomViewController: UIViewController {
     
     private func mute(with frame:FrameModel, button:UIButton, unmute:Bool) {
         guard let uid = frame.userUID else {return}
+        
         if !unmute {
             button.setBackgroundImage(UIImage(systemName: "mic.slash.circle"), for: .normal)
             frame.container.alpha = 0.5
             button.alpha = 0.5
-            if uid == UserModel.shared.uid {
+            if String(uid) == UserModel.shared.uid {
                 agoraKit?.adjustRecordingSignalVolume(0)
             } else {
                 agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 0)
@@ -448,7 +449,7 @@ class RoomViewController: UIViewController {
             button.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
             frame.container.alpha = 1
             button.alpha = 1
-            if uid == UserModel.shared.uid {
+            if String(uid) == UserModel.shared.uid {
                 agoraKit?.adjustRecordingSignalVolume(100)
             } else {
                 agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 100)
@@ -612,12 +613,13 @@ class RoomViewController: UIViewController {
     private func updateAvailablePositions(index:Int?, completionHandler: @escaping (Int?)->() ) {
         guard let room = room else {return}
         guard let networkManager = networkManager else {return}
+        guard let userUID = UserModel.shared.uid else {return}
         
-        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { data, _ in
+        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(userUID)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { data, _ in
             do {
                 let ix = try JSONDecoder().decode(Int.self, from: data)
-                if ix != -1 {
-                    room.availablePositions[ix] = true
+                if ix > -1 {
+                    room.positions[ix] = userUID
                     completionHandler(ix)
                 } else {
                     completionHandler(nil)
@@ -631,18 +633,19 @@ class RoomViewController: UIViewController {
     
     private func findEmptyPosition() -> Int? {
         guard let room = room else {return nil}
-        for (i,isOccupied) in room.availablePositions.enumerated() {
-            if isOccupied {
-                continue
+        
+        for (i,position) in room.positions.enumerated() {
+            if position.isEmpty {
+                return i
             }
-            return i
         }
         return nil
     }
     
     //MARK: - Agora Functionss
     private func initializeAndJoinChannel() {
-        guard let userUID = UserModel.shared.uid else {return}
+        guard let userUID = UserModel.shared.uid,
+              let uid = UInt(userUID) else {return}
         
         updateAvailablePositions(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
@@ -657,11 +660,11 @@ class RoomViewController: UIViewController {
                 
                 self.localFrameIndex = availablePositionIX
                 
-                videoCanvas.uid = userUID
+                videoCanvas.uid = uid
                 videoCanvas.renderMode = .hidden
                 videoCanvas.view = self.frames[self.localFrameIndex!].videoView
                 
-                self.frames[self.localFrameIndex!].userUID  = userUID
+                self.frames[self.localFrameIndex!].userUID  = uid
                 
                 self.agoraKit?.setupLocalVideo(videoCanvas)
             }
@@ -677,15 +680,15 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         guard let room = self.room else {return}
         
         guard let emptyPositionIX = findEmptyPosition() else {return}
-        room.availablePositions[emptyPositionIX] = true
+        room.positions[emptyPositionIX] = String(uid)
         
         let videoCanvas = AgoraRtcVideoCanvas()
         videoCanvas.uid = uid
         videoCanvas.renderMode = .hidden
         videoCanvas.view = frames[emptyPositionIX].videoView
         
-        frames[emptyPositionIX].userUID  = uid
-
+        frames[emptyPositionIX].userUID = uid
+        
         agoraKit?.setupRemoteVideo(videoCanvas)
         
         print("A remote user has joined the channel with uid: \(uid)")

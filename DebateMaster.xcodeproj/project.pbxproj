@@ -40,7 +40,6 @@
 		C6AD0997288039C8004AF0DD /* CategoriesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */; };
 		C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1E8E32875C406006B067D /* UIView+Extensions.swift */; };
 		C6CBE82328707458007D1F95 /* KeyCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CBE82228707458007D1F95 /* KeyCenter.swift */; };
-		C6DD895B28A6C4C300D64199 /* UInt + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DD895A28A6C4C300D64199 /* UInt + Extensions.swift */; };
 		C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,7 +68,6 @@
 		C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesTableViewCell.swift; sourceTree = "<group>"; };
 		C6B1E8E32875C406006B067D /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		C6CBE82228707458007D1F95 /* KeyCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCenter.swift; sourceTree = "<group>"; };
-		C6DD895A28A6C4C300D64199 /* UInt + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt + Extensions.swift"; sourceTree = "<group>"; };
 		C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,7 +190,6 @@
 				C6B1E8E32875C406006B067D /* UIView+Extensions.swift */,
 				C6AD09922880360A004AF0DD /* UIViewController+Extensions.swift */,
 				C6098F37287B027100AF1CDD /* String+Extensions.swift */,
-				C6DD895A28A6C4C300D64199 /* UInt + Extensions.swift */,
 				C6561A8528873D1400F96160 /* Constants.swift */,
 				C67F68352896CA9B005F1D67 /* KeyChain.swift */,
 			);
@@ -285,7 +282,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C6DD895B28A6C4C300D64199 /* UInt + Extensions.swift in Sources */,
 				C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */,
 				C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,

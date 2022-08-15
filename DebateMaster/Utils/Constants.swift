@@ -31,8 +31,10 @@ struct Constants {
     struct KeyChain {
         struct Keys {
             static let userID = "userID"
+            static let userUID = "userUID"
             static let userAuthToken = "userAuthToken"
             static let userEmail = "userEmail"
+
         }
     }
     struct Colors {

@@ -89,6 +89,7 @@ class LoginViewController: UIViewController {
         KeyChain.shared[Constants.KeyChain.Keys.userAuthToken] = UserModel.shared.authToken
         KeyChain.shared[Constants.KeyChain.Keys.userEmail] = UserModel.shared.email
         KeyChain.shared[Constants.KeyChain.Keys.userID] = UserModel.shared.id
+        KeyChain.shared[Constants.KeyChain.Keys.userUID] = UserModel.shared.uid
     }
     
     @objc private func facebookLogin() {
@@ -108,8 +109,9 @@ class LoginViewController: UIViewController {
                   let token = queryItems?.first { $0.name == "token" }?.value
                   let email = queryItems?.first { $0.name == "email" }?.value
                   let id = queryItems?.first { $0.name == "id" }?.value
-
-                  UserModel.shared.populateUser(token: token, email: email, id: id)
+                  let uid = queryItems?.first { $0.name == "uid" }?.value
+                  
+                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
                   self?.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async {
@@ -140,8 +142,9 @@ class LoginViewController: UIViewController {
                   let token = queryItems?.first { $0.name == "token" }?.value
                   let email = queryItems?.first { $0.name == "email" }?.value
                   let id = queryItems?.first { $0.name == "id" }?.value
+                  let uid = queryItems?.first { $0.name == "uid" }?.value
 
-                  UserModel.shared.populateUser(token: token, email: email, id: id)
+                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
                   self?.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async {

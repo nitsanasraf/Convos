@@ -14,30 +14,26 @@ struct UserModel:Codable {
     
     var email: String?
     var id: String?
+    var uid: String?
     var authToken: String?
     var agoraToken: String?
     
-    var uid: UInt? {
-        guard let id = id else {return nil}
-        if let uid = UInt.parse(from: id) {
-            return uid
-        } 
-        return nil
-    }
-    
     private init() {}
     
-    func populateUser(token:String?, email:String?, id:String?) {
+    func populateUser(token: String?, email: String?, id: String?, uid: String?) {
         UserModel.shared.authToken = token
         UserModel.shared.email = email
         UserModel.shared.id = id
+        UserModel.shared.uid = uid
     }
     
     func isUserLoggedIn() -> Bool {
         if let authToken = KeyChain.shared[Constants.KeyChain.Keys.userAuthToken],
            let email = KeyChain.shared[Constants.KeyChain.Keys.userEmail],
-           let id = KeyChain.shared[Constants.KeyChain.Keys.userID] {
-            populateUser(token: authToken, email: email, id: id)
+           let id = KeyChain.shared[Constants.KeyChain.Keys.userID],
+           let uid = KeyChain.shared[Constants.KeyChain.Keys.userUID] {
+            
+            populateUser(token: authToken, email: email, id: id, uid: uid)
             return true
         }
         return false
@@ -46,13 +42,14 @@ struct UserModel:Codable {
     func resetUser() {
         UserModel.shared.email = nil
         UserModel.shared.id = nil
+        UserModel.shared.uid = nil
         UserModel.shared.authToken = nil
         UserModel.shared.agoraToken = nil
     }
     
     
     func printDetails() -> Void {
-        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? 0)\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
+        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
     }
     
 }

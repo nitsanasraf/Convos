@@ -13,7 +13,7 @@ class RoomModel:Codable {
     let name: String
     let colors: [String]
     let category: String
-    var availablePositions: [Bool]
+    var positions: [String]
     let currentTopic: String
  
     
@@ -26,7 +26,8 @@ class RoomModel:Codable {
     
     static func findEmptyRoom(fromRoom existingRoom: RoomModel?, networkManager: NetworkManger, category: String?, viewController vc: UIViewController, agoraKit:AgoraRtcEngineKit?) {
         guard let urlCategory = category?.makeURLSafe() else {return}
-        guard let userUID = UserModel.shared.uid else {return}
+        guard let strUID = UserModel.shared.uid else {return}
+        guard let userUID = UInt(strUID) else {return}
         
         var roomURL = "\(networkManager.roomsURL)/\(urlCategory)"
 
@@ -46,7 +47,6 @@ class RoomModel:Codable {
                 } else {
                     guard let data = data else {return}
                     guard let token = String(data: data, encoding: .utf8) else {return}
-                    
                     UserModel.shared.agoraToken = token
                     DispatchQueue.main.async {
                         agoraKit?.leaveChannel()
