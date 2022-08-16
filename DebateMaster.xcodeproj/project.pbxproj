@@ -26,6 +26,8 @@
 		C630149C286F126F00128576 /* VideoPreprocess in Frameworks */ = {isa = PBXBuildFile; productRef = C630149B286F126F00128576 /* VideoPreprocess */; };
 		C630149E286F126F00128576 /* VirtualBackground in Frameworks */ = {isa = PBXBuildFile; productRef = C630149D286F126F00128576 /* VirtualBackground */; };
 		C634FE5328ABB934002E734B /* NVActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = C634FE5228ABB934002E734B /* NVActivityIndicatorView */; };
+		C634FE5528AC2607002E734B /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C634FE5428AC2607002E734B /* SettingsModel.swift */; };
+		C634FE5728AC2964002E734B /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C634FE5628AC2964002E734B /* SettingsTableViewCell.swift */; };
 		C63804632882C7BC0028B6D5 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63804622882C7BC0028B6D5 /* LoadingViewController.swift */; };
 		C63905F12872583900AE11C5 /* FrameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63905F02872583900AE11C5 /* FrameModel.swift */; };
 		C6561A8628873D1400F96160 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6561A8528873D1400F96160 /* Constants.swift */; };
@@ -54,6 +56,8 @@
 		C630147D286F11FB00128576 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C6301480286F11FB00128576 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C6301482286F11FB00128576 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C634FE5428AC2607002E734B /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
+		C634FE5628AC2964002E734B /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		C63804622882C7BC0028B6D5 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		C63905F02872583900AE11C5 /* FrameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModel.swift; sourceTree = "<group>"; };
 		C6561A8528873D1400F96160 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 				C63905F02872583900AE11C5 /* FrameModel.swift */,
 				C6561A8728873EE600F96160 /* RoomModel.swift */,
 				C67962FF28942E4F003E179F /* UserModel.swift */,
+				C634FE5428AC2607002E734B /* SettingsModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -166,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */,
+				C634FE5628AC2964002E734B /* SettingsTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -288,6 +294,7 @@
 			files = (
 				C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */,
 				C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */,
+				C634FE5528AC2607002E734B /* SettingsModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,
 				C6A1F37D28A92F20000F3A56 /* TabBarViewController.swift in Sources */,
 				C6AD0995288037A2004AF0DD /* CategoriesTableViewController.swift in Sources */,
@@ -305,6 +312,7 @@
 				C65F1FCB289075CE003DD331 /* LoginViewController.swift in Sources */,
 				C6CBE82328707458007D1F95 /* KeyCenter.swift in Sources */,
 				C6AD0997288039C8004AF0DD /* CategoriesTableViewCell.swift in Sources */,
+				C634FE5728AC2964002E734B /* SettingsTableViewCell.swift in Sources */,
 				C6301477286F11F900128576 /* SceneDelegate.swift in Sources */,
 				C679630028942E4F003E179F /* UserModel.swift in Sources */,
 			);

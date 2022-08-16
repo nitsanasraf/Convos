@@ -22,22 +22,6 @@ class TabBarViewController: UITabBarController {
         Screen(viewController: SettingsViewController(), icon: "gearshape", navBarTitle: "Settings"),
     ]
     
-    @objc private func logout() {
-        guard let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
-        let task = URLSession.shared.dataTask(with: url) { (_, response, error) in
-            if let error = error {
-                print("Error fetching: \(error)")
-            } else {
-                KeyChain.shared.deleteAll()
-                UserModel.shared.resetUser()
-                DispatchQueue.main.async {
-                    self.navigationController?.popToRootViewController(animated: true)
-                }
-            }
-        }
-        task.resume()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
