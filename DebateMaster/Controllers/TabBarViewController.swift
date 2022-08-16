@@ -18,8 +18,8 @@ class TabBarViewController: UITabBarController {
     private let networkManager = NetworkManger()
     
     private let screens = [
-        Screen(viewController: CategoriesViewController(), icon: "house", navBarTitle: "All Categories"),
-        Screen(viewController: ProfileViewController(), icon: "person", navBarTitle: "Profile"),
+        Screen(viewController: CategoriesViewController(), icon: "house", navBarTitle: "Categories"),
+        Screen(viewController: SettingsViewController(), icon: "gearshape", navBarTitle: "Settings"),
     ]
     
     @objc private func logout() {
@@ -53,11 +53,6 @@ class TabBarViewController: UITabBarController {
         
         
         for (i,screen) in screens.enumerated() {
-            let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .regular, scale: .large)
-            
-            screen.viewController.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape",withConfiguration: config), style: .done, target: self, action: nil)
-            screen.viewController.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.square"), style: .plain, target: self, action: #selector(logout))
-            
             screen.viewController.title = screen.navBarTitle
             let navVC = UINavigationController(rootViewController: screen.viewController)
             navVC.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: screen.icon), tag: i+1)

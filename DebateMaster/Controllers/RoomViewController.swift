@@ -7,6 +7,7 @@
 
 import UIKit
 import AgoraRtcKit
+import NVActivityIndicatorView
 
 class RoomViewController: UIViewController {
     
@@ -270,7 +271,7 @@ class RoomViewController: UIViewController {
         guard let networkManager = networkManager else {return}
         guard let agoraKit = agoraKit else {return}
         
-        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "", preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
             self.createLoadingModal()
@@ -405,11 +406,11 @@ class RoomViewController: UIViewController {
     
     private func createActivityIndicators() {
         for frame in frames {
-            let indicator = UIActivityIndicatorView()
+            let size: CGFloat = 30
+            let type = NVActivityIndicatorType.lineScale
+            let indicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: size, height: size)), type: type, color: UIColor(cgColor:frame.color), padding: size)
             indicator.translatesAutoresizingMaskIntoConstraints = false
             frame.videoView.addSubview(indicator)
-            indicator.style = .medium
-            indicator.color = Constants.Colors.secondary
             indicator.centerXAnchor.constraint(equalTo: frame.videoView.centerXAnchor).isActive = true
             indicator.centerYAnchor.constraint(equalTo: frame.videoView.centerYAnchor).isActive = true
             indicator.startAnimating()
@@ -510,7 +511,7 @@ class RoomViewController: UIViewController {
     
     
     @objc private func goBack() {
-        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "You won't be able to join this room again.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
             let tabVC = self.navigationController!.viewControllers.filter { $0 is TabBarViewController }.first!
             self.navigationController!.popToViewController(tabVC, animated: true)
@@ -533,12 +534,14 @@ class RoomViewController: UIViewController {
         addLayouts()
         
         configureVideoViews()
-        createActivityIndicators()
         configureMuteButtons()
+        
+        setFramesColors()
+        createActivityIndicators()
+
         configureVideoStackViews()
         configureButtonsStackViews()
         
-        setFramesColors()
         initializeAndJoinChannel()
         
     }
@@ -660,6 +663,7 @@ class RoomViewController: UIViewController {
             }
         }
     }
+    
     //MARK: - Agora Functionss
     private func initializeAndJoinChannel() {
         guard let userUID = UserModel.shared.uid,

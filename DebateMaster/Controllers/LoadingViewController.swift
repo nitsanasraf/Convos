@@ -7,6 +7,7 @@
 
 import UIKit
 import AgoraRtcKit
+import NVActivityIndicatorView
 
 class LoadingViewController: UIViewController {
     
@@ -25,10 +26,10 @@ class LoadingViewController: UIViewController {
         return stackView
     }()
     
-    private let activityIndicator:UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.style = .medium
-        indicator.color = Constants.Colors.secondary
+    private let activityIndicator: NVActivityIndicatorView = {
+        let size: CGFloat = 35
+        let type = NVActivityIndicatorType.lineScale
+        let indicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: size, height: size)), type: type, color: Constants.Colors.secondary, padding: size)
         indicator.startAnimating()
         return indicator
     }()
