@@ -5,7 +5,7 @@
 //  Created by Nitsan Asraf on 29/07/2022.
 //
 
-import Foundation
+import UIKit
 
 
 struct UserModel:Codable {
@@ -39,7 +39,7 @@ struct UserModel:Codable {
         return false
     }
     
-    func resetUser() {
+    private func resetUser() {
         UserModel.shared.email = nil
         UserModel.shared.id = nil
         UserModel.shared.uid = nil
@@ -50,6 +50,22 @@ struct UserModel:Codable {
     
     func printDetails() -> Void {
         print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
+    }
+    
+    func logout(viewController vc:UIViewController, networkManager: NetworkManger) {
+        guard let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
+        let task = URLSession.shared.dataTask(with: url) { (_, response, error) in
+            if let error = error {
+                print("Error fetching: \(error)")
+            } else {
+                KeyChain.shared.deleteAll()
+                self.resetUser()
+                DispatchQueue.main.async {
+                    vc.navigationController?.popToRootViewController(animated: true)
+                }
+            }
+        }
+        task.resume()
     }
     
 }

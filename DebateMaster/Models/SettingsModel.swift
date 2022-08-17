@@ -5,8 +5,7 @@
 //  Created by Nitsan Asraf on 16/08/2022.
 //
 
-import Foundation
-
+import UIKit
 
 struct SettingsModel {
     
@@ -21,54 +20,49 @@ struct SettingsModel {
     
     struct Item {
         let title: String
+        let color: UIColor
         let icon: String
-        let function: () -> ()
+        let function: (_ vc:UIViewController) -> ()
     }
     
     let sections = [
         Section(title: "Privacy" ,items: [
-            Item(title: "Notifications", icon: "bell.fill") {
+            Item(title: "Notifications", color: Constants.Colors.secondary, icon: "bell.fill") { vc in
                 print("Notifications")
             },
-            Item(title: "Data collection", icon: "antenna.radiowaves.left.and.right") {
+            Item(title: "Data collection", color: Constants.Colors.secondary, icon: "antenna.radiowaves.left.and.right") { vc in
                 print("Data collection")
             },
-            Item(title: "Networking", icon: "network") {
+            Item(title: "Networking", color: Constants.Colors.secondary, icon: "network") { vc in
                 print("Networking")
             },
         ]),
-        Section(title: "Account" ,items: [
-            Item(title: "Logout", icon: "arrow.uturn.left") {
-                print("Logout")
-            },
-            Item(title: "Delete account", icon: "trash.fill") {
-                print("Delete account")
-            },
-        ]),
+        
         Section(title: "Policies" ,items: [
-            Item(title: "Privacy policy", icon: "checkerboard.shield") {
+            Item(title: "Privacy policy", color: Constants.Colors.secondary, icon: "checkerboard.shield") { vc in
                 print("Privacy policy")
             },
-            Item(title: "Terms and conditions", icon: "newspaper") {
+            Item(title: "Terms and conditions", color: Constants.Colors.secondary, icon: "newspaper") { vc in
                 print("Terms and conditions")
             },
         ]),
+        
+        Section(title: "Account" ,items: [
+            Item(title: "Logout", color: Constants.Colors.secondary, icon: "arrow.uturn.left") { vc in
+                let alert = UIAlertController(title: "Are you sure you want to log out?", message: nil, preferredStyle: .alert)
+                
+                alert.addAction(UIAlertAction(title: "YES", style: .destructive) { alert in
+                    guard let parentVC = vc.parent else {return}
+                    UserModel.shared.logout(viewController: parentVC, networkManager: NetworkManger())
+                })
+                alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
+                
+                vc.present(alert, animated: true, completion: nil)
+            },
+            Item(title: "Delete account", color: .systemPink, icon: "trash.fill") { vc in
+                print("Delete account")
+            },
+        ]),
     ]
-    
-    //    private func logout() {
-    //        guard let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
-    //        let task = URLSession.shared.dataTask(with: url) { (_, response, error) in
-    //            if let error = error {
-    //                print("Error fetching: \(error)")
-    //            } else {
-    //                KeyChain.shared.deleteAll()
-    //                UserModel.shared.resetUser()
-    //                DispatchQueue.main.async {
-    //                    self.navigationController?.popToRootViewController(animated: true)
-    //                }
-    //            }
-    //        }
-    //        task.resume()
-    //    }
     
 }

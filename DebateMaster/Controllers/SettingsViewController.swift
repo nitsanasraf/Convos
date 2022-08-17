@@ -48,17 +48,15 @@ class SettingsViewController: UIViewController {
 
 }
 
-
-extension SettingsViewController: UITableViewDelegate {}
-
-extension SettingsViewController: UITableViewDataSource {
+//MARK: - UITableViewDataSource & UITableViewDelegate Delegates
+extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         sections.count
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        sections[indexPath.section].items[indexPath.row].function()
+        sections[indexPath.section].items[indexPath.row].function(self)
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -74,7 +72,9 @@ extension SettingsViewController: UITableViewDataSource {
         
         cell.selectionStyle = .none
         cell.title.text = sections[indexPath.section].items[indexPath.row].title
+        cell.title.textColor = sections[indexPath.section].items[indexPath.row].color
         cell.icon.image = UIImage(systemName: sections[indexPath.section].items[indexPath.row].icon)
+        cell.icon.tintColor = sections[indexPath.section].items[indexPath.row].color
         return cell
     }
     

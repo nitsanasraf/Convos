@@ -271,7 +271,7 @@ class RoomViewController: UIViewController {
         guard let networkManager = networkManager else {return}
         guard let agoraKit = agoraKit else {return}
         
-        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: nil, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
             self.createLoadingModal()
@@ -511,7 +511,7 @@ class RoomViewController: UIViewController {
     
     
     @objc private func goBack() {
-        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
             let tabVC = self.navigationController!.viewControllers.filter { $0 is TabBarViewController }.first!
             self.navigationController!.popToViewController(tabVC, animated: true)
@@ -549,7 +549,7 @@ class RoomViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         guard let localFrameIndex = self.localFrameIndex else {return}
-        updateAvailablePositions(index: localFrameIndex) {_ in}
+        setPosition(index: localFrameIndex) {_ in}
         closeSocket()
     }
     
@@ -613,7 +613,7 @@ class RoomViewController: UIViewController {
     }
     
     //MARK: - Positions Functions
-    private func updateAvailablePositions(index:Int?, completionHandler: @escaping (Int?)->() ) {
+    private func setPosition(index:Int?, completionHandler: @escaping (Int?)->() ) {
         guard let room = room else {return}
         guard let networkManager = networkManager else {return}
         guard let userUID = UserModel.shared.uid else {return}
@@ -669,7 +669,7 @@ class RoomViewController: UIViewController {
         guard let userUID = UserModel.shared.uid,
               let uid = UInt(userUID) else {return}
         
-        updateAvailablePositions(index:nil) { availablePositionIX in
+        setPosition(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             
             DispatchQueue.main.async {

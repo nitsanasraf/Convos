@@ -37,7 +37,6 @@ class SettingsTableViewCell: UITableViewCell {
     var title:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
