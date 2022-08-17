@@ -23,8 +23,6 @@ class RoomViewController: UIViewController {
         return manager
     }()
     
-    private var newTopicVotes = [ParticipantModel]()
-    
     private var localFrameIndex: Int?
     
     var room: RoomModel?
@@ -40,8 +38,8 @@ class RoomViewController: UIViewController {
                 switch msg {
                 case .data(let data):
                     do {
-                        let decodedData = try JSONDecoder().decode([ParticipantModel].self, from: data)
-                        self.newTopicVotes = decodedData
+                        let decodedData = try JSONDecoder().decode([String].self, from: data)
+                        self.room?.currentVotes = decodedData
                         DispatchQueue.main.async {
                             self.renderVoteOrbs()
                         }
@@ -51,7 +49,7 @@ class RoomViewController: UIViewController {
                 case .string(let str):
                     DispatchQueue.main.async {
                         self.changeTopic(topic: str)
-                        self.newTopicVotes = []
+                        self.room?.currentVotes = []
                         self.renderVoteOrbs()
                         self.changeActionButtonUI(isPressed: true, config: &self.newTopicButton.configuration!)
                     }
@@ -72,7 +70,7 @@ class RoomViewController: UIViewController {
     
     private func sendData() {
         do {
-            let dummyJSON = try JSONEncoder().encode(newTopicVotes)
+            let dummyJSON = try JSONEncoder().encode(room?.currentVotes)
             networkManager?.webSocketTask?.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
                 if let error = error {
                     print("Web socket couldn't send message: \(error)")
@@ -160,7 +158,7 @@ class RoomViewController: UIViewController {
     private lazy var newTopicVotesLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14,weight: .regular)
-        label.text = "New Topic Votes: \(newTopicVotes.count)"
+        label.text = "New Topic Votes: \(room?.currentVotes.count ?? 0)"
         label.numberOfLines = 0
         label.textColor = Constants.Colors.secondary
         return label
@@ -187,30 +185,32 @@ class RoomViewController: UIViewController {
     }
     
     private func renderVoteOrbs() {
+        guard let room = room else {return}
+        
         for subview in newVoteOrbsStackView.arrangedSubviews {
             newVoteOrbsStackView.removeArrangedSubview(subview)
         }
         newVoteOrbsStackView.removeFromSuperview()
-        for newTopicVote in newTopicVotes {
+        for newTopicVote in room.currentVotes {
             if newVoteOrbsStackView.superview == nil {
                 middleSkipCounterStack.addArrangedSubview(newVoteOrbsStackView)
             }
-            let orb = createNewVoteOrb(color: newTopicVote.color.getColorByName())
+            let orb = createNewVoteOrb(color: newTopicVote.getColorByName())
             newVoteOrbsStackView.addArrangedSubview(orb)
         }
-        newTopicVotesLabel.text = "New Topic Votes: \(newTopicVotes.count)"
+        newTopicVotesLabel.text = "New Topic Votes: \(room.currentVotes.count)"
     }
     
     private func appendNewTopicVote(isPressed:Bool) {
         guard let localIX = localFrameIndex else {return}
-        guard let userID = UserModel.shared.id else {return}
+        let colorName = UIColor(cgColor:frames[localIX].color).accessibilityName
+        
         if isPressed {
-            if let participantIndex = newTopicVotes.firstIndex(where: { $0.userID == userID}) {
-                newTopicVotes.remove(at: participantIndex)
+            if let participantIndex = room?.currentVotes.firstIndex(where: { $0 == colorName }) {
+                room?.currentVotes.remove(at: participantIndex)
             }
         } else {
-            let colorName = UIColor(cgColor:frames[localIX].color).accessibilityName
-            newTopicVotes.append(ParticipantModel(userID: userID, color: colorName))
+            room?.currentVotes.append(colorName)
         }
     }
     
@@ -415,7 +415,7 @@ class RoomViewController: UIViewController {
             
             
             let size: CGFloat = 30
-            let type = NVActivityIndicatorType.lineScale
+            let type = NVActivityIndicatorType.ballSpinFadeLoader
             let indicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: size, height: size)), type: type, color: UIColor(cgColor:frame.color), padding: size)
             
             let bottomLabel = UILabel()
@@ -698,6 +698,7 @@ class RoomViewController: UIViewController {
                 self.agoraKit?.setupLocalVideo(videoCanvas)
                 
                 self.setRecentPositions()
+                self.renderVoteOrbs()
             }
         }
     }

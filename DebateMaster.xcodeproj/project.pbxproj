@@ -44,7 +44,6 @@
 		C6AD0997288039C8004AF0DD /* CategoriesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */; };
 		C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1E8E32875C406006B067D /* UIView+Extensions.swift */; };
 		C6CBE82328707458007D1F95 /* KeyCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CBE82228707458007D1F95 /* KeyCenter.swift */; };
-		C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,7 +74,6 @@
 		C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesTableViewCell.swift; sourceTree = "<group>"; };
 		C6B1E8E32875C406006B067D /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		C6CBE82228707458007D1F95 /* KeyCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCenter.swift; sourceTree = "<group>"; };
-		C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,7 +158,6 @@
 		C63905F42872624F00AE11C5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C6FEF1EC2877D3110042BBA7 /* ParticipantModel.swift */,
 				C63905F02872583900AE11C5 /* FrameModel.swift */,
 				C6561A8728873EE600F96160 /* RoomModel.swift */,
 				C67962FF28942E4F003E179F /* UserModel.swift */,
@@ -297,7 +294,6 @@
 			files = (
 				C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */,
 				C67FEF7528AD3A6100E53095 /* StackView+Extensions.swift in Sources */,
-				C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */,
 				C634FE5528AC2607002E734B /* SettingsModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,
 				C6A1F37D28A92F20000F3A56 /* TabBarViewController.swift in Sources */,
