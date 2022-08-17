@@ -35,6 +35,7 @@
 		C65F1FCB289075CE003DD331 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65F1FCA289075CE003DD331 /* LoginViewController.swift */; };
 		C679630028942E4F003E179F /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67962FF28942E4F003E179F /* UserModel.swift */; };
 		C67F68362896CA9B005F1D67 /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67F68352896CA9B005F1D67 /* KeyChain.swift */; };
+		C67FEF7528AD3A6100E53095 /* StackView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67FEF7428AD3A6100E53095 /* StackView+Extensions.swift */; };
 		C6A1F37D28A92F20000F3A56 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */; };
 		C6A1F37F28A92FEF000F3A56 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A1F37E28A92FEF000F3A56 /* SettingsViewController.swift */; };
 		C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09902880242B004AF0DD /* CategoriesViewController.swift */; };
@@ -65,6 +66,7 @@
 		C65F1FCA289075CE003DD331 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		C67962FF28942E4F003E179F /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		C67F68352896CA9B005F1D67 /* KeyChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
+		C67FEF7428AD3A6100E53095 /* StackView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StackView+Extensions.swift"; sourceTree = "<group>"; };
 		C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		C6A1F37E28A92FEF000F3A56 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		C6AD09902880242B004AF0DD /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 				C6098F37287B027100AF1CDD /* String+Extensions.swift */,
 				C6561A8528873D1400F96160 /* Constants.swift */,
 				C67F68352896CA9B005F1D67 /* KeyChain.swift */,
+				C67FEF7428AD3A6100E53095 /* StackView+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */,
+				C67FEF7528AD3A6100E53095 /* StackView+Extensions.swift in Sources */,
 				C6FEF1ED2877D3110042BBA7 /* ParticipantModel.swift in Sources */,
 				C634FE5528AC2607002E734B /* SettingsModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,

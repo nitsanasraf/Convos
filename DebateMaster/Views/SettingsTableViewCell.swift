@@ -52,16 +52,15 @@ class SettingsTableViewCell: UITableViewCell {
     private func addViews() {
         contentView.addSubview(cellMainStackView)
         
-        cellMainStackView.addArrangedSubview(title)
-        cellMainStackView.addArrangedSubview(icon)
+        cellMainStackView.addArrangedSubviews(title,icon)
     }
     
     private func addLayouts() {
         let cellMainStackViewConstraints = [
             cellMainStackView.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 5),
-            cellMainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20),
-            cellMainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -20),
-            cellMainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -5),
+            cellMainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            cellMainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            cellMainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
         ]
         
         NSLayoutConstraint.activate(cellMainStackViewConstraints)

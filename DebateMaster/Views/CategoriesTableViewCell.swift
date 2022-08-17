@@ -44,7 +44,7 @@ class CategoriesTableViewCell: UITableViewCell {
     
     var categoryTitle:UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = Constants.Colors.secondary
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -70,11 +70,8 @@ class CategoriesTableViewCell: UITableViewCell {
     private func addViews() {
         contentView.addSubview(cellMainStackView)
         
-        cellMainStackView.addArrangedSubview(descriptionStackView)
-        cellMainStackView.addArrangedSubview(createAccessoryView())
-        
-        descriptionStackView.addArrangedSubview(categoryTitle)
-        descriptionStackView.addArrangedSubview(categoryDescription)
+        cellMainStackView.addArrangedSubviews(descriptionStackView,createAccessoryView())
+        descriptionStackView.addArrangedSubviews(categoryTitle,categoryDescription)
     }
     
     private func addLayouts() {

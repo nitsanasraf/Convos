@@ -173,10 +173,7 @@ class LoginViewController: UIViewController {
     private func addViews() {
         view.addSubview(loginStackView)
         
-        loginStackView.addArrangedSubview(logo)
-        loginStackView.addArrangedSubview(facebookButton)
-        loginStackView.addArrangedSubview(googleButton)
-        loginStackView.addArrangedSubview(appleButton)
+        loginStackView.addArrangedSubviews(logo, facebookButton, googleButton, appleButton)
     }
     
     private func addLayouts() {

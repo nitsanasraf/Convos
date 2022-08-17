@@ -236,7 +236,7 @@ class RoomViewController: UIViewController {
     
     private func createLoadingModal() {
         let modal = UIView()
-        modal.backgroundColor = UIColor.init(white: 0, alpha: 0.8)
+        modal.backgroundColor = UIColor.init(white: 0, alpha: 0.85)
         modal.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView()
@@ -256,8 +256,7 @@ class RoomViewController: UIViewController {
         
         self.view.addSubview(modal)
         modal.addSubview(stackView)
-        stackView.addArrangedSubview(indicator)
-        stackView.addArrangedSubview(label)
+        stackView.addArrangedSubviews(indicator,label)
         
         modal.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         modal.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
@@ -358,8 +357,7 @@ class RoomViewController: UIViewController {
             case 0,1,2:
                 if ix != 1 {
                     mainStackView.addSubview(frame.buttonContainer)
-                    frame.container.addArrangedSubview(frame.videoView)
-                    frame.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
+                    frame.container.addArrangedSubviews(frame.videoView, UIView.spacer(size: 5, for: .vertical))
                 } else {
                     frame.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
                     mainStackView.addSubview(frame.buttonContainer)
@@ -367,8 +365,7 @@ class RoomViewController: UIViewController {
                 }
             case 3,4,5:
                 if ix != 4 {
-                    frame.container.addArrangedSubview(UIView.spacer(size: 5, for: .vertical))
-                    frame.container.addArrangedSubview(frame.videoView)
+                    frame.container.addArrangedSubviews(UIView.spacer(size: 5, for: .vertical), frame.videoView)
                     mainStackView.addSubview(frame.buttonContainer)
                 } else {
                     frame.container.addArrangedSubview(frame.videoView)
@@ -404,15 +401,33 @@ class RoomViewController: UIViewController {
         }
     }
     
-    private func createActivityIndicators() {
+    private func createSearchingParticipantIndicators() {
         for frame in frames {
+            let stackView = UIStackView()
+            stackView.axis = .vertical
+            stackView.alignment = .center
+            stackView.spacing = 10
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let topLabel = UILabel()
+            topLabel.text = "Searching"
+            topLabel.font = .systemFont(ofSize: 11, weight: .bold)
+            
+            
             let size: CGFloat = 30
             let type = NVActivityIndicatorType.lineScale
             let indicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: size, height: size)), type: type, color: UIColor(cgColor:frame.color), padding: size)
-            indicator.translatesAutoresizingMaskIntoConstraints = false
-            frame.videoView.addSubview(indicator)
-            indicator.centerXAnchor.constraint(equalTo: frame.videoView.centerXAnchor).isActive = true
-            indicator.centerYAnchor.constraint(equalTo: frame.videoView.centerYAnchor).isActive = true
+            
+            let bottomLabel = UILabel()
+            bottomLabel.text = "Participant"
+            bottomLabel.font = .systemFont(ofSize: 11, weight: .bold)
+            
+            frame.videoView.addSubview(stackView)
+            stackView.addArrangedSubviews(topLabel,indicator,bottomLabel)
+
+            stackView.centerXAnchor.constraint(equalTo: frame.videoView.centerXAnchor).isActive = true
+            stackView.centerYAnchor.constraint(equalTo: frame.videoView.centerYAnchor).isActive = true
+            
             indicator.startAnimating()
         }
     }
@@ -537,7 +552,7 @@ class RoomViewController: UIViewController {
         configureMuteButtons()
         
         setFramesColors()
-        createActivityIndicators()
+        createSearchingParticipantIndicators()
 
         configureVideoStackViews()
         configureButtonsStackViews()
@@ -574,13 +589,7 @@ class RoomViewController: UIViewController {
     private func addViews() {
         view.addSubview(mainStackView)
         
-        mainStackView.addArrangedSubview(topVideoStack)
-        mainStackView.addArrangedSubview(UIView.spacer(size: 0, for: .vertical))
-        mainStackView.addArrangedSubview(middleQustionsStack)
-        mainStackView.addArrangedSubview(middleActionStack)
-        mainStackView.addArrangedSubview(middleSkipCounterStack)
-        mainStackView.addArrangedSubview(bottomVideoStack)
-        
+        mainStackView.addArrangedSubviews(topVideoStack, UIView.spacer(size: 0, for: .vertical), middleQustionsStack, middleActionStack, middleSkipCounterStack, bottomVideoStack)
         
         for i in 3...5 {
             topVideoStack.addArrangedSubview(frames[i].container)
@@ -589,9 +598,7 @@ class RoomViewController: UIViewController {
         
         middleQustionsStack.addArrangedSubview(discussionTopic)
         
-        middleActionStack.addArrangedSubview(newRoomButton)
-        middleActionStack.addArrangedSubview(newTopicButton)
-        middleActionStack.addArrangedSubview(muteAllButton)
+        middleActionStack.addArrangedSubviews(newRoomButton, newTopicButton, muteAllButton)
         
         middleSkipCounterStack.addArrangedSubview(newTopicVotesLabel)
         

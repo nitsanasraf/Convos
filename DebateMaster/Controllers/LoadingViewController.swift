@@ -7,7 +7,6 @@
 
 import UIKit
 import AgoraRtcKit
-import NVActivityIndicatorView
 
 class LoadingViewController: UIViewController {
     
@@ -26,10 +25,9 @@ class LoadingViewController: UIViewController {
         return stackView
     }()
     
-    private let activityIndicator: NVActivityIndicatorView = {
-        let size: CGFloat = 35
-        let type = NVActivityIndicatorType.lineScale
-        let indicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: size, height: size)), type: type, color: Constants.Colors.secondary, padding: size)
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.color = Constants.Colors.secondary
         indicator.startAnimating()
         return indicator
     }()
@@ -106,11 +104,7 @@ class LoadingViewController: UIViewController {
     private func addViews() {
         view.addSubview(stackView)
         
-        stackView.addArrangedSubview(categoryLabel)
-        stackView.addArrangedSubview(activityIndicator)
-        stackView.addArrangedSubview(loadingLabel)
-        stackView.addArrangedSubview(timeAssessmentLabel)
-        stackView.addArrangedSubview(cancelButton)
+        stackView.addArrangedSubviews(categoryLabel, activityIndicator, loadingLabel, timeAssessmentLabel, cancelButton)
     }
     
     private func addLayouts() {
