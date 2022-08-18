@@ -13,6 +13,9 @@ class RoomViewController: UIViewController {
     
     private var agoraKit: AgoraRtcEngineKit?
     
+    private var isTopicPressed = false
+    private var isMutePressed = false
+    
     private lazy var networkManager: NetworkManger? = {
         guard let userID = UserModel.shared.id else {return nil}
         
@@ -38,7 +41,7 @@ class RoomViewController: UIViewController {
                 switch msg {
                 case .data(let data):
                     do {
-                        let decodedData = try JSONDecoder().decode([String].self, from: data)
+                        let decodedData = try JSONDecoder().decode([[String:String]].self, from: data)
                         self.room?.currentVotes = decodedData
                         DispatchQueue.main.async {
                             self.renderVoteOrbs()
@@ -52,6 +55,7 @@ class RoomViewController: UIViewController {
                         self.room?.currentVotes = []
                         self.renderVoteOrbs()
                         self.changeActionButtonUI(isPressed: true, config: &self.newTopicButton.configuration!)
+                        self.isTopicPressed = false
                     }
                 default:
                     break
@@ -70,8 +74,8 @@ class RoomViewController: UIViewController {
     
     private func sendData() {
         do {
-            let dummyJSON = try JSONEncoder().encode(room?.currentVotes)
-            networkManager?.webSocketTask?.send( URLSessionWebSocketTask.Message.data(dummyJSON) ) { error in
+            let votes = try JSONEncoder().encode(room?.currentVotes)
+            networkManager?.webSocketTask?.send( URLSessionWebSocketTask.Message.data(votes) ) { error in
                 if let error = error {
                     print("Web socket couldn't send message: \(error)")
                 }
@@ -91,6 +95,10 @@ class RoomViewController: UIViewController {
     }
     
     private func closeSocket() {
+        if let userVoteIX = room?.currentVotes.firstIndex(where: { $0["userUID"]! == UserModel.shared.uid }) {
+            room?.currentVotes.remove(at: userVoteIX)
+            sendData()
+        }
         networkManager?.webSocketTask?.cancel(with: .goingAway, reason: "User left".data(using: .utf8))
     }
     
@@ -190,28 +198,33 @@ class RoomViewController: UIViewController {
         for subview in newVoteOrbsStackView.arrangedSubviews {
             newVoteOrbsStackView.removeArrangedSubview(subview)
         }
+        
         newVoteOrbsStackView.removeFromSuperview()
+        
         for newTopicVote in room.currentVotes {
             if newVoteOrbsStackView.superview == nil {
                 middleSkipCounterStack.addArrangedSubview(newVoteOrbsStackView)
             }
-            let orb = createNewVoteOrb(color: newTopicVote.getColorByName())
+            let orb = createNewVoteOrb(color: newTopicVote["color"]!.getColorByName())
             newVoteOrbsStackView.addArrangedSubview(orb)
         }
         newTopicVotesLabel.text = "New Topic Votes: \(room.currentVotes.count)"
     }
     
-    private func appendNewTopicVote(isPressed:Bool) {
+    private func appendNewTopicVote() {
         guard let localIX = localFrameIndex else {return}
+        guard let userUID = UserModel.shared.uid else {return}
+        
         let colorName = UIColor(cgColor:frames[localIX].color).accessibilityName
         
-        if isPressed {
-            if let participantIndex = room?.currentVotes.firstIndex(where: { $0 == colorName }) {
+        if isTopicPressed {
+            if let participantIndex = room?.currentVotes.firstIndex(where: { $0["color"]! == colorName }) {
                 room?.currentVotes.remove(at: participantIndex)
             }
         } else {
-            room?.currentVotes.append(colorName)
+            room?.currentVotes.append(["userUID": userUID, "color": colorName])
         }
+        isTopicPressed.toggle()
     }
     
     private lazy var newRoomButton: UIButton = {
@@ -303,9 +316,8 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func newTopicPressed(_ sender:UIButton) {
-        let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.2) ? false : true
-        appendNewTopicVote(isPressed: isPressed)
-        changeActionButtonUI(isPressed: isPressed, config: &sender.configuration!)
+        changeActionButtonUI(isPressed: isTopicPressed, config: &sender.configuration!)
+        appendNewTopicVote()
         sendData()
     }
     
@@ -330,18 +342,21 @@ class RoomViewController: UIViewController {
     }()
     
     @objc private func muteAllPressed(_ sender:UIButton) {
-        let isPressed = sender.configuration?.baseBackgroundColor == UIColor(white: 0, alpha: 0.2) ? false : true
-        changeActionButtonUI(isPressed: isPressed, config: &sender.configuration!)
-        for frame in frames {
-            if isPressed {
+        changeActionButtonUI(isPressed: isMutePressed, config: &sender.configuration!)
+        if isMutePressed {
+            for frame in frames {
                 mute(with: frame, button: frame.muteButton, unmute: true)
-            } else {
+            }
+        } else {
+            for frame in frames {
                 mute(with: frame, button: frame.muteButton, unmute: false)
             }
         }
+        isMutePressed.toggle()
     }
-    
-    private let bottomVideoStack:UIStackView = {
+
+
+private let bottomVideoStack:UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 10
@@ -577,6 +592,7 @@ class RoomViewController: UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
+    
     //MARK: - Utils Setups
     
     private func configureSkeleton() {
@@ -586,6 +602,7 @@ class RoomViewController: UIViewController {
         let newBackButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(goBack))
         self.navigationItem.leftBarButtonItem = newBackButton
     }
+    
     private func addViews() {
         view.addSubview(mainStackView)
         

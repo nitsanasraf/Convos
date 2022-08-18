@@ -15,7 +15,7 @@ class RoomModel:Codable {
     let category: String
     var positions: [String]
     let currentTopic: String
-    var currentVotes: [String]
+    var currentVotes: [[String:String]]
  
     
     static func moveToRoom(room:RoomModel, fromViewController vc: UIViewController, withTitle title :String?) {
