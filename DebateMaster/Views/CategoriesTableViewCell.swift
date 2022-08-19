@@ -29,7 +29,7 @@ class CategoriesTableViewCell: UITableViewCell {
         let image = UIImage(systemName: "chevron.right")
         let accessory = UIImageView(frame:CGRect(x:0, y:0, width:(image?.size.width) ?? 0, height:(image?.size.height) ?? 0))
         accessory.image = image
-        accessory.tintColor = Constants.Colors.secondary
+        accessory.tintColor = Constants.Colors.primaryText
         accessory.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return accessory
     }
@@ -45,7 +45,7 @@ class CategoriesTableViewCell: UITableViewCell {
     var categoryTitle:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -54,7 +54,7 @@ class CategoriesTableViewCell: UITableViewCell {
     var categoryDescription:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -62,14 +62,12 @@ class CategoriesTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = Constants.Colors.primary
         addViews()
         addLayouts()
     }
     
     private func addViews() {
         contentView.addSubview(cellMainStackView)
-        
         cellMainStackView.addArrangedSubviews(descriptionStackView,createAccessoryView())
         descriptionStackView.addArrangedSubviews(categoryTitle,categoryDescription)
     }
@@ -81,7 +79,6 @@ class CategoriesTableViewCell: UITableViewCell {
             cellMainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -20),
             cellMainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10),
         ]
-        
         NSLayoutConstraint.activate(cellMainStackViewConstraints)
     }
     

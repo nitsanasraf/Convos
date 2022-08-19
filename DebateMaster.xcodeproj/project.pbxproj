@@ -40,7 +40,6 @@
 		C6A1F37F28A92FEF000F3A56 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A1F37E28A92FEF000F3A56 /* SettingsViewController.swift */; };
 		C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09902880242B004AF0DD /* CategoriesViewController.swift */; };
 		C6AD09932880360A004AF0DD /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09922880360A004AF0DD /* UIViewController+Extensions.swift */; };
-		C6AD0995288037A2004AF0DD /* CategoriesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD0994288037A2004AF0DD /* CategoriesTableViewController.swift */; };
 		C6AD0997288039C8004AF0DD /* CategoriesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */; };
 		C6B1E8E42875C406006B067D /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1E8E32875C406006B067D /* UIView+Extensions.swift */; };
 		C6CBE82328707458007D1F95 /* KeyCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CBE82228707458007D1F95 /* KeyCenter.swift */; };
@@ -70,7 +69,6 @@
 		C6A1F37E28A92FEF000F3A56 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		C6AD09902880242B004AF0DD /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		C6AD09922880360A004AF0DD /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
-		C6AD0994288037A2004AF0DD /* CategoriesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesTableViewController.swift; sourceTree = "<group>"; };
 		C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesTableViewCell.swift; sourceTree = "<group>"; };
 		C6B1E8E32875C406006B067D /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		C6CBE82228707458007D1F95 /* KeyCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCenter.swift; sourceTree = "<group>"; };
@@ -146,7 +144,6 @@
 			children = (
 				C6301478286F11F900128576 /* RoomViewController.swift */,
 				C6AD09902880242B004AF0DD /* CategoriesViewController.swift */,
-				C6AD0994288037A2004AF0DD /* CategoriesTableViewController.swift */,
 				C63804622882C7BC0028B6D5 /* LoadingViewController.swift */,
 				C65F1FCA289075CE003DD331 /* LoginViewController.swift */,
 				C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */,
@@ -297,7 +294,6 @@
 				C634FE5528AC2607002E734B /* SettingsModel.swift in Sources */,
 				C6301479286F11F900128576 /* RoomViewController.swift in Sources */,
 				C6A1F37D28A92F20000F3A56 /* TabBarViewController.swift in Sources */,
-				C6AD0995288037A2004AF0DD /* CategoriesTableViewController.swift in Sources */,
 				C6A1F37F28A92FEF000F3A56 /* SettingsViewController.swift in Sources */,
 				C63905F12872583900AE11C5 /* FrameModel.swift in Sources */,
 				C6561A8628873D1400F96160 /* Constants.swift in Sources */,

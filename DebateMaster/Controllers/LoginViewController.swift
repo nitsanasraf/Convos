@@ -29,7 +29,7 @@ class LoginViewController: UIViewController {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.systemFont(ofSize: 40,weight: .bold)
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.textAlignment = .center
         return label
     }()
@@ -161,10 +161,13 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         if UserModel.shared.isUserLoggedIn() {
             self.navigationController?.pushViewController(TabBarViewController(), animated: false)
         }
-        view.backgroundColor = Constants.Colors.primary
+        
+        view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
+
         addViews()
         addLayouts()
     }

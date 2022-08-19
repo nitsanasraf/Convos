@@ -27,14 +27,14 @@ class LoadingViewController: UIViewController {
     
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
-        indicator.color = Constants.Colors.secondary
+        indicator.color = Constants.Colors.primaryText
         indicator.startAnimating()
         return indicator
     }()
     
     lazy var categoryLabel: UILabel = {
         let label = UILabel()
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byCharWrapping
@@ -45,7 +45,7 @@ class LoadingViewController: UIViewController {
     private let loadingLabel: UILabel = {
         let label = UILabel()
         label.text = "Looking for an available room"
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byCharWrapping
@@ -56,7 +56,7 @@ class LoadingViewController: UIViewController {
     private let timeAssessmentLabel: UILabel = {
         let label = UILabel()
         label.text = "(No more than 2 minutes)"
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byCharWrapping
@@ -74,8 +74,8 @@ class LoadingViewController: UIViewController {
             return outgoing
         }
         config.image = UIImage(systemName: "xmark",withConfiguration: imgConfig)
-        config.baseBackgroundColor = Constants.Colors.secondary
-        config.baseForegroundColor = Constants.Colors.secondary
+        config.baseBackgroundColor = Constants.Colors.primaryText
+        config.baseForegroundColor = Constants.Colors.primaryText
         config.imagePadding = 5
         config.imagePlacement = .trailing
         let btn = UIButton(configuration: config)
@@ -97,7 +97,7 @@ class LoadingViewController: UIViewController {
     }
     
     private func configureSkeleton() {
-        view.backgroundColor = Constants.Colors.primary
+        view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
         self.navigationItem.hidesBackButton = true
     }
     

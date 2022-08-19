@@ -27,28 +27,28 @@ struct SettingsModel {
     
     let sections = [
         Section(title: "Privacy" ,items: [
-            Item(title: "Notifications", color: Constants.Colors.secondary, icon: "bell.fill") { vc in
+            Item(title: "Notifications", color: Constants.Colors.primaryText, icon: "bell.fill") { vc in
                 print("Notifications")
             },
-            Item(title: "Data collection", color: Constants.Colors.secondary, icon: "antenna.radiowaves.left.and.right") { vc in
+            Item(title: "Data collection", color: Constants.Colors.primaryText, icon: "antenna.radiowaves.left.and.right") { vc in
                 print("Data collection")
             },
-            Item(title: "Networking", color: Constants.Colors.secondary, icon: "network") { vc in
+            Item(title: "Networking", color: Constants.Colors.primaryText, icon: "network") { vc in
                 print("Networking")
             },
         ]),
         
         Section(title: "Policies" ,items: [
-            Item(title: "Privacy policy", color: Constants.Colors.secondary, icon: "checkerboard.shield") { vc in
+            Item(title: "Privacy policy", color: Constants.Colors.primaryText, icon: "checkerboard.shield") { vc in
                 print("Privacy policy")
             },
-            Item(title: "Terms and conditions", color: Constants.Colors.secondary, icon: "newspaper") { vc in
+            Item(title: "Terms and conditions", color: Constants.Colors.primaryText, icon: "newspaper") { vc in
                 print("Terms and conditions")
             },
         ]),
         
         Section(title: "Account" ,items: [
-            Item(title: "Logout", color: Constants.Colors.secondary, icon: "arrow.uturn.left") { vc in
+            Item(title: "Logout", color: Constants.Colors.primaryText, icon: "arrow.uturn.left") { vc in
                 let alert = UIAlertController(title: "Are you sure you want to log out?", message: nil, preferredStyle: .alert)
                 
                 alert.addAction(UIAlertAction(title: "YES", style: .destructive) { alert in

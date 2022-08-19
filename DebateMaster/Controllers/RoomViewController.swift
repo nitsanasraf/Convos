@@ -156,10 +156,10 @@ class RoomViewController: UIViewController {
     private func changeActionButtonUI(isPressed:Bool,config: inout UIButton.Configuration) {
         if isPressed {
             config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-            config.baseForegroundColor = Constants.Colors.secondary
+            config.baseForegroundColor = Constants.Colors.primaryText
         } else {
-            config.baseBackgroundColor = Constants.Colors.secondary
-            config.baseForegroundColor = Constants.Colors.primary
+            config.baseBackgroundColor = Constants.Colors.primaryText
+            config.baseForegroundColor = Constants.Colors.primaryGradient
         }
     }
     
@@ -168,7 +168,7 @@ class RoomViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 14,weight: .regular)
         label.text = "New Topic Votes: \(room?.currentVotes.count ?? 0)"
         label.numberOfLines = 0
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         return label
     }()
     
@@ -231,7 +231,7 @@ class RoomViewController: UIViewController {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-        config.baseForegroundColor = Constants.Colors.secondary
+        config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "New room"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
@@ -260,11 +260,11 @@ class RoomViewController: UIViewController {
         
         let label = UILabel()
         label.text = "Looking for a new room..."
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.font = UIFont.systemFont(ofSize: 16)
         
         let indicator = UIActivityIndicatorView()
-        indicator.color = Constants.Colors.secondary
+        indicator.color = Constants.Colors.primaryText
         indicator.startAnimating()
         
         self.view.addSubview(modal)
@@ -299,7 +299,7 @@ class RoomViewController: UIViewController {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-        config.baseForegroundColor = Constants.Colors.secondary
+        config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "New topic"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
@@ -325,7 +325,7 @@ class RoomViewController: UIViewController {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
-        config.baseForegroundColor = Constants.Colors.secondary
+        config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "Mute all"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
@@ -532,7 +532,7 @@ private let bottomVideoStack:UIStackView = {
     private lazy var discussionTopic:UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.text = room?.currentTopic
         label.textAlignment = .center
@@ -596,7 +596,7 @@ private let bottomVideoStack:UIStackView = {
     //MARK: - Utils Setups
     
     private func configureSkeleton() {
-        view.backgroundColor = Constants.Colors.primary
+        view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
         self.navigationItem.hidesBackButton = true
         
         let newBackButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(goBack))

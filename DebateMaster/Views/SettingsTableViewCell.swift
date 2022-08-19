@@ -29,7 +29,6 @@ class SettingsTableViewCell: UITableViewCell {
         let image = UIImage(systemName: "chevron.right")
         let accessory = UIImageView(frame:CGRect(x:0, y:0, width:(image?.size.width) ?? 0, height:(image?.size.height) ?? 0))
         accessory.image = image
-        accessory.tintColor = Constants.Colors.secondary
         accessory.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return accessory
     }()
@@ -44,7 +43,7 @@ class SettingsTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = Constants.Colors.primary
+        
         addViews()
         addLayouts()
     }

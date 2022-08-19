@@ -35,7 +35,7 @@ class SettingsViewController: UIViewController {
         normalString.append(boldString)
         
         label.attributedText = normalString
-        label.textColor = Constants.Colors.secondary
+        label.textColor = Constants.Colors.primaryText
         label.textAlignment = .center
         return label
     }()
@@ -44,13 +44,15 @@ class SettingsViewController: UIViewController {
         let table = UITableView(frame: .zero, style: .grouped)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.register(SettingsTableViewCell.self, forCellReuseIdentifier: SettingsTableViewCell.identifier)
-        table.backgroundColor = Constants.Colors.primary
+        table.backgroundColor = .clear
+        table.separatorStyle = .none
         return table
     }()
-    
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.Colors.primary
+        view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -69,10 +71,9 @@ class SettingsViewController: UIViewController {
     private func addLayouts() {
         let stackViewConstraints = [
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ]
         NSLayoutConstraint.activate(stackViewConstraints)
     }
@@ -111,6 +112,7 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
         cell.title.textColor = sections[indexPath.section].items[indexPath.row].color
         cell.icon.image = UIImage(systemName: sections[indexPath.section].items[indexPath.row].icon)
         cell.icon.tintColor = sections[indexPath.section].items[indexPath.row].color
+        cell.backgroundColor = .clear
         return cell
     }
     

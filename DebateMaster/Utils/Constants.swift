@@ -38,7 +38,8 @@ struct Constants {
         }
     }
     struct Colors {
-        static let primary: UIColor = UIColor(red: 0.37, green: 0.15, blue: 0.80, alpha: 1.00)
-        static let secondary: UIColor = .white
+        static let primaryGradient: UIColor = UIColor(red: 0.85, green: 0.13, blue: 1.00, alpha: 1.00)
+        static let secondaryGradient: UIColor = UIColor(red: 0.59, green: 0.20, blue: 0.93, alpha: 1.00)
+        static let primaryText: UIColor = .white
     }
 }
