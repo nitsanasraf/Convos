@@ -59,8 +59,17 @@ struct SettingsModel {
                 
                 vc.present(alert, animated: true, completion: nil)
             },
-            Item(title: "Delete account", color: .systemPink, icon: "trash.fill") { vc in
+            Item(title: "Delete account", color: .systemRed, icon: "trash.fill") { vc in
                 print("Delete account")
+            },
+        ]),
+        
+        Section(title: "Premium" ,items: [
+            Item(title: "Get premium membership", color: .systemYellow, icon: "crown.fill") { vc in
+               print("Premium")
+            },
+            Item(title: "Become a V.I.P", color: .systemOrange, icon: "star.fill") { vc in
+                print("VIP")
             },
         ]),
     ]

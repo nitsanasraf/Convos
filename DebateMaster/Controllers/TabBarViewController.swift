@@ -8,12 +8,12 @@
 import UIKit
 
 class TabBarViewController: UITabBarController {
+    
     struct Screen {
         let viewController: UIViewController
         let icon: String
         let navBarTitle: String
     }
-    
     
     private let networkManager = NetworkManger()
     
@@ -29,7 +29,6 @@ class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        CategoriesTableViewController.delegate = self
         
         self.navigationItem.setHidesBackButton(true, animated: false)
         
@@ -48,10 +47,4 @@ class TabBarViewController: UITabBarController {
         tabBar.tintColor = .label
     }
     
-}
-
-extension TabBarViewController: CategoriesTableVcDelegate {
-    func pushRoom(viewController vc: UIViewController) {
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
 }

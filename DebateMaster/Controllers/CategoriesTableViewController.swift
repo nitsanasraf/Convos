@@ -7,14 +7,8 @@
 
 import UIKit
 
-protocol CategoriesTableVcDelegate {
-    func pushRoom(viewController vc: UIViewController) -> ()
-}
-
 class CategoriesTableViewController: UITableViewController {
-    
-    static var delegate: CategoriesTableVcDelegate?
-    
+        
     private let tempDict = [
         ["title":"History 📖","desc":"Discuss history and newest conventions in history."],
         ["title":"Politics 📋","desc":"Discuss politics and newest conventions in politics."],
@@ -35,7 +29,7 @@ class CategoriesTableViewController: UITableViewController {
     private func openLoadingVC(withCategory category:String) {
         let vc = LoadingViewController()
         vc.categoryLabel.text = category
-        CategoriesTableViewController.delegate?.pushRoom(viewController: vc)
+        self.parent?.parent?.navigationController?.pushViewController(vc, animated: true)
     }
     
     // MARK: - Table view data source
