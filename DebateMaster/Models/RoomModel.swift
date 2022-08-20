@@ -26,14 +26,15 @@ class RoomModel:Codable {
     }
     
     static func findEmptyRoom(fromRoom existingRoom: RoomModel?, networkManager: NetworkManger, category: String?, viewController vc: UIViewController, agoraKit:AgoraRtcEngineKit?) {
-        guard let urlCategory = category?.makeURLSafe() else {return}
-        guard let strUID = UserModel.shared.uid else {return}
-        guard let userUID = UInt(strUID) else {return}
+        guard let urlCategory = category?.makeURLSafe(),
+              let strUID = UserModel.shared.uid,
+              let userUID = UInt(strUID),
+              let userID = UserModel.shared.id else {return}
         
-        var roomURL = "\(networkManager.roomsURL)/\(urlCategory)"
-
+        var roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.find)/\(urlCategory)/\(userID)"
+        
         if let existingRoom = existingRoom {
-            roomURL = "\(networkManager.roomsURL)/\(existingRoom.category)/\(existingRoom.id)"
+            roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.next)/\(existingRoom.category)/\(existingRoom.id)"
         }
         
         networkManager.fetchData(type: RoomModel.self, url: roomURL) { [weak vc] room in
@@ -63,4 +64,15 @@ class RoomModel:Codable {
         }
     }
     
+    static func getEmojiName(categoryName: String) -> String{
+        switch categoryName {
+        case "History": return "History 📖"
+        case "Politics": return "Politics 📋"
+        case "Economics": return "Economics 📉"
+        case "Law": return "Law 📜"
+        case "Technology": return "Technology 🤖"
+        case "Science": return "Science 🪐"
+        default: return ""
+        }
+    }
 }

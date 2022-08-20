@@ -21,7 +21,7 @@ class CategoriesViewController: UIViewController {
     private let networkManager = NetworkManger()
         
     private let tableView: UITableView = {
-        let table = UITableView(frame: .zero, style: .grouped)
+        let table = UITableView(frame: .zero)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.register(CategoriesTableViewCell.self, forCellReuseIdentifier: CategoriesTableViewCell.identifier)
         table.backgroundColor = .clear

@@ -594,11 +594,9 @@ private let bottomVideoStack:UIStackView = {
     }
     
     //MARK: - Utils Setups
-    
     private func configureSkeleton() {
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
         self.navigationItem.hidesBackButton = true
-        
         let newBackButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(goBack))
         self.navigationItem.leftBarButtonItem = newBackButton
     }

@@ -36,6 +36,9 @@
 		C679630028942E4F003E179F /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67962FF28942E4F003E179F /* UserModel.swift */; };
 		C67F68362896CA9B005F1D67 /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67F68352896CA9B005F1D67 /* KeyChain.swift */; };
 		C67FEF7528AD3A6100E53095 /* StackView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67FEF7428AD3A6100E53095 /* StackView+Extensions.swift */; };
+		C681E7FE28AFA86C00AB9F10 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681E7FD28AFA86C00AB9F10 /* StatisticsViewController.swift */; };
+		C681E80028AFF2F000AB9F10 /* BRLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681E7FF28AFF2F000AB9F10 /* BRLabel.swift */; };
+		C681E80328AFFD1400AB9F10 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = C681E80228AFFD1400AB9F10 /* Charts */; };
 		C6A1F37D28A92F20000F3A56 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */; };
 		C6A1F37F28A92FEF000F3A56 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A1F37E28A92FEF000F3A56 /* SettingsViewController.swift */; };
 		C6AD09912880242B004AF0DD /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD09902880242B004AF0DD /* CategoriesViewController.swift */; };
@@ -65,6 +68,8 @@
 		C67962FF28942E4F003E179F /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		C67F68352896CA9B005F1D67 /* KeyChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
 		C67FEF7428AD3A6100E53095 /* StackView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StackView+Extensions.swift"; sourceTree = "<group>"; };
+		C681E7FD28AFA86C00AB9F10 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
+		C681E7FF28AFF2F000AB9F10 /* BRLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BRLabel.swift; sourceTree = "<group>"; };
 		C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		C6A1F37E28A92FEF000F3A56 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		C6AD09902880242B004AF0DD /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
@@ -79,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C681E80328AFFD1400AB9F10 /* Charts in Frameworks */,
 				C6301492286F126F00128576 /* ROIEnc in Frameworks */,
 				C630148C286F126F00128576 /* AV1Dec in Frameworks */,
 				C630149C286F126F00128576 /* VideoPreprocess in Frameworks */,
@@ -148,6 +154,7 @@
 				C65F1FCA289075CE003DD331 /* LoginViewController.swift */,
 				C6A1F37C28A92F20000F3A56 /* TabBarViewController.swift */,
 				C6A1F37E28A92FEF000F3A56 /* SettingsViewController.swift */,
+				C681E7FD28AFA86C00AB9F10 /* StatisticsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -168,6 +175,7 @@
 			children = (
 				C6AD0996288039C8004AF0DD /* CategoriesTableViewCell.swift */,
 				C634FE5628AC2964002E734B /* SettingsTableViewCell.swift */,
+				C681E7FF28AFF2F000AB9F10 /* BRLabel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -230,6 +238,7 @@
 				C630149B286F126F00128576 /* VideoPreprocess */,
 				C630149D286F126F00128576 /* VirtualBackground */,
 				C634FE5228ABB934002E734B /* NVActivityIndicatorView */,
+				C681E80228AFFD1400AB9F10 /* Charts */,
 			);
 			productName = DebateMaster;
 			productReference = C6301471286F11F900128576 /* DebateMaster.app */;
@@ -262,6 +271,7 @@
 			packageReferences = (
 				C6301488286F126F00128576 /* XCRemoteSwiftPackageReference "AgoraRtcEngine_iOS" */,
 				C634FE5128ABB934002E734B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */,
+				C681E80128AFFD1400AB9F10 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = C6301472286F11F900128576 /* Products */;
 			projectDirPath = "";
@@ -301,8 +311,10 @@
 				C6098F38287B027100AF1CDD /* String+Extensions.swift in Sources */,
 				C6561A8828873EE600F96160 /* RoomModel.swift in Sources */,
 				C63804632882C7BC0028B6D5 /* LoadingViewController.swift in Sources */,
+				C681E80028AFF2F000AB9F10 /* BRLabel.swift in Sources */,
 				C67F68362896CA9B005F1D67 /* KeyChain.swift in Sources */,
 				C6AD09932880360A004AF0DD /* UIViewController+Extensions.swift in Sources */,
+				C681E7FE28AFA86C00AB9F10 /* StatisticsViewController.swift in Sources */,
 				C61DCD1D28770E79007E5EBE /* NetworkManger.swift in Sources */,
 				C6301475286F11F900128576 /* AppDelegate.swift in Sources */,
 				C65F1FCB289075CE003DD331 /* LoginViewController.swift in Sources */,
@@ -544,6 +556,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		C681E80128AFFD1400AB9F10 /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -606,6 +626,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C634FE5128ABB934002E734B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */;
 			productName = NVActivityIndicatorView;
+		};
+		C681E80228AFFD1400AB9F10 /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C681E80128AFFD1400AB9F10 /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

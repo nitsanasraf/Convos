@@ -12,11 +12,13 @@ struct UserModel:Codable {
     
     static var shared = UserModel()
     
-    var email: String?
     var id: String?
     var uid: String?
+    var createdAt: String?
+    var email: String?
     var authToken: String?
     var agoraToken: String?
+    var categoriesCount: [[String:String]]?
     
     private init() {}
     
@@ -32,7 +34,6 @@ struct UserModel:Codable {
            let email = KeyChain.shared[Constants.KeyChain.Keys.userEmail],
            let id = KeyChain.shared[Constants.KeyChain.Keys.userID],
            let uid = KeyChain.shared[Constants.KeyChain.Keys.userUID] {
-            
             populateUser(token: authToken, email: email, id: id, uid: uid)
             return true
         }
@@ -45,13 +46,10 @@ struct UserModel:Codable {
         UserModel.shared.uid = nil
         UserModel.shared.authToken = nil
         UserModel.shared.agoraToken = nil
+        UserModel.shared.createdAt = nil
+        UserModel.shared.categoriesCount = nil
     }
-    
-    
-    func printDetails() -> Void {
-        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
-    }
-    
+
     func logout(viewController vc:UIViewController, networkManager: NetworkManger) {
         guard let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
         let task = URLSession.shared.dataTask(with: url) { (_, response, error) in
@@ -66,6 +64,22 @@ struct UserModel:Codable {
             }
         }
         task.resume()
+    }
+    
+    func getFavouriteCategory() -> String? {
+        if let category = self.categoriesCount?.max(by: { $0["count"]! < $1["count"]! }) {
+            if Int(category["count"]!) == 0 {
+                return nil
+            }
+            return category["category"]
+        }
+        return nil
+    }
+    
+    
+    
+    func printDetails() -> Void {
+        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
     }
     
 }

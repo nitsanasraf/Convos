@@ -18,8 +18,9 @@ class TabBarViewController: UITabBarController {
     private let networkManager = NetworkManger()
     
     private let screens = [
-        Screen(viewController: CategoriesViewController(), icon: "house", navBarTitle: "Categories"),
-        Screen(viewController: SettingsViewController(), icon: "gearshape", navBarTitle: "Settings"),
+        Screen(viewController: CategoriesViewController(), icon: "house.fill", navBarTitle: "Categories"),
+        Screen(viewController: StatisticsViewController(), icon: "chart.bar.fill", navBarTitle: "Statistics"),
+        Screen(viewController: SettingsViewController(), icon: "gearshape.fill", navBarTitle: "Settings"),
     ]
     
     override func viewWillAppear(_ animated: Bool) {

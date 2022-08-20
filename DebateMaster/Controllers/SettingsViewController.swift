@@ -48,8 +48,7 @@ class SettingsViewController: UIViewController {
         table.separatorStyle = .none
         return table
     }()
-
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
