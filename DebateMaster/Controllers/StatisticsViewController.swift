@@ -11,7 +11,7 @@ import Charts
 class StatisticsViewController: UIViewController {
     
     private let networkManager = NetworkManger()
-        
+    
     private let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
@@ -19,9 +19,9 @@ class StatisticsViewController: UIViewController {
     }()
     
     private let contentView: UIView = {
-      let contentView = UIView()
-      contentView.translatesAutoresizingMaskIntoConstraints = false
-      return contentView
+        let contentView = UIView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
     }()
     
     private let stackView: UIStackView = {
@@ -52,7 +52,44 @@ class StatisticsViewController: UIViewController {
         }
     }
     
-    private func createFavouriteLabel() -> BRLabel {
+    private func createSection(content: UIView, withLabel label: UIView?) -> UIStackView {
+        let stack = UIStackView()
+        stack.backgroundColor = .init(white: 0, alpha: 0.1)
+        stack.layer.cornerRadius = 10
+        stack.clipsToBounds = true
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        stack.spacing = 10
+        stack.axis = .vertical
+        if let label = label {
+            stack.addArrangedSubviews(label, content)
+        } else {
+            stack.addArrangedSubview(content)
+        }
+        return stack
+    }
+    
+    private lazy var createdAtLabel: BRLabel = {
+        guard let createdTimeStamp = UserModel.shared.createdAt else { return BRLabel() }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        
+        guard let date = dateFormatter.date(from: createdTimeStamp) else { return BRLabel() }
+        let components = Calendar.current.dateComponents([.day], from: date , to: Date())
+        
+        guard let totalDays = components.day else { return BRLabel() }
+        
+        let totalDaysAgo = totalDays < 1 ? "Less than a day ago" : (totalDays == 1 ? "\(totalDays) day ago" : "\(totalDays) days ago")
+        let label = BRLabel(boldText: "Account created: ", regularText: totalDaysAgo , ofSize: 15)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        return label
+    }()
+    
+    private lazy var favouriteLabel: BRLabel = {
         var label = BRLabel()
         let size = 15.0
         if let category = UserModel.shared.getFavouriteCategory() {
@@ -65,27 +102,24 @@ class StatisticsViewController: UIViewController {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
-    }
+    }()
     
     private let barChartView: BarChartView = {
         let chart = BarChartView()
         chart.translatesAutoresizingMaskIntoConstraints = false
-        chart.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        
+        chart.heightAnchor.constraint(equalToConstant: 250).isActive = true
         chart.legend.setCustom(entries: [])
-        
         chart.rightAxis.enabled = false
-        chart.leftAxis.enabled = false
-        chart.leftAxis.spaceBottom = 0
         chart.leftAxis.axisMinimum = 0
+        chart.leftAxis.gridColor = .systemPink
         
-        chart.xAxis.gridColor = .systemPink
+        chart.xAxis.drawGridLinesEnabled = false
         chart.xAxis.labelPosition = .bottom
         chart.xAxis.labelFont = .systemFont(ofSize: 10, weight: .bold)
         chart.xAxis.labelTextColor = Constants.Colors.primaryText
         chart.xAxis.axisLineColor = Constants.Colors.primaryText
         chart.xAxis.labelRotationAngle = -25
-
+        
         chart.highlightPerTapEnabled = false
         chart.pinchZoomEnabled = false
         chart.doubleTapToZoomEnabled = false
@@ -93,32 +127,38 @@ class StatisticsViewController: UIViewController {
         return chart
     }()
     
+    private let someLabel: BRLabel = {
+        let label = BRLabel(boldText: "Radar label: ", regularText: "Some Data", ofSize: 15)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        return label
+    }()
+    
+    private let radarChartView: RadarChartView = {
+        let chart = RadarChartView()
+        chart.translatesAutoresizingMaskIntoConstraints = false
+        chart.heightAnchor.constraint(equalToConstant: 350).isActive = true
+        chart.rotationEnabled = false
+        chart.legend.setCustom(entries: [])
+        chart.webColor = .systemPink
+        chart.yAxis.axisMinimum = 0
+        chart.webLineWidth = 2
+        chart.innerWebColor = .systemYellow
+        
+        chart.xAxis.labelFont = .systemFont(ofSize: 10, weight: .bold)
+        chart.xAxis.labelTextColor = Constants.Colors.primaryText
+
+        chart.highlightPerTapEnabled = false
+        
+        return chart
+    }()
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         barChartView.animate(yAxisDuration: 1, easingOption: .easeInSine)
-
-    }
-    private func setData() {
-        guard let categoriesCount = UserModel.shared.categoriesCount else {return}
-        
-        var values = [String]()
-        for item in categoriesCount {
-            values.append(item["category"]!)
-        }
-        barChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: values)
-
-        var dataEntries = [ChartDataEntry]()
-        for (ix,item) in categoriesCount.enumerated() {
-            dataEntries.append(BarChartDataEntry(x: Double(ix), y: Double(item["count"]!) ?? 0))
-        }
-        let dataSet = BarChartDataSet(entries: dataEntries , label: nil)
-        dataSet.setColor(.systemCyan)
-        dataSet.highlightEnabled = false
-        
-        let data = BarChartData(dataSet: dataSet)
-        data.setDrawValues(false)
-        
-        barChartView.data = data
+        radarChartView.animate(xAxisDuration: 1, easingOption: .easeInSine)
+        radarChartView.animate(yAxisDuration: 1, easingOption: .easeInSine)
     }
     
     override func viewDidLoad() {
@@ -130,23 +170,73 @@ class StatisticsViewController: UIViewController {
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         scrollView.delegate = self
-  
+        
         getUserData {
             DispatchQueue.main.async {
                 self.activityIndicator.removeFromSuperview()
                 
-                self.setData()
+                self.setBarData()
+                self.setRadarData()
                 self.addViews()
                 self.addLayouts()
             }
         }
     }
     
+    private func setBarData() {
+        guard let categoriesCount = UserModel.shared.categoriesCount else {return}
+        
+        var values = [String]()
+        for item in categoriesCount {
+            values.append(item["category"]!)
+        }
+        barChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: values)
+        
+        var dataEntries = [ChartDataEntry]()
+        for (ix,item) in categoriesCount.enumerated() {
+            dataEntries.append(BarChartDataEntry(x: Double(ix), y: Double(item["count"]!) ?? 0))
+        }
+        let dataSet = BarChartDataSet(entries: dataEntries , label: nil)
+        dataSet.setColor(.systemYellow)
+        dataSet.highlightEnabled = false
+        
+        let data = BarChartData(dataSet: dataSet)
+        data.setDrawValues(false)
+        
+        barChartView.data = data
+    }
+    
+    private func setRadarData() {
+        guard let categoriesCount = UserModel.shared.categoriesCount else {return}
+        
+        var values = [String]()
+        for item in categoriesCount {
+            values.append(item["category"]!)
+        }
+        radarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: values)
+        
+        var dataEntries = [ChartDataEntry]()
+        for item in categoriesCount {
+            dataEntries.append(RadarChartDataEntry(value: Double(item["count"]!) ?? 0))
+        }
+        let dataSet = RadarChartDataSet(entries: dataEntries , label: nil)
+        dataSet.setColor(.systemYellow)
+        dataSet.highlightEnabled = false
+        
+        let data = RadarChartData(dataSet: dataSet)
+        data.setDrawValues(false)
+        
+        radarChartView.data = data
+    }
+    
+    
     private func addViews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
-        stackView.addArrangedSubviews(createFavouriteLabel(), barChartView)
+        stackView.addArrangedSubviews(createSection(content: createdAtLabel, withLabel: nil),
+                                      createSection(content: barChartView, withLabel: favouriteLabel),
+                                      createSection(content: radarChartView, withLabel: someLabel))
     }
     
     private func addLayouts() {
@@ -174,8 +264,8 @@ class StatisticsViewController: UIViewController {
         NSLayoutConstraint.activate(stackViewConstraints)
     }
     
-
-
+    
+    
 }
 
 

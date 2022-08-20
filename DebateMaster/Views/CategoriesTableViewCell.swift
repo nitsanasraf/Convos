@@ -19,7 +19,7 @@ class CategoriesTableViewCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-        stackView.backgroundColor = .init(white: 0, alpha: 0.2)
+        stackView.backgroundColor = .init(white: 0, alpha: 0.1)
         stackView.layer.cornerRadius = 10
         stackView.clipsToBounds = true
         return stackView
