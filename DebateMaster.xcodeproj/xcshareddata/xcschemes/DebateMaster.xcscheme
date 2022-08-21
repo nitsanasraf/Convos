@@ -50,6 +50,18 @@
             ReferencedContainer = "container:DebateMaster.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "APP_ID"
+            value = "68aec75811214c85a87524b6442e936b"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "APP_CERTIFICATE"
+            value = "b29fc3cb13b945e09d397ca3365f9014"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

@@ -156,7 +156,6 @@ class StatisticsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         barChartView.animate(yAxisDuration: 1, easingOption: .easeInSine)
-        radarChartView.animate(xAxisDuration: 1, easingOption: .easeInSine)
         radarChartView.animate(yAxisDuration: 1, easingOption: .easeInSine)
     }
     
@@ -185,12 +184,6 @@ class StatisticsViewController: UIViewController {
     private func setBarData() {
         guard let categoriesCount = UserModel.shared.categoriesCount else {return}
         
-        var values = [String]()
-        for item in categoriesCount {
-            values.append(item["category"]!)
-        }
-        barChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: values)
-        
         var dataEntries = [ChartDataEntry]()
         for (ix,item) in categoriesCount.enumerated() {
             dataEntries.append(BarChartDataEntry(x: Double(ix), y: Double(item["count"]!) ?? 0))
@@ -204,32 +197,54 @@ class StatisticsViewController: UIViewController {
         let data = BarChartData(dataSet: dataSet)
         data.setDrawValues(false)
         
+        barChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: categoriesCount.map { $0["category"]! })
         barChartView.data = data
     }
     
     private func setRadarData() {
-        guard let categoriesCount = UserModel.shared.categoriesCount else {return}
-        
-        var values = [String]()
-        for item in categoriesCount {
-            values.append(item["category"]!)
-        }
-        radarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: values)
+//        guard let categoriesCount = UserModel.shared.categoriesCount else {return}
         
         var dataEntries = [ChartDataEntry]()
-        for item in categoriesCount {
-            dataEntries.append(RadarChartDataEntry(value: Double(item["count"]!) ?? 0))
+        let data = [6.0,4.0,7.0,1.5,4.4,9.9]
+        for i in 0..<data.count{
+            dataEntries.append(RadarChartDataEntry(value: data[i] ))
         }
+        
+        var dataEntries1 = [ChartDataEntry]()
+        let data1 = [5.0,10.0,9.0,5.5,7.3,2.5]
+        for i in 0..<data1.count {
+            dataEntries1.append(RadarChartDataEntry(value: data1[i] ))
+        }
+        
+        var dataEntries2 = [ChartDataEntry]()
+        let data2 = [10.0,5.0,2.0,9.6,7.6,5.5]
+        for i in 0..<data2.count {
+            dataEntries2.append(RadarChartDataEntry(value: data2[i] ))
+        }
+        
         let dataSet = RadarChartDataSet(entries: dataEntries , label: nil)
         dataSet.highlightEnabled = false
         dataSet.drawFilledEnabled = true
         dataSet.setColor(.systemYellow)
         dataSet.fillColor = .systemYellow
         
-        let data = RadarChartData(dataSet: dataSet)
-        data.setDrawValues(false)
+        let dataSet1 = RadarChartDataSet(entries: dataEntries1 , label: nil)
+        dataSet1.highlightEnabled = false
+        dataSet1.drawFilledEnabled = true
+        dataSet1.setColor(.systemBlue)
+        dataSet1.fillColor = .systemBlue
         
-        radarChartView.data = data
+        let dataSet2 = RadarChartDataSet(entries: dataEntries2 , label: nil)
+        dataSet2.highlightEnabled = false
+        dataSet2.drawFilledEnabled = true
+        dataSet2.setColor(.systemPink)
+        dataSet2.fillColor = .systemPink
+        
+        let totalData = RadarChartData(dataSets: [dataSet,dataSet1,dataSet2])
+        totalData.setDrawValues(false)
+        
+        radarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: ["Label1", "Label2", "Label3","Label4","Label5","Label6"])
+        radarChartView.data = totalData
     }
     
     
