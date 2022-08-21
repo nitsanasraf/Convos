@@ -3,6 +3,7 @@ xcuserdata/
 *.swp
 *~.nib
 *.xcscheme
+*.xcodeproj
 
 build/
 
