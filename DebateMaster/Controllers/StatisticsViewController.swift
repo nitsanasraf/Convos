@@ -107,8 +107,8 @@ class StatisticsViewController: UIViewController {
     private let barChartView: BarChartView = {
         let chart = BarChartView()
         chart.translatesAutoresizingMaskIntoConstraints = false
-        chart.heightAnchor.constraint(equalToConstant: 250).isActive = true
-        chart.legend.setCustom(entries: [])
+        chart.heightAnchor.constraint(equalToConstant: 230).isActive = true
+        chart.legend.enabled = false
         chart.rightAxis.enabled = false
         chart.leftAxis.axisMinimum = 0
         chart.leftAxis.gridColor = .systemPink
@@ -123,7 +123,6 @@ class StatisticsViewController: UIViewController {
         chart.highlightPerTapEnabled = false
         chart.pinchZoomEnabled = false
         chart.doubleTapToZoomEnabled = false
-        
         return chart
     }()
     
@@ -138,19 +137,19 @@ class StatisticsViewController: UIViewController {
     private let radarChartView: RadarChartView = {
         let chart = RadarChartView()
         chart.translatesAutoresizingMaskIntoConstraints = false
-        chart.heightAnchor.constraint(equalToConstant: 350).isActive = true
+        chart.heightAnchor.constraint(equalToConstant: 300).isActive = true
         chart.rotationEnabled = false
-        chart.legend.setCustom(entries: [])
+        chart.legend.enabled = false
         chart.webColor = .systemPink
-        chart.yAxis.axisMinimum = 0
-        chart.webLineWidth = 2
         chart.innerWebColor = .systemYellow
+        
+        chart.yAxis.axisMinimum = 0
+        chart.yAxis.drawLabelsEnabled = false
         
         chart.xAxis.labelFont = .systemFont(ofSize: 10, weight: .bold)
         chart.xAxis.labelTextColor = Constants.Colors.primaryText
-
-        chart.highlightPerTapEnabled = false
         
+        chart.highlightPerTapEnabled = false
         return chart
     }()
     
@@ -197,8 +196,10 @@ class StatisticsViewController: UIViewController {
             dataEntries.append(BarChartDataEntry(x: Double(ix), y: Double(item["count"]!) ?? 0))
         }
         let dataSet = BarChartDataSet(entries: dataEntries , label: nil)
-        dataSet.setColor(.systemYellow)
         dataSet.highlightEnabled = false
+        dataSet.setColor(.systemYellow, alpha: 0.45)
+        dataSet.barBorderColor = .systemYellow
+        dataSet.barBorderWidth = 1
         
         let data = BarChartData(dataSet: dataSet)
         data.setDrawValues(false)
@@ -220,8 +221,10 @@ class StatisticsViewController: UIViewController {
             dataEntries.append(RadarChartDataEntry(value: Double(item["count"]!) ?? 0))
         }
         let dataSet = RadarChartDataSet(entries: dataEntries , label: nil)
-        dataSet.setColor(.systemYellow)
         dataSet.highlightEnabled = false
+        dataSet.drawFilledEnabled = true
+        dataSet.setColor(.systemYellow)
+        dataSet.fillColor = .systemYellow
         
         let data = RadarChartData(dataSet: dataSet)
         data.setDrawValues(false)
