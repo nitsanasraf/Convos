@@ -1,9 +1,9 @@
-xcuserdata
+xcuserdata/
 .DS_Store
 *.swp
 *~.nib
 .env
-build/
+.build/
 
 *.pbxuser
 *.perspective
