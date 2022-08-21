@@ -1,2 +1,2 @@
 ### DebateMaster
-## Work in progress... 🚧
+## 🚧 Work in progress... 🚧
