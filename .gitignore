@@ -2,7 +2,8 @@ xcuserdata/
 .DS_Store
 *.swp
 *~.nib
-.env
+*.xcscheme
+
 build/
 
 *.pbxuser
