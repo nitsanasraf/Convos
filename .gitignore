@@ -4,9 +4,7 @@ xcuserdata/
 *~.nib
 *.xcscheme
 *.xcodeproj
-
 build/
-
 *.pbxuser
 *.perspective
 *.perspectivev3
