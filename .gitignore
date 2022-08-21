@@ -3,7 +3,7 @@ xcuserdata/
 *.swp
 *~.nib
 .env
-.build/
+build/
 
 *.pbxuser
 *.perspective
