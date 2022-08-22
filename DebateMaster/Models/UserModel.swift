@@ -67,7 +67,9 @@ struct UserModel:Codable {
     }
     
     func getFavouriteCategory() -> String? {
-        if let category = self.categoriesCount?.max(by: { $0["count"]! < $1["count"]! }) {
+        guard let categoriesCount = self.categoriesCount else {return nil}
+        
+        if let category = categoriesCount.max(by: { Int($0["count"]!)! < Int($1["count"]!)! }) {
             if Int(category["count"]!) == 0 {
                 return nil
             }

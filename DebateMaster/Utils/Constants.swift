@@ -36,7 +36,6 @@ struct Constants {
             static let userUID = "userUID"
             static let userAuthToken = "userAuthToken"
             static let userEmail = "userEmail"
-
         }
     }
     struct Colors {
