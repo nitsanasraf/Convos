@@ -36,35 +36,36 @@ class RoomModel:Codable {
         if let existingRoom = existingRoom {
             roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.next)/\(existingRoom.category)/\(existingRoom.id)"
         }
-        
-        networkManager.fetchData(type: RoomModel.self, url: roomURL) { [weak vc] room in
+        networkManager.fetchData(type: RoomModel.self, url: roomURL, withEncoding: true) { [weak vc] (code,room,_) in
             guard let vc = vc else {return}
-            
-            let url = "\(networkManager.rtcURL)/\(KeyCenter.appID)/\(KeyCenter.appCertificate)/\(room.name)/\(userUID)"
-            guard let url = URL(string: url) else {return}
-            
-            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if let error = error {
-                    print("Error fetching: \(error)")
-                } else {
-                    guard let data = data else {return}
-                    guard let token = String(data: data, encoding: .utf8) else {return}
-                    UserModel.shared.agoraToken = token
-                    DispatchQueue.main.async {
-                        agoraKit?.leaveChannel()
-                        agoraKit?.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: userUID, joinSuccess: { (channel, uid, elapsed) in
-                            print("User has successfully joined the channel: \(channel)")
-                            RoomModel.moveToRoom(room: room, fromViewController: vc, withTitle: category)
-                        })
-                    }
+            networkManager.handleClientErrors(code: code) {
+                DispatchQueue.main.async {
+                    UserModel.shared.logout(viewController: vc, networkManager: networkManager)
                 }
             }
-            task.resume()
-            
+            guard let room = room else { return }
+            let url = "\(networkManager.rtcURL)/\(KeyCenter.appID)/\(KeyCenter.appCertificate)/\(room.name)/\(userUID)"
+            networkManager.fetchData(type: String.self, url: url, withEncoding: false) { (statusCode,_,data) in
+                networkManager.handleClientErrors(code: statusCode) {
+                    DispatchQueue.main.async {
+                        UserModel.shared.logout(viewController: vc, networkManager: networkManager)
+                    }
+                }
+                guard let data = data else { return }
+                guard let token = String(data: data, encoding: .utf8) else {return}
+                UserModel.shared.agoraToken = token
+                DispatchQueue.main.async {
+                    agoraKit?.leaveChannel()
+                    agoraKit?.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: userUID, joinSuccess: { (channel, uid, elapsed) in
+                        print("User has successfully joined the channel: \(channel)")
+                        RoomModel.moveToRoom(room: room, fromViewController: vc, withTitle: category)
+                    })
+                }
+            }
         }
     }
     
-    static func getEmojiName(categoryName: String) -> String{
+    static func getEmojiName(categoryName: String) -> String {
         switch categoryName {
         case "History": return "History 📖"
         case "Politics": return "Politics 📋"
