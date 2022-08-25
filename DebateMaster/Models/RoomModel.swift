@@ -25,7 +25,7 @@ class RoomModel:Codable {
         vc.navigationController?.pushViewController(roomVC, animated: true)
     }
     
-    static func findEmptyRoom(fromRoom existingRoom: RoomModel?, networkManager: NetworkManger, category: String?, viewController vc: UIViewController, agoraKit:AgoraRtcEngineKit?) {
+    static func findEmptyRoom(fromRoom existingRoom: RoomModel?, networkManager: NetworkManger, category: String?, viewController vc: UIViewController, agoraKit: AgoraRtcEngineKit?) {
         guard let urlCategory = category?.makeURLSafe(),
               let strUID = UserModel.shared.uid,
               let userUID = UInt(strUID),
@@ -38,19 +38,12 @@ class RoomModel:Codable {
         }
         networkManager.fetchData(type: RoomModel.self, url: roomURL, withEncoding: true) { [weak vc] (code,room,_) in
             guard let vc = vc else {return}
-            networkManager.handleClientErrors(code: code) {
-                DispatchQueue.main.async {
-                    UserModel.shared.logout(viewController: vc, networkManager: networkManager)
-                }
-            }
+            networkManager.handleErrors(code: code, viewController: vc)
+            
             guard let room = room else { return }
             let url = "\(networkManager.rtcURL)/\(KeyCenter.appID)/\(KeyCenter.appCertificate)/\(room.name)/\(userUID)"
             networkManager.fetchData(type: String.self, url: url, withEncoding: false) { (statusCode,_,data) in
-                networkManager.handleClientErrors(code: statusCode) {
-                    DispatchQueue.main.async {
-                        UserModel.shared.logout(viewController: vc, networkManager: networkManager)
-                    }
-                }
+                networkManager.handleErrors(code: statusCode, viewController: vc)
                 guard let data = data else { return }
                 guard let token = String(data: data, encoding: .utf8) else {return}
                 UserModel.shared.agoraToken = token

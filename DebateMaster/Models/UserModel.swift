@@ -50,15 +50,23 @@ struct UserModel:Codable {
         UserModel.shared.categoriesCount = nil
     }
 
-    func logout(viewController vc:UIViewController, networkManager: NetworkManger) {
-        guard let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
+    func handleUnauthorised(viewController vc: UIViewController) {
+        logout(viewController: vc)
+        DispatchQueue.main.async {
+            vc.navigationController?.viewControllers.first?.showToast(message: "There was an issue with your current session. please log in again.", icon: "dead", alertColor: .systemRed.withAlphaComponent(0.8))
+        }
+    }
+    
+    func logout(viewController vc: UIViewController) {
+        guard let url = URL(string: "\(NetworkManger().usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
+        
         let task = URLSession.shared.dataTask(with: url) { (_, response, error) in
             if let error = error {
                 print("Error fetching: \(error)")
             } else {
-                KeyChain.shared.deleteAll()
-                self.resetUser()
                 DispatchQueue.main.async {
+                    KeyChain.shared.deleteAll()
+                    self.resetUser()
                     vc.navigationController?.popToRootViewController(animated: true)
                 }
             }

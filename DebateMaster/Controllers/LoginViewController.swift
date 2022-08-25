@@ -68,7 +68,7 @@ class LoginViewController: UIViewController {
         return button
     }()
     
-    private let appleButton:UIButton = {
+    private lazy var appleButton:UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "Sign in with Apple"
         config.baseBackgroundColor = .black
@@ -81,6 +81,7 @@ class LoginViewController: UIViewController {
             return outgoing
         }
         let button = UIButton(configuration: config)
+        button.addTarget(self, action: #selector(appleLogin), for: .touchUpInside)
         return button
     }()
     
@@ -157,6 +158,10 @@ class LoginViewController: UIViewController {
         session.prefersEphemeralWebBrowserSession = true
         session.start()
         
+    }
+    
+    @objc private func appleLogin() {
+
     }
     
     override func viewDidLoad() {

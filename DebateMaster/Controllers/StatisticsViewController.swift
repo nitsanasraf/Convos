@@ -45,14 +45,11 @@ class StatisticsViewController: UIViewController {
     
     private func getUserData(completionHandler: @escaping ()->()) {
         guard let userID = UserModel.shared.id else {return}
+        guard let parent = self.parent else {return}
+
         networkManager.fetchData(type: UserModel.self, url: "\(networkManager.usersURL)/\(userID)", withEncoding: true) { [weak self] (code,user,_) in
             guard let self = self else {return}
-            self.networkManager.handleClientErrors(code: code) {
-                DispatchQueue.main.async {
-                    guard let parent = self.parent else {return}
-                    UserModel.shared.logout(viewController: parent, networkManager: self.networkManager)
-                }
-            }
+            self.networkManager.handleErrors(code: code, viewController: parent)
             guard let user = user else {return}
             UserModel.shared.categoriesCount = user.categoriesCount
             UserModel.shared.createdAt = user.createdAt

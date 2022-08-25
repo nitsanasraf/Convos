@@ -640,13 +640,9 @@ private let bottomVideoStack:UIStackView = {
         guard let networkManager = networkManager else {return}
         guard let userUID = UserModel.shared.uid else {return}
         
-        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(userUID)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { [weak self] data, code in
+        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(userUID)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { [weak self] (data, code) in
             guard let self = self else {return}
-            networkManager.handleClientErrors(code: code) {
-                DispatchQueue.main.async {
-                    UserModel.shared.logout(viewController: self, networkManager: networkManager)
-                }
-            }
+            networkManager.handleErrors(code: code, viewController: self)
             do {
                 let ix = try JSONDecoder().decode(Int.self, from: data)
                 if ix > -1 {

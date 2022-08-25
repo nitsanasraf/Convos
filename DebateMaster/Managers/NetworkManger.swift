@@ -5,7 +5,7 @@
 //  Created by Nitsan Asraf on 07/07/2022.
 //
 
-import Foundation
+import UIKit
 
 struct NetworkManger {
     
@@ -102,14 +102,14 @@ struct NetworkManger {
         task.resume()
     }
     
-    func handleClientErrors(code: Int, error: ()->() ) {
+    func handleErrors(code: Int, viewController vc:UIViewController) {
         switch code {
         case 100...199: print("Information")
         case 200...299: print("Success")
         case 300...399: print("Redirect")
-        case 401:
-            error()
-        case 400...499: print("Client error")
+        case 400,401:
+            UserModel.shared.handleUnauthorised(viewController: vc)
+        case 402...499: print("Client error")
         case 500...599: print("Server error")
         default: break
         }

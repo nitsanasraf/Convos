@@ -53,7 +53,7 @@ struct SettingsModel {
                 
                 alert.addAction(UIAlertAction(title: "YES", style: .destructive) { alert in
                     guard let parentVC = vc.parent else {return}
-                    UserModel.shared.logout(viewController: parentVC, networkManager: NetworkManger())
+                    UserModel.shared.logout(viewController: parentVC)
                 })
                 alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
                 
