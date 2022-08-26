@@ -697,7 +697,7 @@ private let bottomVideoStack:UIStackView = {
             guard let availablePositionIX = availablePositionIX else {return}
             
             DispatchQueue.main.async {
-                self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
+                self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID ?? "", delegate: self)
                 self.agoraKit?.enableVideo()
                 self.agoraKit?.setEnableSpeakerphone(true)
                 self.agoraKit?.setDefaultAudioRouteToSpeakerphone(true)

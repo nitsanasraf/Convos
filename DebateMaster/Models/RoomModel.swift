@@ -40,8 +40,10 @@ class RoomModel:Codable {
             guard let vc = vc else {return}
             networkManager.handleErrors(statusCode: code, viewController: vc)
             guard let room = room else { return }
-            let url = "\(networkManager.rtcURL)/\(KeyCenter.appID)/\(KeyCenter.appCertificate)/\(room.name)/\(userUID)"
-            
+           
+            guard let appID = KeyCenter.appID,
+                  let appCertificate = KeyCenter.appCertificate else {return}
+            let url = "\(networkManager.agoraURL)/\(appID)/\(appCertificate)/\(room.name)/\(userUID)"
             //Fetch token
             networkManager.fetchData(type: String.self, url: url, withEncoding: false) { (statusCode,_,data) in
                 networkManager.handleErrors(statusCode: statusCode, viewController: vc)

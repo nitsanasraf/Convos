@@ -55,8 +55,9 @@ struct UserModel:Codable {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: "There was an issue with your current session. Please log in again.", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            let rootVC = vc.navigationController!.viewControllers.filter { $0 is LoginViewController }.first!
+            let rootVC = vc.navigationController?.viewControllers.filter { $0 is LoginViewController }.first
             vc.navigationController?.popToRootViewController(animated: true)
+            guard let rootVC = rootVC else {return}
             rootVC.present(alert, animated: true, completion: nil)
         }
     }

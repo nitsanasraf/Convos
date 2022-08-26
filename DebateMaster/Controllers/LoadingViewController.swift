@@ -11,8 +11,8 @@ import AgoraRtcKit
 class LoadingViewController: UIViewController {
     
     private var networkManager = NetworkManger()
-    
-    private lazy var agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID, delegate: self)
+
+    private lazy var agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID ?? "", delegate: self)
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()

@@ -22,7 +22,8 @@ struct Constants {
             static let facebook = "facebook"
             static let users = "users"
             static let logout = "logout"
-            static let rtc = "rtc"
+            static let agora = "agora"
+            static let keys = "keys"
         }
     }
     enum HttpMethods:String {

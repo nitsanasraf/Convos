@@ -5,9 +5,20 @@
 //  Created by Nitsan Asraf on 02/07/2022.
 //
 
-import Foundation
+import UIKit
 
 struct KeyCenter {
-    static let appID = ProcessInfo.processInfo.environment["APP_ID"]!
-    static let appCertificate = ProcessInfo.processInfo.environment["APP_CERTIFICATE"]!
+    static var appID: String?
+    static var appCertificate: String?
+    
+    static func getKeys(viewController vc: UIViewController, completionHandler: @escaping ()->()) {
+        let networkManager = NetworkManger()
+        networkManager.fetchData(type: [String:String].self, url: "\(networkManager.agoraURL)/\(Constants.Network.EndPoints.keys)", withEncoding: true) { (statusCode,keys,_) in
+            networkManager.handleErrors(statusCode: statusCode, viewController: vc)
+            guard let keysDict = keys else { return }
+            KeyCenter.appID = keysDict["APP_ID"]
+            KeyCenter.appCertificate = keysDict["APP_CERTIFICATE"]
+            completionHandler()
+        }
+    }
 }
