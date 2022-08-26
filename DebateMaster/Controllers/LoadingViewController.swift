@@ -93,7 +93,6 @@ class LoadingViewController: UIViewController {
         addViews()
         addLayouts()
         RoomModel.findEmptyRoom(fromRoom: nil, networkManager: networkManager, category: categoryLabel.text, viewController: self, agoraKit: agoraKit)
-
     }
     
     private func configureSkeleton() {

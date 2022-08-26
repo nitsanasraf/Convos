@@ -49,11 +49,15 @@ struct UserModel:Codable {
         UserModel.shared.createdAt = nil
         UserModel.shared.categoriesCount = nil
     }
-
+    
     func handleUnauthorised(viewController vc: UIViewController) {
         logout(viewController: vc)
         DispatchQueue.main.async {
-            vc.navigationController?.viewControllers.first?.showToast(message: "There was an issue with your current session. please log in again.", icon: "dead", alertColor: .systemRed.withAlphaComponent(0.8))
+            let alert = UIAlertController(title: "There was an issue with your current session. Please log in again.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            let rootVC = vc.navigationController!.viewControllers.filter { $0 is LoginViewController }.first!
+            vc.navigationController?.popToRootViewController(animated: true)
+            rootVC.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -64,11 +68,8 @@ struct UserModel:Codable {
             if let error = error {
                 print("Error fetching: \(error)")
             } else {
-                DispatchQueue.main.async {
-                    KeyChain.shared.deleteAll()
-                    self.resetUser()
-                    vc.navigationController?.popToRootViewController(animated: true)
-                }
+                KeyChain.shared.deleteAll()
+                self.resetUser()
             }
         }
         task.resume()

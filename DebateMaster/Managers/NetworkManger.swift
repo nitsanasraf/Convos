@@ -102,8 +102,8 @@ struct NetworkManger {
         task.resume()
     }
     
-    func handleErrors(code: Int, viewController vc:UIViewController) {
-        switch code {
+    func handleErrors(statusCode: Int, viewController vc:UIViewController) {
+        switch statusCode {
         case 100...199: print("Information")
         case 200...299: print("Success")
         case 300...399: print("Redirect")

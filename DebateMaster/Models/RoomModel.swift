@@ -32,18 +32,19 @@ class RoomModel:Codable {
               let userID = UserModel.shared.id else {return}
         
         var roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.find)/\(urlCategory)/\(userID)"
-        
         if let existingRoom = existingRoom {
             roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.next)/\(existingRoom.category)/\(existingRoom.id)"
         }
+        //Fetch room
         networkManager.fetchData(type: RoomModel.self, url: roomURL, withEncoding: true) { [weak vc] (code,room,_) in
             guard let vc = vc else {return}
-            networkManager.handleErrors(code: code, viewController: vc)
-            
+            networkManager.handleErrors(statusCode: code, viewController: vc)
             guard let room = room else { return }
             let url = "\(networkManager.rtcURL)/\(KeyCenter.appID)/\(KeyCenter.appCertificate)/\(room.name)/\(userUID)"
+            
+            //Fetch token
             networkManager.fetchData(type: String.self, url: url, withEncoding: false) { (statusCode,_,data) in
-                networkManager.handleErrors(code: statusCode, viewController: vc)
+                networkManager.handleErrors(statusCode: statusCode, viewController: vc)
                 guard let data = data else { return }
                 guard let token = String(data: data, encoding: .utf8) else {return}
                 UserModel.shared.agoraToken = token

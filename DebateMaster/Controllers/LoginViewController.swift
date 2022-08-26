@@ -163,7 +163,7 @@ class LoginViewController: UIViewController {
     @objc private func appleLogin() {
 
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

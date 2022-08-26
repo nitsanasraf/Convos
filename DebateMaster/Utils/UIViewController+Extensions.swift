@@ -30,7 +30,7 @@ extension UIViewController {
         textView.layoutMargins = UIEdgeInsets(top: 0, left: paddingSize, bottom: 0, right: paddingSize)
         textView.isLayoutMarginsRelativeArrangement = true
         
-        let icon = UIImageView(image: UIImage(named: iconName))
+        let icon = UIImageView(image: UIImage(systemName: iconName))
         
         let toastLabel = UILabel()
         toastLabel.textColor = .white
@@ -56,7 +56,7 @@ extension UIViewController {
             container.alpha = 1.0
             container.transform = bottomIn
         }, completion: { _ in
-            UIView.animate(withDuration: 0.7, delay: 3.0, options: .curveEaseInOut) {
+            UIView.animate(withDuration: 0.7, delay: 4.0, options: .curveEaseInOut) {
                 container.alpha = 0.0
                 container.transform = bottomOut
             } completion: { _ in
