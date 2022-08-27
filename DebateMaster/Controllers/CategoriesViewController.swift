@@ -19,7 +19,16 @@ class CategoriesViewController: UIViewController {
     ]
     
     private let networkManager = NetworkManger()
-        
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.color = Constants.Colors.primaryText
+        indicator.style = .large
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.startAnimating()
+        return indicator
+    }()
+    
     private let tableView: UITableView = {
         let table = UITableView(frame: .zero)
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -32,12 +41,22 @@ class CategoriesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
-
+      
+        view.addSubview(activityIndicator)
+        activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        guard let parent = self.parent else {return}
+        KeyCenter.getKeys(viewController: parent) {
+            DispatchQueue.main.async {
+                self.activityIndicator.stopAnimating()
+                self.addViews()
+                self.addLayouts()
+            }
+        }
         tableView.delegate = self
         tableView.dataSource = self
         
-        addViews()
-        addLayouts()
         UserModel.shared.printDetails()
     }
         
