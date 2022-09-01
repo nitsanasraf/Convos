@@ -33,7 +33,7 @@ class RoomModel:Codable {
         
         var roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.find)/\(urlCategory)/\(userID)"
         if let existingRoom = existingRoom {
-            roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.next)/\(existingRoom.category)/\(existingRoom.id)"
+            roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.next)/\(existingRoom.category)/\(existingRoom.id)/\(userID)"
         }
         //Fetch room
         networkManager.fetchData(type: RoomModel.self, url: roomURL, withEncoding: true) { [weak vc] (code,room,_) in

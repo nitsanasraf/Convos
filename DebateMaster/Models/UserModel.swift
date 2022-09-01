@@ -88,6 +88,15 @@ struct UserModel:Codable {
         return nil
     }
     
+    func getTotalRoomsCount() -> Int {
+        guard let categoriesCount = self.categoriesCount else {return 0}
+        
+        let values = categoriesCount.compactMap {Int($0["count"]!)}
+        let totalRooms = values.reduce(0) {
+            $0 + $1
+        }
+        return totalRooms
+    }
     
     
     func printDetails() -> Void {

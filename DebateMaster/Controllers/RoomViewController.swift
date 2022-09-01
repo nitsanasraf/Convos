@@ -432,7 +432,6 @@ private let bottomVideoStack:UIStackView = {
             let size: CGFloat = 30
             let type = NVActivityIndicatorType.ballSpinFadeLoader
             let indicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: size, height: size)), type: type, color: UIColor(cgColor:frame.color), padding: size)
-            
             let bottomLabel = UILabel()
             bottomLabel.text = "Participant"
             bottomLabel.font = .systemFont(ofSize: 11, weight: .bold)
@@ -747,20 +746,13 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         print("User has left the channel: \(room?.name ?? "nil")")
     }
     
-    func rtcEngine(_ engine: AgoraRtcEngineKit, didApiCallExecute error: Int, api: String, result: String) {
-        if error != 0 {
-            print("SDK ERROR: ",error)
-        }
-    }
-    
-    func rtcEngine(_ engine: AgoraRtcEngineKit, didRegisteredLocalUser userAccount: String, withUid uid: UInt) {
-        print("Successfully registered local user")
-    }
-    
     func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinChannel channel: String, withUid uid: UInt, elapsed: Int) {
         print("Joined Channel!")
     }
     
+    func rtcEngine(_ engine: AgoraRtcEngineKit, tokenPrivilegeWillExpire token: String) {
+        print("Token will expire in 30 seconds.")
+    }
 }
 
 //MARK: - URLSessionWebSocketDelegate

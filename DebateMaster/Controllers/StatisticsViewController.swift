@@ -131,8 +131,12 @@ class StatisticsViewController: UIViewController {
         return chart
     }()
     
-    private let someLabel: BRLabel = {
-        let label = BRLabel(boldText: "Radar label: ", regularText: "Some Data", ofSize: 15)
+    private lazy var roomsCountLabel: BRLabel = {
+        let count = UserModel.shared.getTotalRoomsCount()
+        let fmt = NumberFormatter()
+        fmt.numberStyle = .decimal
+        let totalRoomsCount = fmt.string(from: count as NSNumber)
+        let label = BRLabel(boldText: "Total rooms: ", regularText: totalRoomsCount ?? "0", ofSize: 15.0)
         label.textAlignment = .center
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -207,24 +211,11 @@ class StatisticsViewController: UIViewController {
     }
     
     private func setRadarData() {
-//        guard let categoriesCount = UserModel.shared.categoriesCount else {return}
-        
+        guard let categoriesCount = UserModel.shared.categoriesCount else {return}
+
         var dataEntries = [ChartDataEntry]()
-        let data = [6.0,4.0,7.0,1.5,4.4,9.9]
-        for i in 0..<data.count{
-            dataEntries.append(RadarChartDataEntry(value: data[i] ))
-        }
-        
-        var dataEntries1 = [ChartDataEntry]()
-        let data1 = [5.0,10.0,9.0,5.5,7.3,2.5]
-        for i in 0..<data1.count {
-            dataEntries1.append(RadarChartDataEntry(value: data1[i] ))
-        }
-        
-        var dataEntries2 = [ChartDataEntry]()
-        let data2 = [10.0,5.0,2.0,9.6,7.6,5.5]
-        for i in 0..<data2.count {
-            dataEntries2.append(RadarChartDataEntry(value: data2[i] ))
+        for (ix,item) in categoriesCount.enumerated() {
+            dataEntries.append(BarChartDataEntry(x: Double(ix), y: Double(item["count"]!) ?? 0))
         }
         
         let dataSet = RadarChartDataSet(entries: dataEntries , label: nil)
@@ -233,23 +224,11 @@ class StatisticsViewController: UIViewController {
         dataSet.setColor(.systemYellow)
         dataSet.fillColor = .systemYellow
         
-        let dataSet1 = RadarChartDataSet(entries: dataEntries1 , label: nil)
-        dataSet1.highlightEnabled = false
-        dataSet1.drawFilledEnabled = true
-        dataSet1.setColor(.systemBlue)
-        dataSet1.fillColor = .systemBlue
+        let data = RadarChartData(dataSet:dataSet)
+        data.setDrawValues(false)
         
-        let dataSet2 = RadarChartDataSet(entries: dataEntries2 , label: nil)
-        dataSet2.highlightEnabled = false
-        dataSet2.drawFilledEnabled = true
-        dataSet2.setColor(.systemPink)
-        dataSet2.fillColor = .systemPink
-        
-        let totalData = RadarChartData(dataSets: [dataSet,dataSet1,dataSet2])
-        totalData.setDrawValues(false)
-        
-        radarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: ["Label1", "Label2", "Label3","Label4","Label5","Label6"])
-        radarChartView.data = totalData
+        radarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: categoriesCount.map { $0["category"]! })
+        radarChartView.data = data
     }
     
     
@@ -259,7 +238,7 @@ class StatisticsViewController: UIViewController {
         contentView.addSubview(stackView)
         stackView.addArrangedSubviews(createSection(content: createdAtLabel, withLabel: nil),
                                       createSection(content: barChartView, withLabel: favouriteLabel),
-                                      createSection(content: radarChartView, withLabel: someLabel))
+                                      createSection(content: radarChartView, withLabel: roomsCountLabel))
     }
     
     private func addLayouts() {
