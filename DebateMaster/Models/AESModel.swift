@@ -13,7 +13,7 @@ protocol Cryptable {
     func decrypt(_ data: Data) throws -> String
 }
 
-struct AES {
+struct AESModel {
     private let key: Data
     private let ivSize: Int         = kCCBlockSizeAES128
     private let options: CCOptions  = CCOptions(kCCOptionPKCS7Padding)
@@ -26,7 +26,7 @@ struct AES {
     }
 }
 
-extension AES {
+extension AESModel {
     enum Error: Swift.Error {
         case invalidKeySize
         case generateRandomIVFailed
@@ -36,7 +36,7 @@ extension AES {
     }
 }
 
-private extension AES {
+private extension AESModel {
     
     func generateRandomIV(for data: inout Data) throws {
         
@@ -59,7 +59,7 @@ private extension AES {
     }
 }
 
-extension AES: Cryptable {
+extension AESModel: Cryptable {
     
     func encrypt(_ string: String) throws -> Data {
         let dataToEncrypt = Data(string.utf8)
