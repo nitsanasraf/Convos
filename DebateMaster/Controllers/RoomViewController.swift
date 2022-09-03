@@ -602,25 +602,16 @@ private let bottomVideoStack:UIStackView = {
     
     private func addViews() {
         view.addSubview(mainStackView)
-        
         mainStackView.addArrangedSubviews(topVideoStack, UIView.spacer(size: 0, for: .vertical), middleQustionsStack, middleActionStack, middleSkipCounterStack, bottomVideoStack)
-        
         for i in 3...5 {
             topVideoStack.addArrangedSubview(frames[i].container)
         }
-        
-        
         middleQustionsStack.addArrangedSubview(discussionTopic)
-        
         middleActionStack.addArrangedSubviews(newRoomButton, newTopicButton, muteAllButton)
-        
         middleSkipCounterStack.addArrangedSubview(newTopicVotesLabel)
-        
         for i in 0...2 {
             bottomVideoStack.addArrangedSubview(frames[i].container)
         }
-        
-        
     }
     
     private func addLayouts() {
@@ -690,13 +681,15 @@ private let bottomVideoStack:UIStackView = {
     //MARK: - Agora Functionss
     private func initializeAndJoinChannel() {
         guard let userUID = UserModel.shared.uid,
-              let uid = UInt(userUID) else {return}
+              let uid = UInt(userUID),
+              let appID = KeyCenter.appID else {return}
+
         
         setPosition(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             
             DispatchQueue.main.async {
-                self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID ?? "", delegate: self)
+                self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: appID, delegate: self)
                 self.agoraKit?.enableVideo()
                 self.agoraKit?.setEnableSpeakerphone(true)
                 self.agoraKit?.setDefaultAudioRouteToSpeakerphone(true)

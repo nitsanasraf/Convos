@@ -8,7 +8,6 @@
 import UIKit
 import AuthenticationServices
 
-
 class LoginViewController: UIViewController {
 
     private let networkManager = NetworkManger()
@@ -166,7 +165,7 @@ class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if UserModel.shared.isUserLoggedIn() {
             self.navigationController?.pushViewController(TabBarViewController(), animated: false)
         }

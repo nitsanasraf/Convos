@@ -7,16 +7,23 @@
 
 import UIKit
 
+
 struct KeyCenter {
     static var appID: String?
     
-    static func getAppID(viewController vc: UIViewController, completionHandler: @escaping ()->()) {
+    struct KeysHandler:Codable {
+        let key: String
+        let app: Data
+    }
+    
+    static func getKeys(viewController vc: UIViewController, completionHandler: @escaping ()->()) {
         let networkManager = NetworkManger()
-        networkManager.fetchData(type: String.self, url: "\(networkManager.agoraURL)/\(Constants.Network.EndPoints.keys)", withEncoding: false) { (statusCode,_,data) in
+        networkManager.fetchData(type: KeysHandler.self, url: "\(networkManager.agoraURL)/\(Constants.Network.EndPoints.keys)", withEncoding: true) { (statusCode,keysHandler,_) in
             networkManager.handleErrors(statusCode: statusCode, viewController: vc)
-            guard let data = data else {return}
-            let decodedKey = String(data: data, encoding: .utf8)
-            KeyCenter.appID = decodedKey
+            guard let keysHandler = keysHandler else {return}
+            let aes = try? AES(keyString: keysHandler.key)
+            let appID = try? aes?.decrypt(keysHandler.app)
+            KeyCenter.appID = appID
             completionHandler()
         }
     }

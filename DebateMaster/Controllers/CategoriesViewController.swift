@@ -47,7 +47,7 @@ class CategoriesViewController: UIViewController {
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         guard let parent = self.parent else {return}
-        KeyCenter.getAppID(viewController: parent) {
+        KeyCenter.getKeys(viewController: parent) {
             DispatchQueue.main.async {
                 self.activityIndicator.stopAnimating()
                 self.addViews()

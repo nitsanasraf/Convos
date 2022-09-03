@@ -47,9 +47,9 @@ class StatisticsViewController: UIViewController {
         guard let userID = UserModel.shared.id else {return}
         guard let parent = self.parent else {return}
 
-        networkManager.fetchData(type: UserModel.self, url: "\(networkManager.usersURL)/\(userID)", withEncoding: true) { [weak self] (code,user,_) in
+        networkManager.fetchData(type: UserModel.self, url: "\(networkManager.usersURL)/\(userID)", withEncoding: true) { [weak self] (statusCode,user,_) in
             guard let self = self else {return}
-            self.networkManager.handleErrors(statusCode: code, viewController: parent)
+            self.networkManager.handleErrors(statusCode: statusCode, viewController: parent)
             guard let user = user else {return}
             UserModel.shared.categoriesCount = user.categoriesCount
             UserModel.shared.createdAt = user.createdAt
