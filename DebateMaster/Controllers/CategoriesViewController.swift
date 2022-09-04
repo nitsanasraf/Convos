@@ -8,15 +8,8 @@
 import UIKit
 
 class CategoriesViewController: UIViewController {
-   
-    private let categories = [
-        ["title":"History 📖","desc":"Discuss history and newest conventions in history."],
-        ["title":"Politics 📋","desc":"Discuss politics and newest conventions in politics."],
-        ["title":"Economics 📉","desc":"Discuss economics and newest conventions in economy."],
-        ["title":"Law 📜","desc":"Discuss law and newest conventions in law."],
-        ["title":"Technology 🤖","desc":"Discuss technology and newest conventions in technology."],
-        ["title":"Science 🪐","desc":"Discuss science and newest conventions in science."],
-    ]
+    
+    private var categories: [CategoryModel]?
     
     private let networkManager = NetworkManger()
     
@@ -46,25 +39,30 @@ class CategoriesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
-      
+        view.addBackgroundImage(with: "main.bg")
+        
         view.addSubview(activityIndicator)
         activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         guard let parent = self.parent else {return}
         KeyCenter.getKeys(viewController: parent) {
-            DispatchQueue.main.async {
-                self.activityIndicator.stopAnimating()
-                self.addViews()
-                self.addLayouts()
+            CategoryModel.getCategories(viewController: parent) { categories in
+                DispatchQueue.main.async {
+                    self.categories = categories
+                    self.activityIndicator.stopAnimating()
+                    self.addViews()
+                    self.addLayouts()
+                }
             }
+            
         }
         tableView.delegate = self
         tableView.dataSource = self
         
         UserModel.shared.printDetails()
     }
-        
+    
     private func addViews() {
         view.addSubview(tableView)
     }
@@ -79,9 +77,9 @@ class CategoriesViewController: UIViewController {
         NSLayoutConstraint.activate(tableViewConstraints)
     }
     
-    private func openLoadingVC(withCategory category:String) {
+    private func openLoadingVC(withCategory category: CategoryModel?) {
         let vc = LoadingViewController()
-        vc.categoryLabel.text = category
+        vc.category = category
         self.parent?.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -90,22 +88,22 @@ class CategoriesViewController: UIViewController {
 extension CategoriesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return categories?.count ?? 0
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.allowsSelection = false
-        openLoadingVC(withCategory: categories[indexPath.row]["title"]!)
+        openLoadingVC(withCategory: categories?[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoriesTableViewCell.identifier, for: indexPath) as? CategoriesTableViewCell else { return UITableViewCell() }
-        
         cell.selectionStyle = .none
-        cell.categoryTitle.text = categories[indexPath.row]["title"]!
-        cell.categoryDescription.text = categories[indexPath.row]["desc"]!
+        cell.categoryTitle.text = categories?[indexPath.row].title
+        cell.categoryDescription.text = categories?[indexPath.row].description
+        cell.icon.image = UIImage(named: categories?[indexPath.row].icon ?? "")
         cell.backgroundColor = .clear
         return cell
     }
-
+    
 }

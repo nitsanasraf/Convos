@@ -52,7 +52,8 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
-        
+        view.addBackgroundImage(with: "main.bg")
+
         tableView.delegate = self
         tableView.dataSource = self
 

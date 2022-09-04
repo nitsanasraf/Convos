@@ -30,7 +30,7 @@ class RoomViewController: UIViewController {
     
     var room: RoomModel?
     
-    private lazy var frames = [FrameModel(), FrameModel(), FrameModel(), FrameModel(), FrameModel(), FrameModel()]
+    private var frames = [FrameModel(), FrameModel(), FrameModel(), FrameModel(), FrameModel(), FrameModel()]
     
     //MARK: - Web Socket Functions
     private func receiveData() {
@@ -126,7 +126,7 @@ class RoomViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 5
         stackView.layer.cornerRadius = 10
-        stackView.backgroundColor = UIColor(white: 0, alpha: 0.2)
+        stackView.backgroundColor = .init(white: 0, alpha: 0.2)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top:5, left: 15, bottom: 5, right: 15)
         stackView.alignment = .center
@@ -139,7 +139,7 @@ class RoomViewController: UIViewController {
         stackView.spacing = 5
         stackView.alignment = .center
         stackView.layer.cornerRadius = 10
-        stackView.backgroundColor = UIColor(white: 0, alpha: 0.2)
+        stackView.backgroundColor = .init(white: 0, alpha: 0.2)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         return stackView
@@ -155,7 +155,7 @@ class RoomViewController: UIViewController {
     
     private func changeActionButtonUI(isPressed:Bool,config: inout UIButton.Configuration) {
         if isPressed {
-            config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
+            config.baseBackgroundColor = .init(white: 0, alpha: 0.2)
             config.baseForegroundColor = Constants.Colors.primaryText
         } else {
             config.baseBackgroundColor = Constants.Colors.primaryText
@@ -230,7 +230,7 @@ class RoomViewController: UIViewController {
     private lazy var newRoomButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
+        config.baseBackgroundColor = .init(white: 0, alpha: 0.2)
         config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "New room"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -249,7 +249,7 @@ class RoomViewController: UIViewController {
     
     private func createLoadingModal() {
         let modal = UIView()
-        modal.backgroundColor = UIColor.init(white: 0, alpha: 0.85)
+        modal.backgroundColor = .init(white: 0, alpha: 0.85)
         modal.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView()
@@ -298,7 +298,7 @@ class RoomViewController: UIViewController {
     private lazy var newTopicButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
+        config.baseBackgroundColor = .init(white: 0, alpha: 0.2)
         config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "New topic"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -324,7 +324,7 @@ class RoomViewController: UIViewController {
     private lazy var muteAllButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(white: 0, alpha: 0.2)
+        config.baseBackgroundColor = .init(white: 0, alpha: 0.2)
         config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "Mute all"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -549,7 +549,6 @@ private let bottomVideoStack:UIStackView = {
         self.present(alert, animated: true, completion: nil)
     }
     
-    
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -595,6 +594,7 @@ private let bottomVideoStack:UIStackView = {
     //MARK: - Utils Setups
     private func configureSkeleton() {
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
+        view.addBackgroundImage(with: "main.bg")
         self.navigationItem.hidesBackButton = true
         let newBackButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(goBack))
         self.navigationItem.leftBarButtonItem = newBackButton

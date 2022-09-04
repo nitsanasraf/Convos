@@ -18,21 +18,12 @@ class CategoriesTableViewCell: UITableViewCell {
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        stackView.layoutMargins = UIEdgeInsets(top: 15, left: 20, bottom: 15, right: 20)
         stackView.backgroundColor = .init(white: 0, alpha: 0.1)
         stackView.layer.cornerRadius = 10
         stackView.clipsToBounds = true
         return stackView
     }()
-    
-    private func createAccessoryView() -> UIImageView {
-        let image = UIImage(systemName: "chevron.right")
-        let accessory = UIImageView(frame:CGRect(x:0, y:0, width:(image?.size.width) ?? 0, height:(image?.size.height) ?? 0))
-        accessory.image = image
-        accessory.tintColor = Constants.Colors.primaryText
-        accessory.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        return accessory
-    }
     
     private let descriptionStackView:UIStackView = {
         let stackView = UIStackView()
@@ -40,6 +31,18 @@ class CategoriesTableViewCell: UITableViewCell {
         stackView.spacing = 5
         stackView.setContentHuggingPriority(.defaultLow, for: .horizontal)
         return stackView
+    }()
+    
+    var icon: UIImageView = {
+        let imageView = UIImageView()
+        let size: CGFloat = 40
+        imageView.transform = CGAffineTransform(rotationAngle: -25)
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.widthAnchor.constraint(equalToConstant: size).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: size).isActive = true
+        imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        return imageView
     }()
     
     var categoryTitle:UILabel = {
@@ -68,7 +71,7 @@ class CategoriesTableViewCell: UITableViewCell {
     
     private func addViews() {
         contentView.addSubview(cellMainStackView)
-        cellMainStackView.addArrangedSubviews(descriptionStackView,createAccessoryView())
+        cellMainStackView.addArrangedSubviews(descriptionStackView, icon)
         descriptionStackView.addArrangedSubviews(categoryTitle,categoryDescription)
     }
     

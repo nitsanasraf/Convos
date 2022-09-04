@@ -11,6 +11,8 @@ import AgoraRtcKit
 class LoadingViewController: UIViewController {
     
     private var networkManager = NetworkManger()
+    
+    var category: CategoryModel?
 
     private lazy var agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID ?? "", delegate: self)
     
@@ -32,10 +34,21 @@ class LoadingViewController: UIViewController {
         return indicator
     }()
     
-    lazy var categoryLabel: UILabel = {
+    private lazy var categoryIcon: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: category?.icon ?? ""))
+        let size: CGFloat = 50
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.widthAnchor.constraint(equalToConstant: size).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: size).isActive = true
+        return imageView
+    }()
+    
+    private lazy var categoryLabel: UILabel = {
         let label = UILabel()
         label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
+        label.text = category?.title
         label.textAlignment = .center
         label.lineBreakMode = .byCharWrapping
         label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
@@ -92,18 +105,19 @@ class LoadingViewController: UIViewController {
         configureSkeleton()
         addViews()
         addLayouts()
-        RoomModel.findEmptyRoom(fromRoom: nil, networkManager: networkManager, category: categoryLabel.text, viewController: self, agoraKit: agoraKit)
+        RoomModel.findEmptyRoom(fromRoom: nil, networkManager: networkManager, category: category?.title, viewController: self, agoraKit: agoraKit)
     }
     
     private func configureSkeleton() {
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
+        view.addBackgroundImage(with: "main.bg")
         self.navigationItem.hidesBackButton = true
     }
     
     private func addViews() {
         view.addSubview(stackView)
         
-        stackView.addArrangedSubviews(categoryLabel, activityIndicator, loadingLabel, timeAssessmentLabel, cancelButton)
+        stackView.addArrangedSubviews(categoryIcon,categoryLabel, activityIndicator, loadingLabel, timeAssessmentLabel, cancelButton)
     }
     
     private func addLayouts() {

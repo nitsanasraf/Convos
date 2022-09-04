@@ -98,8 +98,7 @@ class StatisticsViewController: UIViewController {
         var label = BRLabel()
         let size = 15.0
         if let category = UserModel.shared.getFavouriteCategory() {
-            let emojiCategory = RoomModel.getEmojiName(categoryName: category)
-            label = BRLabel(boldText: "Favourite category: ", regularText: emojiCategory, ofSize: size)
+            label = BRLabel(boldText: "Favourite category: ", regularText: category, ofSize: size)
         } else {
             label = BRLabel(boldText: "Favourite category: ", regularText: "No favourite yet 🤔", ofSize: size)
         }
@@ -171,7 +170,8 @@ class StatisticsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
-        
+        view.addBackgroundImage(with: "main.bg")
+
         view.addSubview(activityIndicator)
         activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true

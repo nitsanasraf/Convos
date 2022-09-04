@@ -30,4 +30,14 @@ extension UIView {
         self.layer.insertSublayer(gradient, at: 0)
     }
     
+    func addBackgroundImage(with imageName: String) {
+        let imageView = UIImageView(image: UIImage(named: imageName))
+        self.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+        imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+        imageView.contentMode = .scaleAspectFill
+        imageView.alpha = 0.07
+    }
+    
 }

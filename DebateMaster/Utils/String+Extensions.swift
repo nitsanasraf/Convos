@@ -31,12 +31,4 @@ extension String {
         return self.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
     
-    func stripEmojis() -> String {
-        return self.components(separatedBy: CharacterSet.symbols).joined()
-    }
-    
-    func makeURLSafe() -> String {
-        return self.stripEmojis().trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-    
 }

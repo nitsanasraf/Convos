@@ -173,6 +173,8 @@ class LoginViewController: UIViewController {
         }
         
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
+        view.addBackgroundImage(with: "main.bg")
+        
         addViews()
         addLayouts()
     }

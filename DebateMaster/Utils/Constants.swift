@@ -24,6 +24,7 @@ struct Constants {
             static let logout = "logout"
             static let agora = "agora"
             static let keys = "keys"
+            static let categories = "categories"
         }
     }
     enum HttpMethods:String {
