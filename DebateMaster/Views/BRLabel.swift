@@ -12,6 +12,7 @@ class BRLabel: UILabel {
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
+    
     convenience init(boldText bold: String, regularText regular: String, ofSize size:CGFloat, color: UIColor = Constants.Colors.primaryText ) {
         self.init(frame: .zero)
         let boldText = bold

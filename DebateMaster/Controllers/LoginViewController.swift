@@ -12,6 +12,13 @@ class LoginViewController: UIViewController {
 
     private let networkManager = NetworkManger()
     
+    private func saveUserOnKeyChain() {
+        KeyChain.shared[Constants.KeyChain.Keys.userAuthToken] = UserModel.shared.authToken
+        KeyChain.shared[Constants.KeyChain.Keys.userEmail] = UserModel.shared.email
+        KeyChain.shared[Constants.KeyChain.Keys.userID] = UserModel.shared.id
+        KeyChain.shared[Constants.KeyChain.Keys.userUID] = UserModel.shared.uid
+    }
+    
     private let loginStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -84,21 +91,50 @@ class LoginViewController: UIViewController {
         return button
     }()
     
-   
-    private func saveUserOnKeyChain() {
-        KeyChain.shared[Constants.KeyChain.Keys.userAuthToken] = UserModel.shared.authToken
-        KeyChain.shared[Constants.KeyChain.Keys.userEmail] = UserModel.shared.email
-        KeyChain.shared[Constants.KeyChain.Keys.userID] = UserModel.shared.id
-        KeyChain.shared[Constants.KeyChain.Keys.userUID] = UserModel.shared.uid
+    @objc private func googleLogin(_ sender: UIButton) {
+        sender.isEnabled = false
+        guard let authURL = URL(string: networkManager.authGoogleURL) else {return}
+
+        let scheme = networkManager.schemeName
+        let session = ASWebAuthenticationSession(
+          url: authURL,
+          callbackURLScheme: scheme) { [weak self] callbackURL, error in
+              sender.isEnabled = true
+              if let error = error {
+                  print("Auth Error: \(error)")
+              } else {
+                  guard let callbackURL = callbackURL else {return}
+                  let queryItems =
+                  URLComponents(string: callbackURL.absoluteString)?.queryItems
+                  
+                  let token = queryItems?.first { $0.name == "token" }?.value
+                  let email = queryItems?.first { $0.name == "email" }?.value
+                  let id = queryItems?.first { $0.name == "id" }?.value
+                  let uid = queryItems?.first { $0.name == "uid" }?.value
+
+                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
+                  self?.saveUserOnKeyChain()
+                  
+                  DispatchQueue.main.async {
+                      let tabVC = TabBarViewController()
+                      self?.navigationController?.pushViewController(tabVC, animated: true)
+                  }
+              }
+          }
+        session.presentationContextProvider = self
+        session.prefersEphemeralWebBrowserSession = true
+        session.start()
     }
     
-    @objc private func facebookLogin() {
+    @objc private func facebookLogin(_ sender: UIButton) {
+        sender.isEnabled = false
         guard let authURL = URL(string:networkManager.authFacebookURL) else {return}
         
         let scheme = networkManager.schemeName
         let session = ASWebAuthenticationSession(
           url: authURL,
           callbackURLScheme: scheme) { [weak self] callbackURL, error in
+              sender.isEnabled = true
               if let error = error {
                   print("Auth Error: \(error)")
               } else {
@@ -125,42 +161,8 @@ class LoginViewController: UIViewController {
         session.start()
     }
     
-    @objc private func googleLogin() {
-        guard let authURL = URL(string: networkManager.authGoogleURL) else {return}
-        
-        let scheme = networkManager.schemeName
-        let session = ASWebAuthenticationSession(
-          url: authURL,
-          callbackURLScheme: scheme) { [weak self] callbackURL, error in
-              if let error = error {
-                  print("Auth Error: \(error)")
-              } else {
-                  guard let callbackURL = callbackURL else {return}
-                  let queryItems =
-                  URLComponents(string: callbackURL.absoluteString)?.queryItems
-                  
-                  let token = queryItems?.first { $0.name == "token" }?.value
-                  let email = queryItems?.first { $0.name == "email" }?.value
-                  let id = queryItems?.first { $0.name == "id" }?.value
-                  let uid = queryItems?.first { $0.name == "uid" }?.value
-
-                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
-                  self?.saveUserOnKeyChain()
-                  
-                  DispatchQueue.main.async {
-                      let tabVC = TabBarViewController()
-                      self?.navigationController?.pushViewController(tabVC, animated: true)
-                  }
-              }
-          }
-        session.presentationContextProvider = self
-        session.prefersEphemeralWebBrowserSession = true
-        session.start()
-        
-    }
-    
-    @objc private func appleLogin() {
-
+    @objc private func appleLogin(_ sender: UIButton) {
+        sender.isEnabled = false
     }
 
     override func viewDidLoad() {
@@ -171,7 +173,6 @@ class LoginViewController: UIViewController {
         }
         
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
-
         addViews()
         addLayouts()
     }
@@ -196,12 +197,12 @@ class LoginViewController: UIViewController {
 
 
 extension LoginViewController: ASWebAuthenticationPresentationContextProviding {
-  func presentationAnchor(
-    for session: ASWebAuthenticationSession
-  ) -> ASPresentationAnchor {
-    guard let window = view.window else {
-      fatalError("No window found in view")
+    func presentationAnchor(
+        for session: ASWebAuthenticationSession
+    ) -> ASPresentationAnchor {
+        guard let window = view.window else {
+            fatalError("No window found in view")
+        }
+        return window
     }
-    return window
-  }
 }

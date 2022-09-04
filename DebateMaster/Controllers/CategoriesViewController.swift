@@ -37,7 +37,12 @@ class CategoriesViewController: UIViewController {
         table.separatorStyle = .none
         return table
     }()
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.allowsSelection = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
@@ -89,6 +94,7 @@ extension CategoriesViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.allowsSelection = false
         openLoadingVC(withCategory: categories[indexPath.row]["title"]!)
     }
     
