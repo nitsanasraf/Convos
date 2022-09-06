@@ -27,7 +27,7 @@ struct Constants {
             static let categories = "categories"
         }
     }
-    enum HttpMethods:String {
+    enum HttpMethods: String {
         case POST
         case PUT
         case DELETE
