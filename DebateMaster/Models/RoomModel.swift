@@ -24,7 +24,7 @@ class RoomModel: Codable {
         vc.navigationController?.pushViewController(roomVC, animated: true)
     }
     
-    static func findEmptyRoom(fromRoom existingRoom: RoomModel?, networkManager: NetworkManger, category: String?, viewController vc: UIViewController, agoraKit: AgoraRtcEngineKit?) {
+    static func findEmptyRoom(fromRoom existingRoom: RoomModel?, networkManager: NetworkManger, category: String?, viewController vc: UIViewController, completionHandler: @escaping (RoomModel,UInt)->()) {
         guard let urlCategory = category?.trimmingCharacters(in: .whitespacesAndNewlines),
               let strUID = UserModel.shared.uid,
               let userUID = UInt(strUID),
@@ -48,13 +48,7 @@ class RoomModel: Codable {
                 guard let data = data else { return }
                 guard let token = String(data: data, encoding: .utf8) else {return}
                 UserModel.shared.agoraToken = token
-                DispatchQueue.main.async {
-                    agoraKit?.leaveChannel()
-                    agoraKit?.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: userUID, joinSuccess: { (channel, uid, elapsed) in
-                        print("User has successfully joined the channel: \(channel)")
-                        RoomModel.moveToRoom(room: room, fromViewController: vc, withTitle: room.category)
-                    })
-                }
+                completionHandler(room,userUID)
             }
         }
     }

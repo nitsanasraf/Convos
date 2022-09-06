@@ -285,10 +285,26 @@ class RoomViewController: UIViewController {
         
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: nil, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
+        alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { [weak self] alert in
+            guard let self = self else {return}
             self.createLoadingModal()
             self.closeSocket()
-            RoomModel.findEmptyRoom(fromRoom: room, networkManager: networkManager, category: self.title, viewController: self, agoraKit: agoraKit)
+            RoomModel.findEmptyRoom(fromRoom: room, networkManager: networkManager, category: self.title, viewController: self) { room, uid in
+                DispatchQueue.main.async {
+                    agoraKit.leaveChannel()
+                    agoraKit.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: uid, joinSuccess: { [weak self] (channel, uid, elapsed) in
+                        guard let self = self else {return}
+                        print("User has successfully joined the channel: \(channel)")
+                        let roomVC = RoomViewController()
+                        roomVC.title = self.title
+                        roomVC.room = room
+                        guard var vcs = self.navigationController?.viewControllers else {return}
+                        vcs = vcs.dropLast()
+                        vcs.append(roomVC)
+                        self.navigationController?.setViewControllers(vcs, animated: false)
+                    })
+                }
+            }
         })
         
         alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
@@ -541,7 +557,8 @@ private let bottomVideoStack:UIStackView = {
     
     @objc private func goBack() {
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { alert in
+        alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { [weak self] alert in
+            guard let self = self else {return}
             let tabVC = self.navigationController!.viewControllers.filter { $0 is TabBarViewController }.first!
             self.navigationController!.popToViewController(tabVC, animated: true)
         })
@@ -552,7 +569,7 @@ private let bottomVideoStack:UIStackView = {
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         configureSkeleton()
         
         networkManager?.webSocketTask?.delegate = self

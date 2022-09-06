@@ -82,7 +82,6 @@ class CategoriesViewController: UIViewController {
         vc.category = category
         self.parent?.navigationController?.pushViewController(vc, animated: true)
     }
-    
 }
 
 extension CategoriesViewController: UITableViewDelegate, UITableViewDataSource {

@@ -98,7 +98,7 @@ class LoginViewController: UIViewController {
         let scheme = networkManager.schemeName
         let session = ASWebAuthenticationSession(
           url: authURL,
-          callbackURLScheme: scheme) { [weak self] callbackURL, error in
+          callbackURLScheme: scheme) { [weak self] (callbackURL, error) in
               sender.isEnabled = true
               if let error = error {
                   print("Auth Error: \(error)")
@@ -133,7 +133,7 @@ class LoginViewController: UIViewController {
         let scheme = networkManager.schemeName
         let session = ASWebAuthenticationSession(
           url: authURL,
-          callbackURLScheme: scheme) { [weak self] callbackURL, error in
+          callbackURLScheme: scheme) { [weak self] (callbackURL, error) in
               sender.isEnabled = true
               if let error = error {
                   print("Auth Error: \(error)")

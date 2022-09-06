@@ -49,12 +49,12 @@ class LaunchViewController: UIViewController {
     private func animate() {
         UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseIn) {
             self.logo.transform = CGAffineTransform(scaleX: 20, y: 20)
-        } completion: { isFinished in
+        } completion: { [weak self] isFinished in
             if isFinished {
                 let loginVC = UINavigationController(rootViewController: LoginViewController())
                 loginVC.modalPresentationStyle = .fullScreen
                 loginVC.modalTransitionStyle = .crossDissolve
-                self.present(loginVC, animated: true)
+                self?.present(loginVC, animated: true)
             }
         }
     }
