@@ -99,6 +99,7 @@ class LoginViewController: UIViewController {
         let session = ASWebAuthenticationSession(
           url: authURL,
           callbackURLScheme: scheme) { [weak self] (callbackURL, error) in
+              guard let self = self else {return}
               sender.isEnabled = true
               if let error = error {
                   print("Auth Error: \(error)")
@@ -113,11 +114,12 @@ class LoginViewController: UIViewController {
                   let uid = queryItems?.first { $0.name == "uid" }?.value
 
                   UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
-                  self?.saveUserOnKeyChain()
+                  self.saveUserOnKeyChain()
                   
-                  DispatchQueue.main.async {
+                  DispatchQueue.main.async { [weak self] in
+                      guard let self = self else {return}
                       let tabVC = TabBarViewController()
-                      self?.navigationController?.pushViewController(tabVC, animated: true)
+                      self.navigationController?.pushViewController(tabVC, animated: true)
                   }
               }
           }
@@ -134,6 +136,7 @@ class LoginViewController: UIViewController {
         let session = ASWebAuthenticationSession(
           url: authURL,
           callbackURLScheme: scheme) { [weak self] (callbackURL, error) in
+              guard let self = self else {return}
               sender.isEnabled = true
               if let error = error {
                   print("Auth Error: \(error)")
@@ -148,11 +151,12 @@ class LoginViewController: UIViewController {
                   let uid = queryItems?.first { $0.name == "uid" }?.value
                   
                   UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
-                  self?.saveUserOnKeyChain()
+                  self.saveUserOnKeyChain()
                   
-                  DispatchQueue.main.async {
+                  DispatchQueue.main.async { [weak self] in
+                      guard let self = self else {return}
                       let tabVC = TabBarViewController()
-                      self?.navigationController?.pushViewController(tabVC, animated: true)
+                      self.navigationController?.pushViewController(tabVC, animated: true)
                   }
               }
           }

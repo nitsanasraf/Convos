@@ -52,7 +52,8 @@ struct UserModel:Codable {
     
     func handleUnauthorised(viewController vc: UIViewController) {
         logout(viewController: vc)
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak vc] in
+            guard let vc = vc else {return}
             let alert = UIAlertController(title: "There was an issue with your current session. Please log in again.", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             let rootVC = vc.navigationController?.viewControllers.filter { $0 is LoginViewController }.first

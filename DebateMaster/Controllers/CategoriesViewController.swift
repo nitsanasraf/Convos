@@ -48,7 +48,8 @@ class CategoriesViewController: UIViewController {
         guard let parent = self.parent else {return}
         KeyCenter.getKeys(viewController: parent) {
             CategoryModel.getCategories(viewController: parent) { categories in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else {return}
                     self.categories = categories
                     self.activityIndicator.stopAnimating()
                     self.addViews()

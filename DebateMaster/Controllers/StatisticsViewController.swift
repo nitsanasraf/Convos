@@ -179,7 +179,8 @@ class StatisticsViewController: UIViewController {
         scrollView.delegate = self
         
         getUserData {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else {return}
                 self.activityIndicator.removeFromSuperview()
                 
                 self.setBarData()

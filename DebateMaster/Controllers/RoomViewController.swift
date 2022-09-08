@@ -43,14 +43,16 @@ class RoomViewController: UIViewController {
                     do {
                         let decodedData = try JSONDecoder().decode([[String:String]].self, from: data)
                         self.room?.currentVotes = decodedData
-                        DispatchQueue.main.async {
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else {return}
                             self.renderVoteOrbs()
                         }
                     } catch {
                         print("Error decoding: \(error)")
                     }
                 case .string(let str):
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else {return}
                         self.changeTopic(topic: str)
                         self.room?.currentVotes = []
                         self.renderVoteOrbs()
@@ -290,7 +292,7 @@ class RoomViewController: UIViewController {
             self.createLoadingModal()
             self.closeSocket()
             RoomModel.findEmptyRoom(fromRoom: room, networkManager: networkManager, category: self.title, viewController: self) { room, uid in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { 
                     agoraKit.leaveChannel()
                     agoraKit.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: uid, joinSuccess: { [weak self] (channel, uid, elapsed) in
                         guard let self = self else {return}
@@ -704,7 +706,9 @@ private let bottomVideoStack:UIStackView = {
         setPosition(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else {return}
+                
                 self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: appID, delegate: self)
                 let agoraConfig = AgoraVideoEncoderConfiguration(size: CGSize(width: 424, height: 240), frameRate: .fps15, bitrate: 220, orientationMode: .fixedPortrait)
                 
