@@ -700,13 +700,15 @@ private let bottomVideoStack:UIStackView = {
         guard let userUID = UserModel.shared.uid,
               let uid = UInt(userUID),
               let appID = KeyCenter.appID else {return}
-
         
         setPosition(index:nil) { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             
             DispatchQueue.main.async {
                 self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: appID, delegate: self)
+                let agoraConfig = AgoraVideoEncoderConfiguration(size: CGSize(width: 424, height: 240), frameRate: .fps15, bitrate: 220, orientationMode: .fixedPortrait)
+                
+                self.agoraKit?.setVideoEncoderConfiguration(agoraConfig)
                 self.agoraKit?.enableVideo()
                 self.agoraKit?.setEnableSpeakerphone(true)
                 self.agoraKit?.setDefaultAudioRouteToSpeakerphone(true)
