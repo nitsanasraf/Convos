@@ -13,16 +13,23 @@ class RoomViewController: UIViewController {
     
     private var agoraKit: AgoraRtcEngineKit?
     
+    private var timer = Timer()
+    
+    private let userSeconds: UserSecondsModel? = {
+        guard let userID = UserModel.shared.id,
+              let uuid = UUID(uuidString: userID) else {return nil}
+        return UserSecondsModel(userID: uuid, seconds: 0)
+    }()
+    
     private var isTopicPressed = false
     private var isMutePressed = false
     
-    private lazy var networkManager: NetworkManger? = {
-        guard let userID = UserModel.shared.id else {return nil}
+    private lazy var networkManager: NetworkManger = {
+        guard let userID = UserModel.shared.id,
+              let room = self.room else { return NetworkManger() }
         
         var manager = NetworkManger()
-        if let room = self.room {
-            manager.configureWebSocketTask(userID: userID, roomID: room.id.uuidString)
-        }
+        manager.configureWebSocketTask(userID: userID, roomID: room.id.uuidString)
         return manager
     }()
     
@@ -34,7 +41,7 @@ class RoomViewController: UIViewController {
     
     //MARK: - Web Socket Functions
     private func receiveData() {
-        networkManager?.webSocketTask?.receive { [weak self] result in
+        networkManager.webSocketTask?.receive { [weak self] result in
             guard let self = self else {return}
             switch result {
             case .success(let msg):
@@ -71,13 +78,13 @@ class RoomViewController: UIViewController {
     }
     
     private func resumeSocket() {
-        networkManager?.webSocketTask?.resume()
+        networkManager.webSocketTask?.resume()
     }
     
     private func sendData() {
         do {
             let votes = try JSONEncoder().encode(room?.currentVotes)
-            networkManager?.webSocketTask?.send( URLSessionWebSocketTask.Message.data(votes) ) { error in
+            networkManager.webSocketTask?.send( URLSessionWebSocketTask.Message.data(votes) ) { error in
                 if let error = error {
                     print("Web socket couldn't send message: \(error)")
                 }
@@ -89,7 +96,7 @@ class RoomViewController: UIViewController {
     
     
     private func ping() {
-        networkManager?.webSocketTask?.sendPing { error in
+        networkManager.webSocketTask?.sendPing { error in
             if let error = error {
                 print("Ping Error: \(error)")
             }
@@ -101,7 +108,7 @@ class RoomViewController: UIViewController {
             room?.currentVotes.remove(at: userVoteIX)
             sendData()
         }
-        networkManager?.webSocketTask?.cancel(with: .goingAway, reason: "User left".data(using: .utf8))
+        networkManager.webSocketTask?.cancel(with: .goingAway, reason: "User left".data(using: .utf8))
     }
     
     //MARK: - UI Views
@@ -282,7 +289,6 @@ class RoomViewController: UIViewController {
     
     @objc private func newRoomPressed() {
         guard let room = room else {return}
-        guard let networkManager = networkManager else {return}
         guard let agoraKit = agoraKit else {return}
         
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: nil, preferredStyle: .alert)
@@ -291,7 +297,7 @@ class RoomViewController: UIViewController {
             guard let self = self else {return}
             self.createLoadingModal()
             self.closeSocket()
-            RoomModel.findEmptyRoom(fromRoom: room, networkManager: networkManager, category: self.title, viewController: self) { room, uid in
+            RoomModel.findEmptyRoom(fromRoom: room, networkManager: self.networkManager, category: self.title, viewController: self) { room, uid in
                 DispatchQueue.main.async { 
                     agoraKit.leaveChannel()
                     agoraKit.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: uid, joinSuccess: { [weak self] (channel, uid, elapsed) in
@@ -568,13 +574,33 @@ private let bottomVideoStack:UIStackView = {
         self.present(alert, animated: true, completion: nil)
     }
     
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 20.0, repeats: true) { [weak self] timer in
+            guard let self = self else {return}
+            guard var userSeconds = self.userSeconds else {return}
+            
+            userSeconds.seconds = Int(timer.timeInterval)
+            self.networkManager.sendData(object: userSeconds, url: self.networkManager.usersURL, httpMethod: Constants.HttpMethods.POST.rawValue) { [weak self] (data, statusCode) in
+                guard let self = self else {return}
+                self.networkManager.handleErrors(statusCode: statusCode, viewController: self)
+                do {
+                    let decodedData = try JSONDecoder().decode(Int.self, from: data)
+                    UserModel.shared.secondsSpent = decodedData
+                    KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(UserModel.shared.secondsSpent!)
+                } catch {
+                    print("Error decoding: ",error)
+                }
+            }
+        }
+    }
+    
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureSkeleton()
         
-        networkManager?.webSocketTask?.delegate = self
+        networkManager.webSocketTask?.delegate = self
         resumeSocket()
         
         addViews()
@@ -591,6 +617,9 @@ private let bottomVideoStack:UIStackView = {
         
         initializeAndJoinChannel()
         
+        timer.tolerance = 0.2
+        startTimer()
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -603,6 +632,8 @@ private let bottomVideoStack:UIStackView = {
     deinit {
         agoraKit?.leaveChannel()
         AgoraRtcEngineKit.destroy()
+        timer.invalidate()
+        print("DEINIT ROOM")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -646,12 +677,11 @@ private let bottomVideoStack:UIStackView = {
     //MARK: - Positions Functions
     private func setPosition(index:Int?, completionHandler: @escaping (Int?)->() ) {
         guard let room = room else {return}
-        guard let networkManager = networkManager else {return}
         guard let userUID = UserModel.shared.uid else {return}
         
         networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(userUID)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { [weak self] (data, code) in
             guard let self = self else {return}
-            networkManager.handleErrors(statusCode: code, viewController: self)
+            self.networkManager.handleErrors(statusCode: code, viewController: self)
             do {
                 let ix = try JSONDecoder().decode(Int.self, from: data)
                 if ix > -1 {

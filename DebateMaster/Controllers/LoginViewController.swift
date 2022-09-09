@@ -9,14 +9,16 @@ import UIKit
 import AuthenticationServices
 
 class LoginViewController: UIViewController {
-
+    
     private let networkManager = NetworkManger()
     
     private func saveUserOnKeyChain() {
+        guard let seconds = UserModel.shared.secondsSpent else {return}
         KeyChain.shared[Constants.KeyChain.Keys.userAuthToken] = UserModel.shared.authToken
         KeyChain.shared[Constants.KeyChain.Keys.userEmail] = UserModel.shared.email
         KeyChain.shared[Constants.KeyChain.Keys.userID] = UserModel.shared.id
         KeyChain.shared[Constants.KeyChain.Keys.userUID] = UserModel.shared.uid
+        KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(seconds)
     }
     
     private let loginStackView: UIStackView = {
@@ -112,8 +114,11 @@ class LoginViewController: UIViewController {
                   let email = queryItems?.first { $0.name == "email" }?.value
                   let id = queryItems?.first { $0.name == "id" }?.value
                   let uid = queryItems?.first { $0.name == "uid" }?.value
+                  let secondsSpent = queryItems?.first { $0.name == "seconds" }?.value
 
-                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
+                  guard let seconds = Int(secondsSpent ?? "") else {return}
+
+                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid, secondsSpent: seconds)
                   self.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async { [weak self] in
@@ -149,8 +154,11 @@ class LoginViewController: UIViewController {
                   let email = queryItems?.first { $0.name == "email" }?.value
                   let id = queryItems?.first { $0.name == "id" }?.value
                   let uid = queryItems?.first { $0.name == "uid" }?.value
+                  let secondsSpent = queryItems?.first { $0.name == "seconds" }?.value
                   
-                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid)
+                  guard let seconds = Int(secondsSpent ?? "") else {return}
+
+                  UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid, secondsSpent: seconds)
                   self.saveUserOnKeyChain()
                   
                   DispatchQueue.main.async { [weak self] in

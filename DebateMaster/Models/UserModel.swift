@@ -19,25 +19,28 @@ struct UserModel:Codable {
     var authToken: String?
     var agoraToken: String?
     var categoriesCount: [[String:String]]?
+    var secondsSpent: Int?
     
     private init() {}
     
-    func populateUser(token: String?, email: String?, id: String?, uid: String?) {
+    func populateUser(token: String?, email: String?, id: String?, uid: String?, secondsSpent: Int?) {
         UserModel.shared.authToken = token
         UserModel.shared.email = email
         UserModel.shared.id = id
         UserModel.shared.uid = uid
+        UserModel.shared.secondsSpent = secondsSpent
     }
     
     func isUserLoggedIn() -> Bool {
-        if let authToken = KeyChain.shared[Constants.KeyChain.Keys.userAuthToken],
-           let email = KeyChain.shared[Constants.KeyChain.Keys.userEmail],
-           let id = KeyChain.shared[Constants.KeyChain.Keys.userID],
-           let uid = KeyChain.shared[Constants.KeyChain.Keys.userUID] {
-            populateUser(token: authToken, email: email, id: id, uid: uid)
-            return true
-        }
-        return false
+        guard let authToken = KeyChain.shared[Constants.KeyChain.Keys.userAuthToken],
+              let email = KeyChain.shared[Constants.KeyChain.Keys.userEmail],
+              let id = KeyChain.shared[Constants.KeyChain.Keys.userID],
+              let uid = KeyChain.shared[Constants.KeyChain.Keys.userUID],
+              let secondsSpent = KeyChain.shared[Constants.KeyChain.Keys.userSeconds],
+              let seconds = Int(secondsSpent) else {return false}
+        
+        populateUser(token: authToken, email: email, id: id, uid: uid, secondsSpent: seconds)
+        return true
     }
     
     private func resetUser() {
@@ -48,6 +51,7 @@ struct UserModel:Codable {
         UserModel.shared.agoraToken = nil
         UserModel.shared.createdAt = nil
         UserModel.shared.categoriesCount = nil
+        UserModel.shared.secondsSpent = nil
     }
     
     func handleUnauthorised(viewController vc: UIViewController) {
@@ -101,7 +105,7 @@ struct UserModel:Codable {
     
     
     func printDetails() -> Void {
-        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")")
+        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")\nSeconds spent: \(self.secondsSpent ?? -1 )")
     }
     
 }

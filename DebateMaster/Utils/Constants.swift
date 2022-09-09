@@ -10,8 +10,8 @@ import UIKit
 
 struct Constants {
     struct Network {
-        static let baseHttpURL = "http://localhost:8080/"
-        static let baseSocketURL = "ws://localhost:8080/"
+        static let baseHttpURL = "http://127.0.0.1:8080/"
+        static let baseSocketURL = "ws://127.0.0.1:8080/"
         static let schemeName = "debatemaster"
         struct EndPoints {
             static let rooms = "rooms"
@@ -38,6 +38,7 @@ struct Constants {
             static let userUID = "userUID"
             static let userAuthToken = "userAuthToken"
             static let userEmail = "userEmail"
+            static let userSeconds = "userSeconds"
         }
     }
     struct Colors {
