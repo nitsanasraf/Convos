@@ -79,9 +79,14 @@ class CategoriesViewController: UIViewController {
     }
     
     private func openLoadingVC(withCategory category: CategoryModel?) {
-        let vc = LoadingViewController()
-        vc.category = category
-        self.parent?.navigationController?.pushViewController(vc, animated: true)
+        if UserModel.shared.didExceedFreeTierLimit! {
+            present(PopUpViewController(), animated: true)
+            tableView.allowsSelection = true
+        } else {
+            let vc = LoadingViewController()
+            vc.category = category
+            self.parent?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 

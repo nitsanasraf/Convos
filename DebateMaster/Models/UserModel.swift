@@ -21,6 +21,19 @@ struct UserModel:Codable {
     var categoriesCount: [[String:String]]?
     var secondsSpent: Int?
     
+    var freeTierLimit: Float? = 4.0
+  
+    var minutesSpent: Float? {
+        guard let secondsSpent = secondsSpent else {return nil}
+        return Float(secondsSpent)/60
+    }
+    
+    var didExceedFreeTierLimit: Bool? {
+        guard let minutesSpent = minutesSpent else {return nil}
+        guard let freeTierLimit = freeTierLimit else {return nil}
+        return minutesSpent >= freeTierLimit
+    }
+    
     private init() {}
     
     func populateUser(token: String?, email: String?, id: String?, uid: String?, secondsSpent: Int?) {
@@ -105,7 +118,7 @@ struct UserModel:Codable {
     
     
     func printDetails() -> Void {
-        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")\nSeconds spent: \(self.secondsSpent ?? -1 )")
+        print("ID: \(self.id ?? "")\nUID:\(self.uid ?? "")\nEmail: \(self.email ?? "")\nToken: \(self.authToken ?? "")\nSeconds spent: \(self.secondsSpent ?? -1 )\nMinutes spent: \(self.minutesSpent ?? -1)")
     }
     
 }

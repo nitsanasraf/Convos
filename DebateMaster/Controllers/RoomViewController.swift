@@ -584,9 +584,16 @@ private let bottomVideoStack:UIStackView = {
                 guard let self = self else {return}
                 self.networkManager.handleErrors(statusCode: statusCode, viewController: self)
                 do {
-                    let decodedData = try JSONDecoder().decode(Int.self, from: data)
-                    UserModel.shared.secondsSpent = decodedData
+                    let realUserSeconds = try JSONDecoder().decode(Int.self, from: data)
+                    UserModel.shared.secondsSpent = realUserSeconds
                     KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(UserModel.shared.secondsSpent!)
+                    if UserModel.shared.didExceedFreeTierLimit! {
+                        DispatchQueue.main.async {
+                            let tabVC = self.navigationController!.viewControllers.filter { $0 is TabBarViewController }.first!
+                            self.navigationController!.popToViewController(tabVC, animated: true)
+                            print("User Exceeded Free Tier.")
+                        }
+                    }
                 } catch {
                     print("Error decoding: ",error)
                 }

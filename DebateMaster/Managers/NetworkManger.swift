@@ -44,8 +44,13 @@ struct NetworkManger {
                 guard let data = data else {return}
                 guard let statusCode = response?.getStatusCode() else {return}
                 if withEncoding {
-                    let decodedData = try? JSONDecoder().decode(type, from: data)
-                    completionHandler(statusCode,decodedData, nil)
+                    do {
+                        let decodedData = try JSONDecoder().decode(type, from: data)
+                        completionHandler(statusCode,decodedData, nil)
+                    }
+                    catch {
+                        print("Failed to decode: \(error)")
+                    }
                 }
                 else {
                     completionHandler(statusCode, nil, data)
@@ -108,9 +113,9 @@ struct NetworkManger {
         case 100...199: print("Information")
         case 200...299: print("Success")
         case 300...399: print("Redirect")
-        case 400,401:
+        case 401:
             UserModel.shared.handleUnauthorised(viewController: vc)
-        case 402...499: print("Client error")
+        case 400...499: print("Client error")
         case 500...599: print("Server error")
         default: break
         }

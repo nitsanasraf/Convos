@@ -38,7 +38,6 @@ class CategoriesTableViewCell: UITableViewCell {
         let size: CGFloat = 40
         imageView.transform = CGAffineTransform(rotationAngle: -25)
         imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.widthAnchor.constraint(equalToConstant: size).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: size).isActive = true
         imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
