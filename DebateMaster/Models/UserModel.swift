@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 struct UserModel:Codable {
     
     static var shared = UserModel()
@@ -21,7 +20,7 @@ struct UserModel:Codable {
     var categoriesCount: [[String:String]]?
     var secondsSpent: Int?
     
-    var freeTierLimit: Float? = 4.0
+    var freeTierLimit: Float? = 5.0
   
     var minutesSpent: Float? {
         guard let secondsSpent = secondsSpent else {return nil}

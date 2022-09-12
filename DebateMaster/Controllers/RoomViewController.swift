@@ -588,10 +588,11 @@ private let bottomVideoStack:UIStackView = {
                     UserModel.shared.secondsSpent = realUserSeconds
                     KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(UserModel.shared.secondsSpent!)
                     if UserModel.shared.didExceedFreeTierLimit! {
-                        DispatchQueue.main.async {
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else {return}
                             let tabVC = self.navigationController!.viewControllers.filter { $0 is TabBarViewController }.first!
                             self.navigationController!.popToViewController(tabVC, animated: true)
-                            print("User Exceeded Free Tier.")
+                            tabVC.present(PopUpViewController(), animated: true)
                         }
                     }
                 } catch {

@@ -44,6 +44,9 @@ struct Constants {
     struct Colors {
         static let primaryGradient = UIColor(red: 0.63, green: 0.27, blue: 1.00, alpha: 1.00)
         static let secondaryGradient = UIColor(red: 0.42, green: 0.19, blue: 0.58, alpha: 1.00)
+        static let tertiaryGradient = UIColor(red: 1.00, green: 0.83, blue: 0.19, alpha: 1.00)
+        static let quaternaryGradient = UIColor(red: 0.98, green: 0.81, blue: 0.18, alpha: 1.00)
         static let primaryText: UIColor = .white
+        static let secondaryText: UIColor = UIColor(red: 0.20, green: 0.12, blue: 0.59, alpha: 1.00)
     }
 }

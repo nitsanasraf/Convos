@@ -19,6 +19,13 @@ extension UIView {
         return spacer
     }
     
+    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        layer.mask = mask
+    }
+    
     func addGradient(colors: [UIColor], locations: [NSNumber] = [0, 1], startPoint: CGPoint = CGPoint(x: 0, y: 0), endPoint:CGPoint = CGPoint(x: 0, y: 1), type: CAGradientLayerType = .conic){
         let gradient = CAGradientLayer()
         gradient.frame.size = self.frame.size
