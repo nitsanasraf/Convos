@@ -1,6 +1,6 @@
 //
 //  StackView+Extensions.swift
-//  DebateMaster
+//  Convos
 //
 //  Created by Nitsan Asraf on 17/08/2022.
 //

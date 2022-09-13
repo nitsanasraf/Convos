@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  DebateMaster
+//  Convos
 //
 //  Created by Nitsan Asraf on 01/07/2022.
 //

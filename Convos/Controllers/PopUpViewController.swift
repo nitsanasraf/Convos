@@ -1,6 +1,6 @@
 //
 //  PopUpViewController.swift
-//  DebateMaster
+//  Convos
 //
 //  Created by Nitsan Asraf on 10/09/2022.
 //

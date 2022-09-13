@@ -1,6 +1,6 @@
 //
 //  LoginViewController.swift
-//  DebateMaster
+//  Convos
 //
 //  Created by Nitsan Asraf on 26/07/2022.
 //
@@ -33,7 +33,7 @@ class LoginViewController: UIViewController {
     
     private let logo:UILabel = {
         let label = UILabel()
-        label.text = "DebateMaster"
+        label.text = "Convos"
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.systemFont(ofSize: 40,weight: .bold)

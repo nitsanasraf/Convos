@@ -1,6 +1,6 @@
 //
 //  LaunchViewController.swift
-//  DebateMaster
+//  Convos
 //
 //  Created by Nitsan Asraf on 30/08/2022.
 //

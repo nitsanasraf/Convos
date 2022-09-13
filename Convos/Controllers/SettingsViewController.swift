@@ -1,6 +1,6 @@
 //
 //  SettingsViewController.swift
-//  DebateMaster
+//  Convos
 //
 //  Created by Nitsan Asraf on 14/08/2022.
 //

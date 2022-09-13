@@ -1,6 +1,6 @@
 //
 //  WebSocketModel.swift
-//  DebateMaster
+//  Convos
 //
 //  Created by Nitsan Asraf on 07/07/2022.
 //
