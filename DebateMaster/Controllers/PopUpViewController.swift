@@ -118,8 +118,8 @@ class PopUpViewController: UIViewController {
     private func animateIcon() {
         let pulseAnimation = CABasicAnimation(keyPath: "transform.scale")
         pulseAnimation.duration = 2.0
-        pulseAnimation.fromValue = 0.9
-        pulseAnimation.toValue = 1.1
+        pulseAnimation.fromValue = 0.8
+        pulseAnimation.toValue = 1
         pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         pulseAnimation.autoreverses = true
         pulseAnimation.repeatCount = .greatestFiniteMagnitude
@@ -144,7 +144,6 @@ class PopUpViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fetchProducts()
         animateIcon()
     }
     
@@ -169,27 +168,12 @@ class PopUpViewController: UIViewController {
     }
     
     override func updateViewConstraints() {
-        self.view.frame.size.height = UIScreen.main.bounds.height - 200
-        self.view.frame.origin.y = 200
+        self.view.frame.size.height = UIScreen.main.bounds.height - 150
+        self.view.frame.origin.y = 150
         self.view.roundCorners(corners: [.topLeft, .topRight], radius: 10.0)
         super.updateViewConstraints()
     }
     
-    
-    private func fetchProducts() {
-        let request = SKProductsRequest(productIdentifiers: Set(StoreModel.Products.allCases.compactMap({ $0.rawValue })))
-        request.delegate = self
-        request.start()
-    }
 }
 
-extension PopUpViewController: SKProductsRequestDelegate {
-    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        StoreModel.products = response.products
-        print(response.products.count)
-        print(StoreModel.products[0].localizedTitle)
-    }
-    
-    
-}
 

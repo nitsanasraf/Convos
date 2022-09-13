@@ -197,7 +197,7 @@ class StatisticsViewController: UIViewController {
         for (ix,item) in categoriesCount.enumerated() {
             dataEntries.append(BarChartDataEntry(x: Double(ix), y: Double(item["count"]!) ?? 0))
         }
-        let dataSet = BarChartDataSet(entries: dataEntries , label: nil)
+        let dataSet = BarChartDataSet(entries: dataEntries)
         dataSet.highlightEnabled = false
         dataSet.setColor(.systemYellow, alpha: 0.45)
         dataSet.barBorderColor = .systemYellow
@@ -218,7 +218,7 @@ class StatisticsViewController: UIViewController {
             dataEntries.append(BarChartDataEntry(x: Double(ix), y: Double(item["count"]!) ?? 0))
         }
         
-        let dataSet = RadarChartDataSet(entries: dataEntries , label: nil)
+        let dataSet = RadarChartDataSet(entries: dataEntries)
         dataSet.highlightEnabled = false
         dataSet.drawFilledEnabled = true
         dataSet.setColor(.systemYellow)
