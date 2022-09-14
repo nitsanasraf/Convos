@@ -15,7 +15,7 @@ struct CategoryModel: Codable {
     
     static func getCategories(viewController vc: UIViewController, completionHandler: @escaping ([CategoryModel])->()) {
         let networkManager = NetworkManger()
-        networkManager.fetchData(type: [CategoryModel].self, url: networkManager.categoriesURL, withEncoding: true) { (statusCode,categories,_) in
+        networkManager.fetchData(type: [CategoryModel].self, url: networkManager.categoriesURL) { (statusCode,categories,_) in
             networkManager.handleErrors(statusCode: statusCode, viewController: vc)
             guard let categories = categories else {return}
             completionHandler(categories)

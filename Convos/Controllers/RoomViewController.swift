@@ -11,7 +11,11 @@ import NVActivityIndicatorView
 
 class RoomViewController: UIViewController {
     
-    private var agoraKit: AgoraRtcEngineKit?
+    private lazy var agoraKit: AgoraRtcEngineKit = {
+        guard let appID = KeyCenter.appID else {return AgoraRtcEngineKit.sharedEngine(withAppId: "", delegate: self)}
+        let engine = AgoraRtcEngineKit.sharedEngine(withAppId: appID, delegate: self)
+        return engine
+    }()
     
     private var timer = Timer()
     
@@ -288,8 +292,7 @@ class RoomViewController: UIViewController {
     }
     
     @objc private func newRoomPressed() {
-        guard let room = room else {return}
-        guard let agoraKit = agoraKit else {return}
+        guard let room = room else { return }
         
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: nil, preferredStyle: .alert)
         
@@ -298,9 +301,10 @@ class RoomViewController: UIViewController {
             self.createLoadingModal()
             self.closeSocket()
             RoomModel.findEmptyRoom(fromRoom: room, networkManager: self.networkManager, category: self.title, viewController: self) { room, uid in
-                DispatchQueue.main.async { 
-                    agoraKit.leaveChannel()
-                    agoraKit.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: uid, joinSuccess: { [weak self] (channel, uid, elapsed) in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else {return}
+                    self.agoraKit.leaveChannel()
+                    self.agoraKit.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: uid, joinSuccess: { [weak self] (channel, uid, elapsed) in
                         guard let self = self else {return}
                         print("User has successfully joined the channel: \(channel)")
                         let roomVC = RoomViewController()
@@ -494,20 +498,20 @@ private let bottomVideoStack:UIStackView = {
             frame.container.alpha = 0.5
             button.alpha = 0.5
             if String(uid) == UserModel.shared.uid {
-                agoraKit?.adjustRecordingSignalVolume(0)
+                agoraKit.adjustRecordingSignalVolume(0)
             } else {
-                agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 0)
-                agoraKit?.adjustAudioMixingVolume(0)
+                agoraKit.adjustUserPlaybackSignalVolume(uid, volume: 0)
+                agoraKit.adjustAudioMixingVolume(0)
             }
         } else {
             button.setBackgroundImage(UIImage(systemName: "mic.circle"), for: .normal)
             frame.container.alpha = 1
             button.alpha = 1
             if String(uid) == UserModel.shared.uid {
-                agoraKit?.adjustRecordingSignalVolume(100)
+                agoraKit.adjustRecordingSignalVolume(100)
             } else {
-                agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 100)
-                agoraKit?.adjustAudioMixingVolume(100)
+                agoraKit.adjustUserPlaybackSignalVolume(uid, volume: 100)
+                agoraKit.adjustAudioMixingVolume(100)
             }
         }
     }
@@ -632,15 +636,14 @@ private let bottomVideoStack:UIStackView = {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        guard let localFrameIndex = self.localFrameIndex else {return}
-        setPosition(index: localFrameIndex) {_ in}
+        setPosition {_ in}
         closeSocket()
+        timer.invalidate()
     }
     
     deinit {
-        agoraKit?.leaveChannel()
+        agoraKit.leaveChannel()
         AgoraRtcEngineKit.destroy()
-        timer.invalidate()
         print("DEINIT ROOM")
     }
     
@@ -683,11 +686,11 @@ private let bottomVideoStack:UIStackView = {
     }
     
     //MARK: - Positions Functions
-    private func setPosition(index:Int?, completionHandler: @escaping (Int?)->() ) {
-        guard let room = room else {return}
-        guard let userUID = UserModel.shared.uid else {return}
-        
-        networkManager.sendData(object: room, url: "\(networkManager.roomsURL)/\(userUID)/\(index ?? -1)", httpMethod: Constants.HttpMethods.PUT.rawValue) { [weak self] (data, code) in
+    private func setPosition(completionHandler: @escaping (Int?)->() ) {
+        guard let room = room,
+              let userUID = UserModel.shared.uid else {return}
+        let userRoom = UserRoom(userUID: userUID, roomID: room.id)
+        networkManager.sendData(object: userRoom, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.PUT.rawValue) { [weak self] (data, code) in
             guard let self = self else {return}
             self.networkManager.handleErrors(statusCode: code, viewController: self)
             do {
@@ -730,7 +733,7 @@ private let bottomVideoStack:UIStackView = {
                 videoCanvas.view = frames[ix].videoView
                 
                 frames[ix].userUID = uid
-                agoraKit?.setupRemoteVideo(videoCanvas)
+                agoraKit.setupRemoteVideo(videoCanvas)
             }
         }
     }
@@ -738,22 +741,20 @@ private let bottomVideoStack:UIStackView = {
     //MARK: - Agora Functionss
     private func initializeAndJoinChannel() {
         guard let userUID = UserModel.shared.uid,
-              let uid = UInt(userUID),
-              let appID = KeyCenter.appID else {return}
+              let uid = UInt(userUID) else {return}
         
-        setPosition(index:nil) { availablePositionIX in
+        setPosition { availablePositionIX in
             guard let availablePositionIX = availablePositionIX else {return}
             
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else {return}
                 
-                self.agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: appID, delegate: self)
                 let agoraConfig = AgoraVideoEncoderConfiguration(size: CGSize(width: 424, height: 240), frameRate: .fps15, bitrate: 220, orientationMode: .fixedPortrait)
                 
-                self.agoraKit?.setVideoEncoderConfiguration(agoraConfig)
-                self.agoraKit?.enableVideo()
-                self.agoraKit?.setEnableSpeakerphone(true)
-                self.agoraKit?.setDefaultAudioRouteToSpeakerphone(true)
+                self.agoraKit.setVideoEncoderConfiguration(agoraConfig)
+                self.agoraKit.enableVideo()
+                self.agoraKit.setEnableSpeakerphone(true)
+                self.agoraKit.setDefaultAudioRouteToSpeakerphone(true)
                 
                 let videoCanvas = AgoraRtcVideoCanvas()
                 
@@ -765,7 +766,7 @@ private let bottomVideoStack:UIStackView = {
                 
                 self.frames[self.localFrameIndex!].userUID  = uid
                 
-                self.agoraKit?.setupLocalVideo(videoCanvas)
+                self.agoraKit.setupLocalVideo(videoCanvas)
                 
                 self.setRecentPositions()
                 self.renderVoteOrbs()
@@ -791,7 +792,7 @@ extension RoomViewController: AgoraRtcEngineDelegate {
         
         frames[emptyPositionIX].userUID = uid
         
-        agoraKit?.setupRemoteVideo(videoCanvas)
+        agoraKit.setupRemoteVideo(videoCanvas)
         
         print("A remote user has joined the channel with uid: \(uid)")
     }
@@ -819,4 +820,9 @@ extension RoomViewController:URLSessionWebSocketDelegate {
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
         print("Closed connection to socket")
     }
+}
+
+struct UserRoom: Codable {
+    let userUID: String
+    let roomID: UUID
 }

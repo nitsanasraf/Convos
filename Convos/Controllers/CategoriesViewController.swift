@@ -44,7 +44,7 @@ class CategoriesViewController: UIViewController {
         view.addSubview(activityIndicator)
         activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        
+
         guard let parent = self.parent else {return}
         KeyCenter.getKeys(viewController: parent) {
             CategoryModel.getCategories(viewController: parent) { categories in

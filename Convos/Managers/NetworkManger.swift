@@ -30,7 +30,7 @@ struct NetworkManger {
         self.webSocketTask = URLSession(configuration: .default).webSocketTask(with: request)
     }
     
-    func fetchData<T:Decodable>(type:T.Type, url:String, withEncoding:Bool, completionHandler: @escaping (Int,T?,Data?)->()) {
+    func fetchData<T:Decodable>(type:T.Type, url:String, completionHandler: @escaping (Int,T?,Data?)->()) {
         guard let url = URL(string: url) else {return}
         guard let token = UserModel.shared.authToken else {return}
         
@@ -43,18 +43,8 @@ struct NetworkManger {
             } else {
                 guard let data = data else {return}
                 guard let statusCode = response?.getStatusCode() else {return}
-                if withEncoding {
-                    do {
-                        let decodedData = try JSONDecoder().decode(type, from: data)
-                        completionHandler(statusCode,decodedData, nil)
-                    }
-                    catch {
-                        print("Failed to decode: \(error)")
-                    }
-                }
-                else {
-                    completionHandler(statusCode, nil, data)
-                }
+                let decodedData = try? JSONDecoder().decode(type, from: data)
+                completionHandler(statusCode, decodedData, data)
             }
         }
         task.resume()

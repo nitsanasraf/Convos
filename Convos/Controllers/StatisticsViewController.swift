@@ -44,9 +44,9 @@ class StatisticsViewController: UIViewController {
     }()
     
     private func getUserData(completionHandler: @escaping ()->()) {
-        guard let userID = UserModel.shared.id else {return}
-        guard let parent = self.parent else {return}
-        networkManager.fetchData(type: UserModel.self, url: "\(networkManager.usersURL)/\(userID)", withEncoding: true) { [weak self] (statusCode,user,_) in
+        guard let userID = UserModel.shared.id,
+              let parent = self.parent else {return}
+        networkManager.fetchData(type: UserModel.self, url: "\(networkManager.usersURL)/\(userID)") { [weak self] (statusCode,user,_) in
             guard let self = self else {return}
             self.networkManager.handleErrors(statusCode: statusCode, viewController: parent)
             guard let user = user else {return}
