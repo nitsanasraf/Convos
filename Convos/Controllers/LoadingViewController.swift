@@ -14,7 +14,7 @@ class LoadingViewController: UIViewController {
     
     var category: CategoryModel?
 
-    private lazy var agoraKit = AgoraRtcEngineKit.sharedEngine(withAppId: KeyCenter.appID ?? "", delegate: self)
+    private weak var agoraKit: AgoraRtcEngineKit? = AgoraModel.shared.agoraKit
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -102,14 +102,15 @@ class LoadingViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        agoraKit?.delegate = self
+        
         configureSkeleton()
         addViews()
         addLayouts()
         RoomModel.findEmptyRoom(fromRoom: nil, networkManager: networkManager, category: category?.title, viewController: self) { room, uid in
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else {return}
-                self.agoraKit.leaveChannel()
-                self.agoraKit.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: uid, joinSuccess: { [weak self] (channel, uid, elapsed) in
+            DispatchQueue.main.async {
+                AgoraModel.shared.leaveChannel()
+                self.agoraKit?.joinChannel(byToken: UserModel.shared.agoraToken, channelId: room.name, info: nil, uid: uid, joinSuccess: { [weak self] (channel, uid, elapsed) in
                     guard let self = self else {return}
                     print("User has successfully joined the channel: \(channel)")
                     RoomModel.moveToRoom(room: room, fromViewController: self, withTitle: room.category)

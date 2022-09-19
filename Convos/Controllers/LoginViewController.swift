@@ -121,8 +121,7 @@ class LoginViewController: UIViewController {
                   UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid, secondsSpent: seconds)
                   self.saveUserOnKeyChain()
                   
-                  DispatchQueue.main.async { [weak self] in
-                      guard let self = self else {return}
+                  DispatchQueue.main.async {
                       let tabVC = TabBarViewController()
                       self.navigationController?.pushViewController(tabVC, animated: true)
                   }
@@ -161,8 +160,7 @@ class LoginViewController: UIViewController {
                   UserModel.shared.populateUser(token: token, email: email, id: id, uid: uid, secondsSpent: seconds)
                   self.saveUserOnKeyChain()
                   
-                  DispatchQueue.main.async { [weak self] in
-                      guard let self = self else {return}
+                  DispatchQueue.main.async {
                       let tabVC = TabBarViewController()
                       self.navigationController?.pushViewController(tabVC, animated: true)
                   }
