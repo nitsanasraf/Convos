@@ -180,7 +180,6 @@ class StatisticsViewController: UIViewController {
         getUserData {
             DispatchQueue.main.async {
                 self.activityIndicator.removeFromSuperview()
-                
                 self.setBarData()
                 self.setRadarData()
                 self.addViews()
