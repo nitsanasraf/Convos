@@ -10,7 +10,7 @@ import AgoraRtcKit
 import NVActivityIndicatorView
 
 class RoomViewController: UIViewController {
-        
+    
     private weak var agoraKit: AgoraRtcEngineKit? = AgoraModel.shared.agoraKit
     
     private var timer = Timer()
@@ -128,7 +128,7 @@ class RoomViewController: UIViewController {
         return stackView
     }()
     
-    private let middleQustionsStack: UIStackView = {
+    private let middleTopicStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 5
@@ -172,7 +172,7 @@ class RoomViewController: UIViewController {
     
     private lazy var newTopicVotesLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14,weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 12,weight: .regular)
         label.text = "New Topic Votes: \(room?.currentVotes.count ?? 0)"
         label.numberOfLines = 0
         label.textColor = Constants.Colors.primaryText
@@ -188,7 +188,7 @@ class RoomViewController: UIViewController {
     }()
     
     private func createNewVoteOrb(color:UIColor) -> UIView {
-        let size:CGFloat = 10
+        let size:CGFloat = 8
         let view = UIView()
         view.backgroundColor = color
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -235,14 +235,14 @@ class RoomViewController: UIViewController {
     }
     
     private lazy var newRoomButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 8, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .init(white: 0, alpha: 0.2)
         config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "New room"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: 14,weight: .bold)
+            outgoing.font = UIFont.systemFont(ofSize: 12,weight: .bold)
             return outgoing
         }
         config.image = UIImage(systemName: "rectangle.portrait.and.arrow.right",withConfiguration: imageConfig)
@@ -317,14 +317,14 @@ class RoomViewController: UIViewController {
     }
     
     private lazy var newTopicButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 8, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .init(white: 0, alpha: 0.2)
         config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "New topic"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: 14,weight: .bold)
+            outgoing.font = UIFont.systemFont(ofSize: 12,weight: .bold)
             return outgoing
         }
         config.image = UIImage(systemName: "arrow.clockwise",withConfiguration: imageConfig)
@@ -343,14 +343,14 @@ class RoomViewController: UIViewController {
     }
     
     private lazy var muteAllButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 8, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .init(white: 0, alpha: 0.2)
         config.baseForegroundColor = Constants.Colors.primaryText
         config.title = "Mute all"
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: 14,weight: .bold)
+            outgoing.font = UIFont.systemFont(ofSize: 12,weight: .bold)
             return outgoing
         }
         config.image = UIImage(systemName: "mic.slash",withConfiguration: imageConfig)
@@ -375,9 +375,8 @@ class RoomViewController: UIViewController {
         }
         isMutePressed.toggle()
     }
-
-
-private let bottomVideoStack:UIStackView = {
+    
+    private let bottomVideoStack:UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 10
@@ -459,7 +458,7 @@ private let bottomVideoStack:UIStackView = {
             
             frame.videoView.addSubview(stackView)
             stackView.addArrangedSubviews(topLabel,indicator,bottomLabel)
-
+            
             stackView.centerXAnchor.constraint(equalTo: frame.videoView.centerXAnchor).isActive = true
             stackView.centerYAnchor.constraint(equalTo: frame.videoView.centerYAnchor).isActive = true
             
@@ -496,7 +495,7 @@ private let bottomVideoStack:UIStackView = {
                 agoraKit?.adjustUserPlaybackSignalVolume(uid, volume: 100)
                 agoraKit?.adjustAudioMixingVolume(100)
             }
-
+            
         } else {
             button.setBackgroundImage(UIImage(systemName: "mic.slash.circle"), for: .normal)
             frame.container.alpha = 0.5
@@ -552,7 +551,7 @@ private let bottomVideoStack:UIStackView = {
     
     private lazy var discussionTopic:UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.text = room?.currentTopic
@@ -606,23 +605,16 @@ private let bottomVideoStack:UIStackView = {
         networkManager.webSocketTask?.delegate = self
         
         configureSkeleton()
-    
         resumeSocket()
-        
         addViews()
         addLayouts()
-        
         configureVideoViews()
         configureMuteButtons()
-        
         setFramesColors()
         createSearchingParticipantIndicators()
-
         configureVideoStackViews()
         configureButtonsStackViews()
-        
         initializeAndJoinChannel()
-        
         timer.tolerance = 0.2
         startTimer()
         
@@ -656,11 +648,11 @@ private let bottomVideoStack:UIStackView = {
     
     private func addViews() {
         view.addSubview(mainStackView)
-        mainStackView.addArrangedSubviews(topVideoStack, UIView.spacer(size: 0, for: .vertical), middleQustionsStack, middleActionStack, middleSkipCounterStack, bottomVideoStack)
+        mainStackView.addArrangedSubviews(topVideoStack, UIView.spacer(size: 0, for: .vertical), middleTopicStack, middleActionStack, middleSkipCounterStack, bottomVideoStack)
         for i in 3...5 {
             topVideoStack.addArrangedSubview(frames[i].container)
         }
-        middleQustionsStack.addArrangedSubview(discussionTopic)
+        middleTopicStack.addArrangedSubview(discussionTopic)
         middleActionStack.addArrangedSubviews(newRoomButton, newTopicButton, muteAllButton)
         middleSkipCounterStack.addArrangedSubview(newTopicVotesLabel)
         for i in 0...2 {
@@ -706,7 +698,6 @@ private let bottomVideoStack:UIStackView = {
         }
     }
     
-    
     private func findEmptyPosition() -> Int? {
         guard let room = room else {return nil}
         
@@ -717,7 +708,7 @@ private let bottomVideoStack:UIStackView = {
         }
         return nil
     }
-        
+    
     private func setRecentPositions() {
         guard let room = room else {return}
         guard let userUID = UserModel.shared.uid else {return}
@@ -747,7 +738,7 @@ private let bottomVideoStack:UIStackView = {
             
             DispatchQueue.main.async {
                 let agoraConfig = AgoraVideoEncoderConfiguration(size: CGSize(width: 424, height: 240), frameRate: .fps15, bitrate: 220, orientationMode: .fixedPortrait)
-
+                
                 self.agoraKit?.setVideoEncoderConfiguration(agoraConfig)
                 self.agoraKit?.enableVideo()
                 self.agoraKit?.setEnableSpeakerphone(true)

@@ -20,7 +20,7 @@ struct UserModel:Codable {
     var categoriesCount: [[String:String]]?
     var secondsSpent: Int?
     
-    var freeTierLimit: Float? = 35.0
+    var freeTierLimit: Float? = 135.0
   
     var minutesSpent: Float? {
         guard let secondsSpent = secondsSpent else {return nil}
