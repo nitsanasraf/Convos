@@ -12,7 +12,7 @@ import NVActivityIndicatorView
 class RoomViewController: UIViewController {
         
     private weak var agoraKit: AgoraRtcEngineKit? = AgoraModel.shared.agoraKit
-  
+    
     private var timer = Timer()
     
     private let userSeconds: UserSecondsModel? = {
@@ -717,7 +717,7 @@ private let bottomVideoStack:UIStackView = {
         }
         return nil
     }
-    
+        
     private func setRecentPositions() {
         guard let room = room else {return}
         guard let userUID = UserModel.shared.uid else {return}
@@ -747,7 +747,7 @@ private let bottomVideoStack:UIStackView = {
             
             DispatchQueue.main.async {
                 let agoraConfig = AgoraVideoEncoderConfiguration(size: CGSize(width: 424, height: 240), frameRate: .fps15, bitrate: 220, orientationMode: .fixedPortrait)
-                
+
                 self.agoraKit?.setVideoEncoderConfiguration(agoraConfig)
                 self.agoraKit?.enableVideo()
                 self.agoraKit?.setEnableSpeakerphone(true)
