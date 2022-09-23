@@ -551,7 +551,7 @@ class RoomViewController: UIViewController {
     
     private lazy var discussionTopic:UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         label.textColor = Constants.Colors.primaryText
         label.numberOfLines = 0
         label.text = room?.currentTopic
@@ -617,7 +617,6 @@ class RoomViewController: UIViewController {
         initializeAndJoinChannel()
         timer.tolerance = 0.2
         startTimer()
-        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
