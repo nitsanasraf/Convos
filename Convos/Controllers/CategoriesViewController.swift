@@ -79,7 +79,11 @@ class CategoriesViewController: UIViewController {
     
     private func openLoadingVC(withCategory category: CategoryModel?) {
         if UserModel.shared.didExceedFreeTierLimit! {
-            present(PopUpViewController(), animated: true)
+            let modalVC = PopUpViewController()
+            modalVC.titleText = "Unfortunately, You exceeded your free minutes limit."
+            modalVC.iconName = "popup.icon"
+            modalVC.descriptionText = "In order to get unlimited minutes you'll have to become a premium member, but it'll be worth it!"
+            present(modalVC, animated: true)
             tableView.allowsSelection = true
         } else {
             let vc = LoadingViewController()

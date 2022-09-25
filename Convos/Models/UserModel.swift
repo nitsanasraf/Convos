@@ -20,7 +20,7 @@ struct UserModel:Codable {
     var categoriesCount: [[String:String]]?
     var secondsSpent: Int?
     
-    var freeTierLimit: Float? = 135.0
+    var freeMinutesLimit: Float? = 1.0
   
     var minutesSpent: Float? {
         guard let secondsSpent = secondsSpent else {return nil}
@@ -29,7 +29,7 @@ struct UserModel:Codable {
     
     var didExceedFreeTierLimit: Bool? {
         guard let minutesSpent = minutesSpent else {return nil}
-        guard let freeTierLimit = freeTierLimit else {return nil}
+        guard let freeTierLimit = freeMinutesLimit else {return nil}
         return minutesSpent >= freeTierLimit
     }
     

@@ -35,8 +35,7 @@ class CategoriesTableViewCell: UITableViewCell {
     
     var icon: UIImageView = {
         let imageView = UIImageView()
-        let size: CGFloat = 40
-        imageView.transform = CGAffineTransform(rotationAngle: -25)
+        let size: CGFloat = 50
         imageView.contentMode = .scaleAspectFit
         imageView.widthAnchor.constraint(equalToConstant: size).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: size).isActive = true

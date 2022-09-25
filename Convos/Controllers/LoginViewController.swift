@@ -47,7 +47,7 @@ class LoginViewController: UIViewController {
         config.title = "Sign in with Google"
         config.baseBackgroundColor = .white
         config.baseForegroundColor = .black
-        config.image = UIImage(named: "google-icon")
+        config.image = UIImage(named: "google.icon")
         config.imagePadding = 10
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
@@ -64,7 +64,7 @@ class LoginViewController: UIViewController {
         config.title = "Sign in with Facebook"
         config.baseBackgroundColor = UIColor(red: 0.26, green: 0.40, blue: 0.70, alpha: 1.00)
         config.baseForegroundColor = .white
-        config.image = UIImage(named: "facebook-circle-fill")
+        config.image = UIImage(named: "facebook.icon")
         config.imagePadding = 10
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming

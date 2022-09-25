@@ -15,6 +15,7 @@ class StatisticsViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.showsVerticalScrollIndicator = false
         return scroll
     }()
     

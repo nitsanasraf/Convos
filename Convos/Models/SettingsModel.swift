@@ -66,11 +66,12 @@ struct SettingsModel {
         ]),
         
         Section(title: "Premium" ,items: [
-            Item(title: "Get premium membership", color: .systemYellow, icon: "crown.fill") { vc in
-               print("Premium")
-            },
-            Item(title: "Become a V.I.P", color: .systemOrange, icon: "star.fill") { vc in
-                print("VIP")
+            Item(title: "Get a premium membership", color: .systemYellow, icon: "crown.fill") { vc in
+                let modalVC = PopUpViewController()
+                modalVC.iconName = "popup.icon2"
+                modalVC.titleText = "Subscribe for a premium membership"
+                modalVC.descriptionText = "With becoming a premium member you'll recieve many privileges, such as:"
+                vc.present(modalVC, animated: true)
             },
         ]),
     ]

@@ -583,12 +583,18 @@ class RoomViewController: UIViewController {
                 do {
                     let realUserSeconds = try JSONDecoder().decode(Int.self, from: data)
                     UserModel.shared.secondsSpent = realUserSeconds
-                    KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(UserModel.shared.secondsSpent!)
-                    if UserModel.shared.didExceedFreeTierLimit! {
+                    KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(realUserSeconds)
+                    guard let didExceedFreeTierLimit = UserModel.shared.didExceedFreeTierLimit else {return}
+                    if didExceedFreeTierLimit {
                         DispatchQueue.main.async {
-                            let tabVC = self.navigationController!.viewControllers.filter { $0 is TabBarViewController }.first!
-                            self.navigationController!.popToViewController(tabVC, animated: true)
-                            tabVC.present(PopUpViewController(), animated: true)
+                            guard let navigationController = self.navigationController else {return}
+                            let tabVC = navigationController.viewControllers.filter { $0 is TabBarViewController }.first!
+                            let modalVC = PopUpViewController()
+                            modalVC.titleText = "Unfortunately, You exceeded your free minutes limit."
+                            modalVC.iconName = "popup.icon"
+                            modalVC.descriptionText = "In order to get unlimited minutes you'll have to become a premium member, but it'll be worth it!"
+                            navigationController.popToViewController(tabVC, animated: true)
+                            tabVC.present(modalVC, animated: true)
                         }
                     }
                 } catch {

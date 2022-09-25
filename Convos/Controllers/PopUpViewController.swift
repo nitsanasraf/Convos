@@ -10,6 +10,10 @@ import StoreKit
 
 class PopUpViewController: UIViewController {
 
+    var iconName: String?
+    var titleText: String?
+    var descriptionText: String?
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -20,8 +24,8 @@ class PopUpViewController: UIViewController {
         return stackView
     }()
     
-    private let icon :UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "popup.icon"))
+    private lazy var icon :UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: iconName ?? ""))
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.heightAnchor.constraint(equalToConstant: 120).isActive = true
@@ -29,11 +33,11 @@ class PopUpViewController: UIViewController {
         return imageView
     }()
     
-    private let titleLabel :UILabel = {
+    private lazy var titleLabel :UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        label.text = "Unfortunately, You exceeded your free minutes limit."
+        label.text = titleText
         label.textColor = Constants.Colors.secondaryText
         label.font = .systemFont(ofSize: 15, weight: .bold)
         label.textAlignment = .center
@@ -41,11 +45,11 @@ class PopUpViewController: UIViewController {
         return label
     }()
     
-    private let descriptionLabel :UILabel = {
+    private lazy var descriptionLabel :UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        label.text = "In order to get unlimited minutes you'll have to become a premium member, but it'll be worth it!"
+        label.text = descriptionText
         label.textColor = Constants.Colors.secondaryText
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         label.textAlignment = .center
@@ -117,21 +121,13 @@ class PopUpViewController: UIViewController {
     
     private func animateIcon() {
         let pulseAnimation = CABasicAnimation(keyPath: "transform.scale")
-        pulseAnimation.duration = 2.0
+        pulseAnimation.duration = 1.5
         pulseAnimation.fromValue = 0.8
         pulseAnimation.toValue = 1
         pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         pulseAnimation.autoreverses = true
         pulseAnimation.repeatCount = .greatestFiniteMagnitude
         icon.layer.add(pulseAnimation, forKey: nil)
-        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
-        rotationAnimation.duration = 2.0
-        rotationAnimation.fromValue = 0
-        rotationAnimation.toValue = Float.pi
-        rotationAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        rotationAnimation.autoreverses = true
-        rotationAnimation.repeatCount = .greatestFiniteMagnitude
-        icon.layer.add(rotationAnimation, forKey: nil)
     }
     
     override func viewDidLoad() {

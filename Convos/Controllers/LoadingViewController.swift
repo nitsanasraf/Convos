@@ -36,7 +36,7 @@ class LoadingViewController: UIViewController {
     
     private lazy var categoryIcon: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: category?.icon ?? ""))
-        let size: CGFloat = 50
+        let size: CGFloat = 70
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.widthAnchor.constraint(equalToConstant: size).isActive = true

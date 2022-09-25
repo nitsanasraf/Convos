@@ -46,6 +46,7 @@ class SettingsViewController: UIViewController {
         table.register(SettingsTableViewCell.self, forCellReuseIdentifier: SettingsTableViewCell.identifier)
         table.backgroundColor = .clear
         table.separatorStyle = .none
+        table.showsVerticalScrollIndicator = false
         return table
     }()
     
