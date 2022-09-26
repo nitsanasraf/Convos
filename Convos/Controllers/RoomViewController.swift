@@ -559,7 +559,6 @@ class RoomViewController: UIViewController {
         return label
     }()
     
-    
     @objc private func goBack() {
         let alert = UIAlertController(title: "Are you sure you want to leave the room?", message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "EXIT", style: .destructive) { [weak self] alert in
