@@ -35,20 +35,23 @@ class RoomModel: Codable {
             roomURL = "\(networkManager.roomsURL)/\(Constants.Network.EndPoints.next)/\(existingRoom.category)/\(existingRoom.id)/\(userID)"
         }
         //Fetch room
-        networkManager.fetchData(type: RoomModel.self, url: roomURL) { [weak vc] (code,room,_) in
+        networkManager.fetchData(type: RoomModel.self, url: roomURL) { [weak vc] (statusCode, room,_) in
             guard let vc = vc else {return}
-            networkManager.handleErrors(statusCode: code, viewController: vc)
-            guard let room = room else { return }
-            
-            guard let appID = KeyCenter.appID else {return}
-            let url = "\(networkManager.agoraURL)/\(appID)/\(room.name)/\(userUID)"
-            //Fetch token
-            networkManager.fetchData(type: String.self, url: url) { (statusCode,_,data) in
-                networkManager.handleErrors(statusCode: statusCode, viewController: vc)
-                guard let data = data else { return }
-                guard let token = String(data: data, encoding: .utf8) else {return}
-                UserModel.shared.agoraToken = token
-                completionHandler(room,userUID)
+            networkManager.handleErrors(statusCode: statusCode, viewController: vc)
+            if statusCode >= 200 && statusCode <= 299 {
+                guard let room = room else { return }
+                guard let appID = KeyCenter.appID else {return}
+                let url = "\(networkManager.agoraURL)/\(appID)/\(room.name)/\(userUID)"
+                //Fetch token
+                networkManager.fetchData(type: String.self, url: url) { (statusCode,_,data) in
+                    networkManager.handleErrors(statusCode: statusCode, viewController: vc)
+                    if statusCode >= 200 && statusCode <= 299 {
+                        guard let data = data else { return }
+                        guard let token = String(data: data, encoding: .utf8) else {return}
+                        UserModel.shared.agoraToken = token
+                        completionHandler(room,userUID)
+                    }
+                }
             }
         }
     }

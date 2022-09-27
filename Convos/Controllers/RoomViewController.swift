@@ -579,25 +579,27 @@ class RoomViewController: UIViewController {
             self.networkManager.sendData(object: userSeconds, url: self.networkManager.usersURL, httpMethod: Constants.HttpMethods.POST.rawValue) { [weak self] (data, statusCode) in
                 guard let self = self else {return}
                 self.networkManager.handleErrors(statusCode: statusCode, viewController: self)
-                do {
-                    let realUserSeconds = try JSONDecoder().decode(Int.self, from: data)
-                    UserModel.shared.secondsSpent = realUserSeconds
-                    KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(realUserSeconds)
-                    guard let didExceedFreeTierLimit = UserModel.shared.didExceedFreeTierLimit else {return}
-                    if didExceedFreeTierLimit {
-                        DispatchQueue.main.async {
-                            guard let navigationController = self.navigationController else {return}
-                            let tabVC = navigationController.viewControllers.filter { $0 is TabBarViewController }.first!
-                            let modalVC = PopUpViewController()
-                            modalVC.titleText = "Unfortunately, You exceeded your free minutes limit."
-                            modalVC.iconName = "popup.icon"
-                            modalVC.descriptionText = "In order to get unlimited minutes you'll have to become a premium member, but it'll be worth it!"
-                            navigationController.popToViewController(tabVC, animated: true)
-                            tabVC.present(modalVC, animated: true)
+                if statusCode >= 200 && statusCode <= 299 {
+                    do {
+                        let realUserSeconds = try JSONDecoder().decode(Int.self, from: data)
+                        UserModel.shared.secondsSpent = realUserSeconds
+                        KeyChain.shared[Constants.KeyChain.Keys.userSeconds] = String(realUserSeconds)
+                        guard let didExceedFreeTierLimit = UserModel.shared.didExceedFreeTierLimit else {return}
+                        if didExceedFreeTierLimit {
+                            DispatchQueue.main.async {
+                                guard let navigationController = self.navigationController else {return}
+                                let tabVC = navigationController.viewControllers.filter { $0 is TabBarViewController }.first!
+                                let modalVC = PopUpViewController()
+                                modalVC.titleText = "Unfortunately, You exceeded your free minutes limit."
+                                modalVC.iconName = "popup.icon"
+                                modalVC.descriptionText = "In order to get unlimited minutes you'll have to become a premium member, but it'll be worth it!"
+                                navigationController.popToViewController(tabVC, animated: true)
+                                tabVC.present(modalVC, animated: true)
+                            }
                         }
+                    } catch {
+                        print("Error decoding: ",error)
                     }
-                } catch {
-                    print("Error decoding: ",error)
                 }
             }
         }
@@ -679,25 +681,27 @@ class RoomViewController: UIViewController {
         guard let room = room,
               let userUID = UserModel.shared.uid else {return}
         let userRoom = UserRoom(userUID: userUID, roomID: room.id)
-        networkManager.sendData(object: userRoom, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.PUT.rawValue) { [weak self] (data, code) in
+        networkManager.sendData(object: userRoom, url: networkManager.roomsURL, httpMethod: Constants.HttpMethods.PUT.rawValue) { [weak self] (data, statusCode) in
             guard let self = self else {return}
-            self.networkManager.handleErrors(statusCode: code, viewController: self)
-            do {
-                let ix = try JSONDecoder().decode(Int.self, from: data)
-                if ix > -1 {
-                    room.positions[ix] = userUID
-                    completionHandler(ix)
-                } else if ix == -1 {
-                    completionHandler(nil)
-                } else {
-                    DispatchQueue.main.async {
-                        guard let navigationController = self.navigationController else {return}
-                        let tabVC = navigationController.viewControllers.filter { $0 is TabBarViewController }.first!
-                        self.navigationController!.popToViewController(tabVC, animated: true)
+            self.networkManager.handleErrors(statusCode: statusCode, viewController: self)
+            if statusCode >= 200 && statusCode <= 299 {
+                do {
+                    let ix = try JSONDecoder().decode(Int.self, from: data)
+                    if ix > -1 {
+                        room.positions[ix] = userUID
+                        completionHandler(ix)
+                    } else if ix == -1 {
+                        completionHandler(nil)
+                    } else {
+                        DispatchQueue.main.async {
+                            guard let navigationController = self.navigationController else {return}
+                            let tabVC = navigationController.viewControllers.filter { $0 is TabBarViewController }.first!
+                            self.navigationController!.popToViewController(tabVC, animated: true)
+                        }
                     }
+                } catch {
+                    print("Decoding data failed: \(error)")
                 }
-            } catch {
-                print("Decoding data failed: \(error)")
             }
         }
     }

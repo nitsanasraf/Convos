@@ -25,6 +25,7 @@ struct Constants {
             static let agora = "agora"
             static let keys = "keys"
             static let categories = "categories"
+            static let deleted = "deleted"
         }
     }
     enum HttpMethods: String {
@@ -47,6 +48,6 @@ struct Constants {
         static let tertiaryGradient = UIColor(red: 1.00, green: 0.83, blue: 0.19, alpha: 1.00)
         static let quaternaryGradient = UIColor(red: 0.98, green: 0.81, blue: 0.18, alpha: 1.00)
         static let primaryText: UIColor = .white
-        static let secondaryText: UIColor = UIColor(red: 0.20, green: 0.12, blue: 0.59, alpha: 1.00)
+        static let secondaryText = UIColor(red: 0.20, green: 0.12, blue: 0.59, alpha: 1.00)
     }
 }

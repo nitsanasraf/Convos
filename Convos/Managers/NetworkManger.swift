@@ -16,6 +16,7 @@ struct NetworkManger {
     let usersURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.users
     let agoraURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.agora
     let categoriesURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.categories
+    let deletedUserURL = Constants.Network.baseHttpURL + Constants.Network.EndPoints.deleted
     let schemeName = Constants.Network.schemeName
     
     var webSocketTask:URLSessionWebSocketTask?
@@ -23,10 +24,10 @@ struct NetworkManger {
     mutating func configureWebSocketTask(userID:String, roomID:String) {
         guard let url = URL(string:"\(socketURL)/\(userID)/\(roomID)") else {return}
         guard let token = UserModel.shared.authToken else {return}
-
+        
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
+        
         self.webSocketTask = URLSession(configuration: .default).webSocketTask(with: request)
     }
     
@@ -59,7 +60,7 @@ struct NetworkManger {
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = httpMethod
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
+        
         do {
             request.httpBody = try JSONEncoder().encode(object)
         } catch {
@@ -70,15 +71,15 @@ struct NetworkManger {
             if let error = error {
                 print("Error posting to server: \(error)")
             } else {
-                guard let data = data else {return}
-                guard let statusCode = response?.getStatusCode() else {return}
-
+                guard let data = data,
+                      let statusCode = response?.getStatusCode() else {return}
+                
                 completionHandler(data,statusCode)
             }
         }
         task.resume()
     }
-        
+    
     func delete(url: String, completionHandler: @escaping (Int)->()) {
         guard let url = URL(string:url) else {return}
         guard let token = UserModel.shared.authToken else {return}
@@ -86,7 +87,7 @@ struct NetworkManger {
         var request = URLRequest(url: url)
         request.httpMethod = Constants.HttpMethods.DELETE.rawValue
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
+        
         let task = URLSession.shared.dataTask(with: request) { (_,response,error) in
             if let error = error {
                 print("Error deleting object from server: \(error)")
@@ -100,9 +101,6 @@ struct NetworkManger {
     
     func handleErrors(statusCode: Int, viewController vc:UIViewController) {
         switch statusCode {
-        case 100...199: print("Information")
-        case 200...299: print("Success")
-        case 300...399: print("Redirect")
         case 401:
             UserModel.shared.handleUnauthorised(viewController: vc)
         case 400...499: print("Client error")

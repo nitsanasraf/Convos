@@ -20,7 +20,7 @@ struct UserModel:Codable {
     var categoriesCount: [[String:String]]?
     var secondsSpent: Int?
     
-    var freeMinutesLimit: Float? = 5.0
+    var freeMinutesLimit: Float? = 2.0
   
     var minutesSpent: Float? {
         guard let secondsSpent = secondsSpent else {return nil}
@@ -67,7 +67,7 @@ struct UserModel:Codable {
     }
     
     func handleUnauthorised(viewController vc: UIViewController) {
-        logout(viewController: vc)
+        logout()
         DispatchQueue.main.async { 
             let alert = UIAlertController(title: "There was an issue with your current session. Please log in again.", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -78,8 +78,10 @@ struct UserModel:Codable {
         }
     }
     
-    func logout(viewController vc: UIViewController) {
-        guard let url = URL(string: "\(NetworkManger().usersURL)/\(Constants.Network.EndPoints.logout)") else {return}
+    func logout() {
+        let networkManager = NetworkManger()
+        guard let userID = UserModel.shared.id,
+              let url = URL(string: "\(networkManager.usersURL)/\(Constants.Network.EndPoints.logout)/\(userID)") else {return}
         
         let task = URLSession.shared.dataTask(with: url) { (_, response, error) in
             if let error = error {
@@ -93,9 +95,9 @@ struct UserModel:Codable {
     }
     
     func getFavouriteCategory() -> String? {
-        guard let categoriesCount = self.categoriesCount else {return nil}
+        guard let categoriesCount = self.categoriesCount else { return nil }
         
-        if let category = categoriesCount.max(by: { Int($0["count"]!)! < Int($1["count"]!)! }) {
+        if let category = categoriesCount.max(by: { Int($0["count"]!) ?? 0 < Int($1["count"]!) ?? 0 }) {
             if Int(category["count"]!) == 0 {
                 return nil
             }
@@ -105,12 +107,10 @@ struct UserModel:Codable {
     }
     
     func getTotalRoomsCount() -> Int {
-        guard let categoriesCount = self.categoriesCount else {return 0}
+        guard let categoriesCount = self.categoriesCount else { return 0 }
         
         let values = categoriesCount.compactMap {Int($0["count"]!)}
-        let totalRooms = values.reduce(0) {
-            $0 + $1
-        }
+        let totalRooms = values.reduce(0) { $0 + $1 }
         return totalRooms
     }
     

@@ -7,11 +7,20 @@
 
 import UIKit
 
-struct SettingsModel {
+protocol SettingsProtocol: AnyObject {
+    func openNotification()
+    func openDataCollection()
+    func openNetworking()
+    func openPrivacy()
+    func openTerms()
+    func logout()
+    func deleteUser()
+    func premium()
+}
+
+class SettingsModel {
     
-    static let shared = SettingsModel()
-    
-    private init() {}
+    weak var delegate: SettingsProtocol?
     
     struct Section {
         let title: String
@@ -22,56 +31,43 @@ struct SettingsModel {
         let title: String
         let color: UIColor
         let icon: String
-        let function: (_ vc:UIViewController) -> ()
+        let function: () -> ()
     }
     
-    let sections = [
+    lazy var sections = [
         Section(title: "Privacy" ,items: [
-            Item(title: "Notifications", color: Constants.Colors.primaryText, icon: "bell.fill") { vc in
-                print("Notifications")
+            Item(title: "Notifications", color: Constants.Colors.primaryText, icon: "bell.fill") {
+                self.delegate?.openNotification()
             },
-            Item(title: "Data collection", color: Constants.Colors.primaryText, icon: "antenna.radiowaves.left.and.right") { vc in
-                print("Data collection")
+            Item(title: "Data collection", color: Constants.Colors.primaryText, icon: "antenna.radiowaves.left.and.right") {
+                self.delegate?.openDataCollection()
             },
-            Item(title: "Networking", color: Constants.Colors.primaryText, icon: "network") { vc in
-                print("Networking")
+            Item(title: "Networking", color: Constants.Colors.primaryText, icon: "network") {
+                self.delegate?.openNetworking()
             },
         ]),
         
         Section(title: "Policies" ,items: [
-            Item(title: "Privacy policy", color: Constants.Colors.primaryText, icon: "checkerboard.shield") { vc in
-                print("Privacy policy")
+            Item(title: "Privacy policy", color: Constants.Colors.primaryText, icon: "checkerboard.shield") {
+                self.delegate?.openPrivacy()
             },
-            Item(title: "Terms and conditions", color: Constants.Colors.primaryText, icon: "newspaper") { vc in
-                print("Terms and conditions")
+            Item(title: "Terms and conditions", color: Constants.Colors.primaryText, icon: "newspaper") {
+                self.delegate?.openTerms()
             },
         ]),
         
         Section(title: "Account" ,items: [
-            Item(title: "Logout", color: Constants.Colors.primaryText, icon: "arrow.uturn.left") { vc in
-                let alert = UIAlertController(title: "Are you sure you want to log out?", message: nil, preferredStyle: .alert)
-                
-                alert.addAction(UIAlertAction(title: "YES", style: .destructive) { alert in
-                    guard let parentVC = vc.parent else {return}
-                    UserModel.shared.logout(viewController: parentVC)
-                    parentVC.navigationController?.popToRootViewController(animated: true)
-                })
-                alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
-                
-                vc.present(alert, animated: true, completion: nil)
+            Item(title: "Logout", color: Constants.Colors.primaryText, icon: "arrow.uturn.left") {
+                self.delegate?.logout()
             },
-            Item(title: "Delete account", color: .systemRed, icon: "trash.fill") { vc in
-                print("Delete account")
-            },
+            Item(title: "Delete account", color: .systemRed, icon: "trash.fill") {
+                self.delegate?.deleteUser()
+            }
         ]),
         
         Section(title: "Premium" ,items: [
-            Item(title: "Get a premium membership", color: .systemYellow, icon: "crown.fill") { vc in
-                let modalVC = PopUpViewController()
-                modalVC.iconName = "popup.icon2"
-                modalVC.titleText = "Subscribe for a premium membership"
-                modalVC.descriptionText = "With becoming a premium member you'll recieve many privileges, such as:"
-                vc.present(modalVC, animated: true)
+            Item(title: "Get a premium membership", color: .systemYellow, icon: "crown.fill") {
+                self.delegate?.premium()
             },
         ]),
     ]

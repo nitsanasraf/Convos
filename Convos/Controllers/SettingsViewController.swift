@@ -9,7 +9,9 @@ import UIKit
 
 class SettingsViewController: UIViewController {
     
-    private let sections = SettingsModel.shared.sections
+    private let settings = SettingsModel()
+    
+    private let networkManager = NetworkManger()
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -54,7 +56,7 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         view.addGradient(colors: [Constants.Colors.primaryGradient, Constants.Colors.secondaryGradient])
         view.addBackgroundImage(with: "main.bg")
-
+        settings.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
 
@@ -90,31 +92,98 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        sections.count
+        settings.sections.count
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        sections[indexPath.section].items[indexPath.row].function(self)
+        settings.sections[indexPath.section].items[indexPath.row].function()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        sections[section].title
+        settings.sections[section].title
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].items.count
+        return settings.sections[section].items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingsTableViewCell.identifier, for: indexPath) as? SettingsTableViewCell else { return UITableViewCell() }
         
         cell.selectionStyle = .none
-        cell.title.text = sections[indexPath.section].items[indexPath.row].title
-        cell.title.textColor = sections[indexPath.section].items[indexPath.row].color
-        cell.icon.image = UIImage(systemName: sections[indexPath.section].items[indexPath.row].icon)
-        cell.icon.tintColor = sections[indexPath.section].items[indexPath.row].color
+        cell.title.text = settings.sections[indexPath.section].items[indexPath.row].title
+        cell.title.textColor = settings.sections[indexPath.section].items[indexPath.row].color
+        cell.icon.image = UIImage(systemName: settings.sections[indexPath.section].items[indexPath.row].icon)
+        cell.icon.tintColor = settings.sections[indexPath.section].items[indexPath.row].color
         cell.backgroundColor = .clear
         return cell
+    }
+}
+
+extension SettingsViewController: SettingsProtocol {
+    func openNotification() {
+        print("Notifications")
+    }
+    
+    func openDataCollection() {
+        print("Data collection")
+    }
+    
+    func openNetworking() {
+        print("Networking")
+    }
+    
+    func openPrivacy() {
+        print("Privacy")
+    }
+    
+    func openTerms() {
+        print("Terms")
+    }
+    
+    func logout() {
+        let alert = UIAlertController(title: "Are you sure you want to log out?", message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "YES", style: .destructive) { [weak self] alert in
+            guard let self = self,
+                  let parentVC = self.parent else {return}
+            UserModel.shared.logout()
+            parentVC.navigationController?.popToRootViewController(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func deleteUser() {
+        let alert = UIAlertController(title: "Are you sure you want to delete your account?", message: nil, preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "DELETE", style: .destructive) { [weak self] alert in
+            guard let self = self,
+                  let userID = UserModel.shared.id,
+                  let parentVC = self.parent else { return }
+            self.networkManager.sendData(object: userID, url: self.networkManager.deletedUserURL, httpMethod: Constants.HttpMethods.POST.rawValue) { [weak self] (data, statusCode) in
+                guard let self = self else {return}
+                self.networkManager.handleErrors(statusCode: statusCode, viewController: parentVC)
+                if statusCode >= 200 && statusCode <= 299 {
+                    DispatchQueue.main.async {
+                        UserModel.shared.logout()
+                        parentVC.navigationController?.popToRootViewController(animated: true)
+                    }
+                }
+            }
+        })
+        alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func premium() {
+        let modalVC = PopUpViewController()
+        modalVC.iconName = "popup.icon2"
+        modalVC.titleText = "Subscribe for a premium membership"
+        modalVC.descriptionText = "With becoming a premium member you'll recieve many privileges, such as:"
+        self.present(modalVC, animated: true)
     }
     
     

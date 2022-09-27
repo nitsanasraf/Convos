@@ -50,10 +50,12 @@ class StatisticsViewController: UIViewController {
         networkManager.fetchData(type: UserModel.self, url: "\(networkManager.usersURL)/\(userID)") { [weak self] (statusCode,user,_) in
             guard let self = self else {return}
             self.networkManager.handleErrors(statusCode: statusCode, viewController: parent)
-            guard let user = user else {return}
-            UserModel.shared.categoriesCount = user.categoriesCount
-            UserModel.shared.createdAt = user.createdAt
-            completionHandler()
+            if statusCode >= 200 && statusCode <= 299 {
+                guard let user = user else {return}
+                UserModel.shared.categoriesCount = user.categoriesCount
+                UserModel.shared.createdAt = user.createdAt
+                completionHandler()
+            }
         }
     }
     

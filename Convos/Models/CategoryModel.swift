@@ -17,8 +17,10 @@ struct CategoryModel: Codable {
         let networkManager = NetworkManger()
         networkManager.fetchData(type: [CategoryModel].self, url: networkManager.categoriesURL) { (statusCode,categories,_) in
             networkManager.handleErrors(statusCode: statusCode, viewController: vc)
-            guard let categories = categories else {return}
-            completionHandler(categories)
+            if statusCode >= 200 && statusCode <= 299 {
+                guard let categories = categories else {return}
+                completionHandler(categories)
+            }
         }
     }
 }
