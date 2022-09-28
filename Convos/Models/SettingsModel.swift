@@ -15,7 +15,7 @@ protocol SettingsProtocol: AnyObject {
     func openTerms()
     func logout()
     func deleteUser()
-    func premium()
+    func getPremium()
 }
 
 class SettingsModel {
@@ -67,7 +67,7 @@ class SettingsModel {
         
         Section(title: "Premium" ,items: [
             Item(title: "Get a premium membership", color: .systemYellow, icon: "crown.fill") {
-                self.delegate?.premium()
+                self.delegate?.getPremium()
             },
         ]),
     ]

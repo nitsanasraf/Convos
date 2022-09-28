@@ -122,7 +122,7 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
 
 extension SettingsViewController: SettingsProtocol {
     func openNotification() {
-        print("Notifications")
+        
     }
     
     func openDataCollection() {
@@ -134,7 +134,18 @@ extension SettingsViewController: SettingsProtocol {
     }
     
     func openPrivacy() {
-        print("Privacy")
+        let vc = ContentViewController()
+        if let path = Bundle.main.path(forResource: "PrivacyPolicy", ofType: "txt") {
+            do {
+                let privacyPolicy = try String(contentsOfFile: path, encoding: .utf8)
+                vc.content = privacyPolicy
+            } catch {
+                print("Error reading file PrivacyPolicy.txt: \(error)")
+            }
+        }
+        vc.title = "Privacy Policy"
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated: true)
     }
     
     func openTerms() {
@@ -178,7 +189,7 @@ extension SettingsViewController: SettingsProtocol {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func premium() {
+    func getPremium() {
         let modalVC = PopUpViewController()
         modalVC.iconName = "popup.icon2"
         modalVC.titleText = "Subscribe for a premium membership"
