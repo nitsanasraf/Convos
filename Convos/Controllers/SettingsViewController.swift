@@ -113,26 +113,19 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = .none
         cell.title.text = settings.sections[indexPath.section].items[indexPath.row].title
         cell.title.textColor = settings.sections[indexPath.section].items[indexPath.row].color
-        cell.icon.image = UIImage(systemName: settings.sections[indexPath.section].items[indexPath.row].icon)
-        cell.icon.tintColor = settings.sections[indexPath.section].items[indexPath.row].color
+        if settings.sections[indexPath.section].items[indexPath.row].title == "Notifications" {
+            cell.isSwitch = true
+        } else {
+            cell.icon.image = UIImage(systemName: settings.sections[indexPath.section].items[indexPath.row].icon)
+            cell.icon.tintColor = settings.sections[indexPath.section].items[indexPath.row].color
+        }
         cell.backgroundColor = .clear
         return cell
     }
 }
 
 extension SettingsViewController: SettingsProtocol {
-    func openNotification() {
-        
-    }
-    
-    func openDataCollection() {
-        print("Data collection")
-    }
-    
-    func openNetworking() {
-        print("Networking")
-    }
-    
+
     func openPrivacy() {
         let vc = ContentViewController()
         if let path = Bundle.main.path(forResource: "PrivacyPolicy", ofType: "txt") {
@@ -146,10 +139,6 @@ extension SettingsViewController: SettingsProtocol {
         vc.title = "Privacy Policy"
         let nav = UINavigationController(rootViewController: vc)
         present(nav, animated: true)
-    }
-    
-    func openTerms() {
-        print("Terms")
     }
     
     func logout() {

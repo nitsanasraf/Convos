@@ -11,6 +11,47 @@ class SettingsTableViewCell: UITableViewCell {
 
     static let identifier = "SettingsTableViewCell"
     
+    private var switchState: Bool {
+        get {
+            let state = UserDefaults.standard.object(forKey: "switchState") as? Bool
+            guard let state = state else { return true }
+            return state
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "switchState")
+        }
+    }
+    
+    lazy var isSwitch = false {
+        willSet {
+            self.icon.removeFromSuperview()
+            self.cellMainStackView.addArrangedSubview(switchButton)
+        }
+    }
+    
+    private lazy var switchButton: UISwitch = {
+        let switchButton = UISwitch()
+        let offColor: UIColor = .systemGray4
+        switchButton.isOn = switchState
+        switchButton.tintColor = offColor
+        switchButton.layer.cornerRadius = switchButton.frame.height / 2.0
+        switchButton.backgroundColor = offColor
+        switchButton.clipsToBounds = true
+        switchButton.setSize(width: 51/1.1, height: 31/1.1)
+        switchButton.addTarget(self, action: #selector(switchStateChanged), for: .valueChanged)
+        return switchButton
+    }()
+    
+    @objc private func switchStateChanged(_ sender:UISwitch) {
+        if sender.isOn {
+            switchState = true
+            //continue notifications
+        } else {
+            switchState = false
+            //stop notifications
+        }
+    }
+    
     private let cellMainStackView:UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -51,7 +92,7 @@ class SettingsTableViewCell: UITableViewCell {
     private func addViews() {
         contentView.addSubview(cellMainStackView)
         
-        cellMainStackView.addArrangedSubviews(title,icon)
+        cellMainStackView.addArrangedSubviews(title, icon)
     }
     
     private func addLayouts() {

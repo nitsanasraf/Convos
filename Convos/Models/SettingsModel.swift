@@ -8,11 +8,7 @@
 import UIKit
 
 protocol SettingsProtocol: AnyObject {
-    func openNotification()
-    func openDataCollection()
-    func openNetworking()
     func openPrivacy()
-    func openTerms()
     func logout()
     func deleteUser()
     func getPremium()
@@ -36,23 +32,9 @@ class SettingsModel {
     
     lazy var sections = [
         Section(title: "Privacy" ,items: [
-            Item(title: "Notifications", color: Constants.Colors.primaryText, icon: "bell.fill") {
-                self.delegate?.openNotification()
-            },
-            Item(title: "Data collection", color: Constants.Colors.primaryText, icon: "antenna.radiowaves.left.and.right") {
-                self.delegate?.openDataCollection()
-            },
-            Item(title: "Networking", color: Constants.Colors.primaryText, icon: "network") {
-                self.delegate?.openNetworking()
-            },
-        ]),
-        
-        Section(title: "Policies" ,items: [
+            Item(title: "Notifications", color: Constants.Colors.primaryText, icon: "bell.fill") {},
             Item(title: "Privacy policy", color: Constants.Colors.primaryText, icon: "checkerboard.shield") {
                 self.delegate?.openPrivacy()
-            },
-            Item(title: "Terms and conditions", color: Constants.Colors.primaryText, icon: "newspaper") {
-                self.delegate?.openTerms()
             },
         ]),
         
