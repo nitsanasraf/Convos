@@ -2,6 +2,7 @@ name: 'Close Stale PR'
 
 on:
   schedule:
+  # 00:00 every day
   - cron: '0 0 * * *'
   
 jobs:
