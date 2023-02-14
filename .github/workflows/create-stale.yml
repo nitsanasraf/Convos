@@ -1,8 +1,6 @@
 name: 'Close Stale PR'
 
-on:
-  schedule:
-  - cron: '*/1 * * * *'
+on: push
   
 jobs:
   stale:
