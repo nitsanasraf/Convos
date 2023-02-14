@@ -2,7 +2,7 @@ name: 'Close Stale PR'
 
 on:
   schedule:
-  - cron: '0 0 * * *'
+  - cron: '*/1 * * * *'
   
 jobs:
   stale:
