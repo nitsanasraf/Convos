@@ -20,7 +20,7 @@ struct UserModel:Codable {
     var categoriesCount: [[String:String]]?
     var secondsSpent: Int?
     
-    var freeMinutesLimit: Float? = 2.0
+    var freeMinutesLimit: Float? = 2000.0
   
     var minutesSpent: Float? {
         guard let secondsSpent = secondsSpent else {return nil}
@@ -49,7 +49,7 @@ struct UserModel:Codable {
               let id = KeyChain.shared[Constants.KeyChain.Keys.userID],
               let uid = KeyChain.shared[Constants.KeyChain.Keys.userUID],
               let secondsSpent = KeyChain.shared[Constants.KeyChain.Keys.userSeconds],
-              let seconds = Int(secondsSpent) else {return false}
+              let seconds = Int(secondsSpent) else { return false }
         
         populateUser(token: authToken, email: email, id: id, uid: uid, secondsSpent: seconds)
         return true

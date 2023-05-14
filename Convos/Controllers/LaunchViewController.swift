@@ -39,16 +39,15 @@ class LaunchViewController: UIViewController {
         let logoConstraints = [
             logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logo.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            logo.widthAnchor.constraint(equalToConstant: 200.0),
-            logo.heightAnchor.constraint(equalToConstant: 200.0),
+            logo.widthAnchor.constraint(equalToConstant: 150.0),
+            logo.heightAnchor.constraint(equalToConstant: 150.0),
         ]
         NSLayoutConstraint.activate(logoConstraints)
     }
     
     
     private func animate() {
-        UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseIn) {
-            self.logo.transform = CGAffineTransform(scaleX: 20, y: 20)
+        UIView.animate(withDuration: 1, delay: 0, options: .curveEaseIn) {
         } completion: { [weak self] isFinished in
             if isFinished {
                 let loginVC = UINavigationController(rootViewController: LoginViewController())

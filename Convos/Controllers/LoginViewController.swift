@@ -7,6 +7,7 @@
 
 import UIKit
 import AuthenticationServices
+import PocketSVG
 
 class LoginViewController: UIViewController {
     
@@ -31,7 +32,19 @@ class LoginViewController: UIViewController {
         return stackView
     }()
     
-    private let logo:UILabel = {
+    private let logo: SVGImageView = {
+        let url = Bundle.main.url(forResource: "logo", withExtension: "svg")!
+        let svgImageView = SVGImageView.init(contentsOf: url)
+        svgImageView.contentMode = .scaleAspectFit
+        svgImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        svgImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        svgImageView.translatesAutoresizingMaskIntoConstraints = false
+        svgImageView.layer.shouldRasterize = false
+        svgImageView.fillColor = .white
+        return svgImageView
+    }()
+    
+    private let logoLabel: UILabel = {
         let label = UILabel()
         label.text = "Convos"
         label.numberOfLines = 0
@@ -73,23 +86,6 @@ class LoginViewController: UIViewController {
         }
         let button = UIButton(configuration: config)
         button.addTarget(self, action: #selector(facebookLogin), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var appleButton:UIButton = {
-        var config = UIButton.Configuration.filled()
-        config.title = "Sign in with Apple"
-        config.baseBackgroundColor = .black
-        config.baseForegroundColor = .white
-        config.image = UIImage(systemName: "applelogo")
-        config.imagePadding = 10
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: 16,weight: .semibold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.addTarget(self, action: #selector(appleLogin), for: .touchUpInside)
         return button
     }()
     
@@ -193,7 +189,7 @@ class LoginViewController: UIViewController {
     private func addViews() {
         view.addSubview(loginStackView)
         
-        loginStackView.addArrangedSubviews(logo, facebookButton, googleButton, appleButton)
+        loginStackView.addArrangedSubviews(logo, logoLabel, facebookButton, googleButton)
     }
     
     private func addLayouts() {
